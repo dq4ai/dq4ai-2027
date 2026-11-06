@@ -1,0 +1,15 @@
+# Deadlines, shown everywhere in Anywhere on Earth (AoE).
+# Set a date with its time zone, e.g. date: "2026-12-11T23:59:00-12:00"
+# To extend a deadline, keep `date` and add: extendedTo: "2026-12-18T23:59:00-12:00"
+- id: submission
+  label: Paper submission
+  kind: submission
+  date: TBA
+- id: notification
+  label: Author notification
+  kind: notification
+  date: TBA
+- id: camera-ready
+  label: Camera-ready papers
+  kind: camera-ready
+  date: TBA

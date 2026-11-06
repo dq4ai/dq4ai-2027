@@ -1,0 +1,7 @@
+# To add a photo, put the file in src/content/images/ and add:
+#   photo: { file: name.jpg, alt: "Portrait of the speaker" }
+- id: abedjan
+  speaker: ziawasch-abedjan
+  title: TBA
+  abstract: TBA
+  bio: TBA

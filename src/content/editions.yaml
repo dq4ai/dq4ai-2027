@@ -1,0 +1,14 @@
+# Add one entry per edition. Set current: true on this year's edition only.
+- id: dq4ai-2027
+  edition: Second
+  year: 2027
+  host: EDBT/ICDT 2027
+  city: Lille, France
+  url: https://kaaaziz.github.io/dq4ai-2027/
+  current: true
+- id: first-edition
+  edition: First
+  year: TBA
+  host: TBA
+  city: TBA
+  url: TBA

@@ -1,0 +1,21 @@
+steps:
+  - title: Check the scope
+    detail: Confirm that your work fits the workshop topics and choose a paper category.
+  - title: Prepare your paper
+    detail: Follow the template and the page limit for your category.
+  - title: Review the policies
+    detail: Read the review model, dual submission, and generative AI policies below.
+  - title: Submit before the deadline
+    detail: Upload your paper through the submission system. All deadlines are Anywhere on Earth.
+  - title: Plan to present
+    detail: Accepted papers will be presented during the workshop.
+formatting: TBA
+anonymization: TBA
+faq:
+  - question: Where will accepted papers be published?
+    answer: >-
+      In the CEUR Workshop Proceedings, subject to the applicable publication policies.
+  - question: What does Anywhere on Earth mean?
+    answer: >-
+      Anywhere on Earth (AoE) is the time zone UTC−12. A deadline is open as long as that day has
+      not ended anywhere on Earth. The dates page can show each deadline in your own time zone.

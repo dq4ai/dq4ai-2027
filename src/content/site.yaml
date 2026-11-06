@@ -1,0 +1,31 @@
+# Workshop-wide facts. Write TBA for anything not yet known; the build lists what remains.
+acronym: DQ4AI
+title: Data Quality for Artificial Intelligence
+fullName: International Workshop on Data Quality for Artificial Intelligence
+edition: Second
+year: 2027
+tagline: >-
+  Researchers and practitioners from data management, data quality, and AI discussing methods,
+  systems, benchmarks, evaluation frameworks, and applications for trustworthy AI.
+host:
+  name: EDBT/ICDT 2027
+  url: https://edbticdt2027.github.io/
+  workshopsUrl: https://edbticdt2027.github.io/?contents=workshops.html
+  startDate: "2027-04-06"
+  endDate: "2027-04-09"
+  city: Lille
+  country: France
+venueTimezone: Europe/Paris
+workshopDate: TBA # Format: "2027-04-06"
+contactEmail: TBA
+submissionSystem: TBA # e.g. EasyChair, CMT, OpenReview, HotCRP
+submissionUrl: TBA
+proceedings:
+  name: CEUR Workshop Proceedings
+  url: https://ceur-ws.org/
+paperTemplate: TBA
+reviewModel: TBA # e.g. double-blind
+deployment:
+  githubOwner: kaaaziz
+  repoName: dq4ai-2027
+  customDomain: "" # e.g. dq4ai-workshop.org. Leave empty to use GitHub Pages.

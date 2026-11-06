@@ -1,0 +1,24 @@
+# order: listed keeps the order below; order: surname sorts alphabetically by surname.
+- id: chairs
+  title: Workshop Chairs
+  order: listed
+  members: [soror-sahri, farah-benamara]
+- id: honorary-chair
+  title: Honorary Chair
+  order: listed
+  members: [divesh-srivastava]
+- id: program-committee
+  title: Program Committee
+  order: surname
+  note: Membership is being finalized.
+  members:
+    - nathalie-aussenac
+    - fabian-suchanek
+    - mohammad-sadoghi
+    - mourad-ouzzani
+    - hazar-harmouch
+    - jesualdo-fernandez-breis
+    - asma-abboura
+    - imane-hocine
+    - sijie-dong
+    - jahid-hasan

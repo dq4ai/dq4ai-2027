@@ -1,0 +1,55 @@
+# Everyone appears here once. Committees, keynotes and the program refer to these ids.
+# Optional fields: surname (when it is not the last word of the name), country, url, orcid, dblp.
+- id: soror-sahri
+  name: Soror Sahri
+  affiliation: Université Paris Cité
+  country: France
+- id: farah-benamara
+  name: Farah Benamara
+  affiliation: University of Toulouse
+  country: France
+- id: divesh-srivastava
+  name: Divesh Srivastava
+  affiliation: TBA
+- id: ziawasch-abedjan
+  name: Ziawasch Abedjan
+  affiliation: Technische Universität Berlin
+- id: nathalie-aussenac
+  name: Nathalie Aussenac
+  affiliation: IRIT-CNRS
+  country: France
+- id: fabian-suchanek
+  name: Fabian M. Suchanek
+  affiliation: Institut Polytechnique de Paris
+  country: France
+- id: mohammad-sadoghi
+  name: Mohammad Sadoghi
+  affiliation: University of California
+  country: USA
+- id: mourad-ouzzani
+  name: Mourad Ouzzani
+  affiliation: QCRI
+  country: Qatar
+- id: hazar-harmouch
+  name: Hazar Harmouch
+  affiliation: University of Amsterdam
+  country: Netherlands
+- id: jesualdo-fernandez-breis
+  name: Jesualdo Fernandez Breis
+  surname: Fernandez Breis
+  affiliation: Universidad de Murcia, IMIB-Arrixaca
+  country: Spain
+- id: asma-abboura
+  name: Asma Abboura
+  affiliation: University of Hassiba Benbouali
+  country: Algeria
+- id: imane-hocine
+  name: Imane Hocine
+  affiliation: University of Luxembourg
+  country: Luxembourg
+- id: sijie-dong
+  name: Sijie Dong
+  affiliation: Alibaba
+- id: jahid-hasan
+  name: Jahid Hasan
+  affiliation: Purdue University
