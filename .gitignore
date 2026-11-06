@@ -10,3 +10,6 @@ test-results/
 .DS_Store
 .env*
 site-root/
+.claude/
+CLAUDE.md
+skills-lock.json
