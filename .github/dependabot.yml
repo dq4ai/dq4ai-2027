@@ -4,6 +4,10 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    # typescript-eslint and astro check do not support TypeScript 7 yet. See docs/ARCHITECTURE.md.
+    ignore:
+      - dependency-name: typescript
+        versions: [">=7"]
     groups:
       dependencies:
         patterns: ["*"]
