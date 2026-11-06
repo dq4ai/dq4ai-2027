@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Lint
+        run: pnpm lint
+      - name: Typecheck
+        run: pnpm check
+      - name: Unit tests
+        run: pnpm test
+      - name: Build the site and the populated test site
+        run: pnpm build && pnpm build:fixture
+      - name: Validate HTML
+        run: pnpm validate:html
+      - name: Prepare link check
+        run: mkdir site-root && ln -s ../dist site-root/dq4ai-2027
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --no-progress --root-dir ${{ github.workspace }}/site-root 'site-root/dq4ai-2027/**/*.html'
+      - name: Report external link failures
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          fail: false
+          args: --no-progress --root-dir ${{ github.workspace }}/site-root 'site-root/dq4ai-2027/**/*.html'
+      - name: Install browser
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Browser and accessibility tests
+        run: pnpm test:e2e
+      - name: Lighthouse
+        run: pnpm lhci
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: ${{ !cancelled() }}
+        with:
+          name: test-reports
+          path: |
+            playwright-report/
+            .lighthouseci/
+          retention-days: 14
