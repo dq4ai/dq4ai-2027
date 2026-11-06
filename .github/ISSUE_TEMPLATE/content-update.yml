@@ -1,0 +1,47 @@
+name: Content update
+description: Ask for a change to dates, people, the program or other site content
+labels: [content]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: What kind of content is this?
+      options:
+        - Dates and deadlines
+        - People and committees
+        - Keynotes
+        - Program and talks
+        - Accepted papers
+        - Call for papers and submission
+        - Venue and travel
+        - Policies
+        - News announcement
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: What should change?
+      description: Give the exact wording or value to publish. Write TBA for anything not known yet.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Where does the correct information come from?
+      description: For example, an email from the EDBT organizers, or a link to a published page.
+    validations:
+      required: true
+  - type: input
+    id: needed-by
+    attributes:
+      label: When does this need to be live?
+      description: Leave empty if there is no particular date.
+  - type: checkboxes
+    id: permission
+    attributes:
+      label: Permission
+      options:
+        - label: This information, and any photo or logo included, may be made public.
+          required: true

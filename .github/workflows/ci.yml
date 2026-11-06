@@ -55,6 +55,7 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: test-reports
+          include-hidden-files: true
           path: |
             playwright-report/
             .lighthouseci/

@@ -29,5 +29,6 @@ jobs:
         if: ${{ !cancelled() }}
         with:
           name: lighthouse-production
+          include-hidden-files: true
           path: .lighthouseci/
           retention-days: 30
