@@ -1,0 +1,10 @@
+dist
+dist-fixture
+.astro
+.lighthouseci
+playwright-report
+test-results
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.remember
+site-root

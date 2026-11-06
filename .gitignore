@@ -1,0 +1,12 @@
+node_modules/
+dist/
+dist-fixture/
+.astro/
+.lighthouseci/
+playwright-report/
+test-results/
+.remember/
+*.log
+.DS_Store
+.env*
+site-root/

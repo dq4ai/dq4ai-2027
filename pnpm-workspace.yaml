@@ -1,0 +1,4 @@
+minimumReleaseAgeExclude:
+  - playwright-core@1.65.0
+overrides:
+  "@emnapi/runtime": 1.11.3
