@@ -1,0 +1,125 @@
+import { describe, expect, it } from "vitest";
+import { resolve } from "node:path";
+import { buildCfpText, wrapText } from "../../src/lib/cfp-text";
+import { checkContent } from "../../src/lib/load-content";
+import { buildEventJsonLd, serializeJsonLd } from "../../src/lib/seo";
+import { scriptHash, THEME_INIT_SCRIPT, contentSecurityPolicy } from "../../src/lib/theme";
+import { siteSchema, cfpSchema } from "../../src/lib/schemas";
+import { nextDeadline, sortBySurname, surnameOf, toDeadlineViews } from "../../src/lib/view";
+import { parse } from "yaml";
+import { readFileSync } from "node:fs";
+
+const load = (directory: string, file: string): unknown =>
+  parse(readFileSync(resolve(directory, file), "utf8"));
+const site = siteSchema.parse(load("src/content", "site.yaml"));
+const cfp = cfpSchema.parse(load("src/content", "cfp.yaml"));
+
+describe("the committed content", () => {
+  it("passes every rule and reports its placeholders", () => {
+    const { issues, placeholders } = checkContent("src/content");
+    expect(issues).toEqual([]);
+    expect(placeholders).toContainEqual({ file: "site.yaml", field: "workshopDate" });
+  });
+  it("the populated fixture passes every rule", () => {
+    expect(checkContent("tests/fixtures/content-populated").issues).toEqual([]);
+  });
+});
+
+describe("view helpers", () => {
+  const person = (name: string, surname?: string) => ({
+    id: "x",
+    name,
+    affiliation: "Y",
+    ...(surname ? { surname } : {}),
+  });
+  it("uses the last word as surname unless told otherwise", () => {
+    expect(surnameOf(person("Fabian M. Suchanek"))).toBe("Suchanek");
+    expect(surnameOf(person("Jesualdo Fernandez Breis", "Fernandez Breis"))).toBe(
+      "Fernandez Breis",
+    );
+  });
+  it("sorts by surname, ignoring case and accents", () => {
+    const sorted = sortBySurname([person("A Zed"), person("B Élan"), person("C alpha")]);
+    expect(sorted.map((p) => p.name)).toEqual(["C alpha", "B Élan", "A Zed"]);
+  });
+  it("picks the earliest open deadline, using extensions", () => {
+    const views = toDeadlineViews(
+      [
+        { id: "a", label: "A", kind: "abstract", date: "2026-11-01T23:59:00-12:00" },
+        {
+          id: "b",
+          label: "B",
+          kind: "submission",
+          date: "2026-11-02T23:59:00-12:00",
+          extendedTo: "2026-12-20T23:59:00-12:00",
+        },
+        { id: "c", label: "C", kind: "other", date: "TBA" },
+      ],
+      new Date("2026-11-10T00:00:00Z"),
+    );
+    expect(nextDeadline(views)?.id).toBe("b");
+    expect(views[1]?.previous?.toISOString()).toBe("2026-11-03T11:59:00.000Z");
+  });
+});
+
+describe("plain-text CFP", () => {
+  it("wraps at 72 columns", () => {
+    for (const line of wrapText("word ".repeat(60)).split("\n")) {
+      expect(line.length).toBeLessThanOrEqual(72);
+    }
+  });
+  it("carries extended dates and marks unknown facts", () => {
+    const text = buildCfpText({
+      site,
+      cfp,
+      chairs: [{ id: "x", name: "Jane Doe", affiliation: "Example University" }],
+      siteUrl: "https://example.org/",
+      deadlines: toDeadlineViews(
+        [
+          {
+            id: "s",
+            label: "Paper submission",
+            kind: "submission",
+            date: "2026-12-11T23:59:00-12:00",
+            extendedTo: "2026-12-18T23:59:00-12:00",
+          },
+        ],
+        new Date("2026-11-10T00:00:00Z"),
+      ),
+    });
+    expect(text).toContain("18 December 2026, 23:59 AoE");
+    expect(text).toContain("extended from 11 December 2026");
+    expect(text).toContain("Submission link: To be announced");
+    expect(text).toContain("Jane Doe, Example University");
+    expect(text).not.toContain("TBA");
+  });
+});
+
+describe("JSON-LD", () => {
+  const organizers = [{ id: "x", name: "Jane Doe", affiliation: "TBA" }];
+  it("omits the start date while it is TBA", () => {
+    const data = buildEventJsonLd({ site, url: "https://example.org/", organizers });
+    expect(data).not.toHaveProperty("startDate");
+    expect(data.superEvent.startDate).toBe("2027-04-06");
+    expect(data.organizer[0]).not.toHaveProperty("affiliation");
+  });
+  it("states the date once known", () => {
+    const data = buildEventJsonLd({
+      site: { ...site, workshopDate: "2027-04-07" },
+      url: "https://example.org/",
+      organizers,
+    });
+    expect(data).toMatchObject({ startDate: "2027-04-07", endDate: "2027-04-07" });
+  });
+  it("cannot be broken out of its script element", () => {
+    expect(serializeJsonLd({ a: "</script>" })).not.toContain("</script>");
+  });
+});
+
+describe("Content-Security-Policy", () => {
+  it("allows only the hashed theme script inline", () => {
+    const policy = contentSecurityPolicy();
+    expect(policy).toContain(scriptHash(THEME_INIT_SCRIPT));
+    expect(policy).not.toContain("unsafe");
+  });
+});
