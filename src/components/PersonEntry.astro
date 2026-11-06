@@ -1,0 +1,23 @@
+---
+import type { Person } from "../lib/schemas";
+import { isKnown } from "../lib/view";
+import ExternalLink from "./ExternalLink.astro";
+
+interface Props {
+  person: Person;
+}
+const { person } = Astro.props;
+const place = isKnown(person.affiliation)
+  ? [person.affiliation, person.country].filter(Boolean).join(", ")
+  : undefined;
+---
+
+<span class="person__name">{person.name}</span>
+{(person.orcid || person.dblp || person.url) && (
+  <span class="person__links">
+    {person.url && <ExternalLink href={person.url}>Web</ExternalLink>}{" "}
+    {person.orcid && <ExternalLink href={person.orcid}>ORCID</ExternalLink>}{" "}
+    {person.dblp && <ExternalLink href={person.dblp}>DBLP</ExternalLink>}
+  </span>
+)}
+<span class="person__detail">{place ?? <span class="tba">Affiliation to be announced</span>}</span>

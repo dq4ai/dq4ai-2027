@@ -1,0 +1,17 @@
+---
+import PageHeader from "../components/PageHeader.astro";
+import ProseSections from "../components/ProseSections.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getAttend, getSite } from "../lib/content";
+import { formatDayRange } from "../lib/dates";
+
+const [site, sections] = await Promise.all([getSite(), getAttend()]);
+---
+
+<BaseLayout slug="attend">
+  <PageHeader
+    title="Attend"
+    lede={`${site.acronym} ${site.year} takes place with ${site.host.name} in ${site.host.city}, ${site.host.country}, ${formatDayRange(site.host.startDate, site.host.endDate)}.`}
+  />
+  <ProseSections {sections} />
+</BaseLayout>

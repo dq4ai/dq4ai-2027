@@ -1,0 +1,143 @@
+---
+import ContentImage from "../components/ContentImage.astro";
+import ExternalLink from "../components/ExternalLink.astro";
+import Heading from "../components/Heading.astro";
+import KeyDates from "../components/KeyDates.astro";
+import Value from "../components/Value.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCfp, getCommittees, getKeynotes, getNews, getSite, getSponsors } from "../lib/content";
+import { formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { absoluteUrl, url } from "../lib/paths";
+import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
+import { hostLocation } from "../lib/view";
+
+const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
+  getSite(),
+  getCfp(),
+  getCommittees(),
+  getKeynotes(),
+  getNews(),
+  getSponsors(),
+]);
+const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
+const jsonLd = serializeJsonLd(
+  buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
+);
+---
+
+<BaseLayout slug="home">
+  <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
+  <div class="hero">
+    <div>
+      <p class="eyebrow">
+        Co-located with {site.host.name} · {hostLocation(site)}
+      </p>
+      <h1>{site.title}</h1>
+      <p class="hero__edition">
+        {`${site.edition} International Workshop · ${site.acronym} ${site.year}`}
+      </p>
+      <p class="lede">{site.tagline}</p>
+      <p class="lede">
+        {site.workshopDate === TBA ? (
+          <>
+            {site.host.name} runs {formatDayRange(site.host.startDate, site.host.endDate)}. Workshop
+            date to be announced.
+          </>
+        ) : (
+          <>Workshop date: {formatIsoDay(site.workshopDate)}.</>
+        )}
+      </p>
+      <div class="hero__actions">
+        {site.submissionUrl === TBA ? (
+          <a class="button button--primary" href={url("/submission/")}>
+            Submit a paper
+          </a>
+        ) : (
+          <ExternalLink class="button button--primary" href={site.submissionUrl}>
+            Submit a paper
+          </ExternalLink>
+        )}
+        <a class="button" href={url("/call-for-papers/")}>
+          Read the call for papers
+        </a>
+      </div>
+    </div>
+    <KeyDates />
+  </div>
+
+  <div class="home-grid">
+    <div>
+      <section>
+        <Heading id="about">About the workshop</Heading>
+        <p>{cfp.goal}</p>
+      </section>
+      <section>
+        <Heading id="topics">Topics of interest</Heading>
+        <ol class="topics">
+          {cfp.topics.map((topic) => (
+            <li>{topic.title}</li>
+          ))}
+        </ol>
+        <p class="ledger__link">
+          <a href={url("/call-for-papers/#topics")}>Full topic descriptions</a>
+        </p>
+      </section>
+      <section>
+        <Heading id="related-venues">How DQ4AI relates to other venues</Heading>
+        <p>{cfp.relatedVenues.distinction}</p>
+      </section>
+    </div>
+    <div>
+      <section>
+        <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
+        {keynotes.map((keynote) => (
+          <div class="entry">
+            <h3>{keynote.person.name}</h3>
+            <p class="entry__meta">
+              <Value of={keynote.person.affiliation} />
+            </p>
+            <p>
+              <a href={url(`/keynotes/#${keynote.id}`)}>
+                {keynote.title === TBA ? "Talk title to be announced" : keynote.title}
+              </a>
+            </p>
+          </div>
+        ))}
+      </section>
+      <section>
+        <Heading id="latest-news">Latest news</Heading>
+        {news.slice(0, 3).map((item) => (
+          <div class="entry">
+            <p class="entry__meta">
+              <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
+            </p>
+            <h3>
+              <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
+            </h3>
+            <p>{item.data.summary}</p>
+          </div>
+        ))}
+      </section>
+    </div>
+  </div>
+
+  {sponsors.length > 0 && (
+    <section>
+      <Heading id="sponsors">Supported by</Heading>
+      <ul class="sponsors">
+        {sponsors.map((sponsor) => (
+          <li>
+            <ExternalLink href={sponsor.url}>
+              <ContentImage
+                file={sponsor.logo.file}
+                alt={sponsor.logo.alt}
+                widths={[120, 240]}
+                sizes="120px"
+              />
+            </ExternalLink>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+</BaseLayout>

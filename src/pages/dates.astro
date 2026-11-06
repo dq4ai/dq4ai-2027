@@ -1,0 +1,81 @@
+---
+import LocalTimeToggle from "../components/LocalTimeToggle.astro";
+import PageHeader from "../components/PageHeader.astro";
+import StatusBadge from "../components/StatusBadge.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getDeadlines, getSite } from "../lib/content";
+import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { url } from "../lib/paths";
+
+const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
+---
+
+<BaseLayout slug="dates">
+  <PageHeader
+    title="Important dates"
+    lede="All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended everywhere on Earth."
+  />
+  <div class="toolbar">
+    <a class="button" href={url("/calendar/deadlines.ics")} download>
+      Add to calendar (.ics)
+    </a>
+    <LocalTimeToggle />
+  </div>
+  <p class="note" data-zone-note>
+    Times shown in AoE.
+  </p>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Milestone</th>
+          <th scope="col">Date</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {deadlines.map((deadline) => (
+          <tr>
+            <th scope="row">{deadline.label}</th>
+            <td class="tabular">
+              {deadline.previous && (
+                <del>
+                  <span>{formatAoE(deadline.previous)}</span>
+                </del>
+              )}
+              {deadline.due ? (
+                <time
+                  datetime={deadline.due.toISOString()}
+                  data-convert={deadline.due.toISOString()}
+                >
+                  {formatAoE(deadline.due)}
+                </time>
+              ) : (
+                <span class="tba">To be announced</span>
+              )}
+            </td>
+            <td>
+              <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
+            </td>
+          </tr>
+        ))}
+        <tr>
+          <th scope="row">Workshop</th>
+          <td class="tabular">
+            {site.workshopDate === TBA ? (
+              <span class="tba">To be announced</span>
+            ) : (
+              <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
+            )}
+          </td>
+          <td></td>
+        </tr>
+        <tr>
+          <th scope="row">{site.host.name}</th>
+          <td class="tabular">{formatDayRange(site.host.startDate, site.host.endDate)}</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</BaseLayout>

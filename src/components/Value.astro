@@ -1,0 +1,10 @@
+---
+import { TBA } from "../lib/dates";
+
+interface Props {
+  of: string | number;
+}
+const { of: value } = Astro.props;
+---
+
+{value === TBA ? <span class="tba">To be announced</span> : value}

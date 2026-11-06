@@ -1,0 +1,41 @@
+---
+import { getDeadlines, getSite } from "../lib/content";
+import { formatAoE, formatIsoDay, TBA } from "../lib/dates";
+import { url } from "../lib/paths";
+import StatusBadge from "./StatusBadge.astro";
+
+const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
+---
+
+<section class="ledger" aria-labelledby="key-dates">
+  <h2 id="key-dates">Key dates</h2>
+  <dl>
+    {deadlines.map((deadline) => (
+      <div class="ledger__row">
+        <dt>{deadline.label}</dt>
+        <dd>
+          {deadline.due && (
+            <>
+              <time datetime={deadline.due.toISOString()}>{formatAoE(deadline.due)}</time>
+              <br />
+            </>
+          )}
+          <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
+        </dd>
+      </div>
+    ))}
+    <div class="ledger__row">
+      <dt>Workshop</dt>
+      <dd>
+        {site.workshopDate === TBA ? (
+          <span class="status status--tba">To be announced</span>
+        ) : (
+          <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
+        )}
+      </dd>
+    </div>
+  </dl>
+  <p class="ledger__link">
+    <a href={url("/dates/")}>All dates and calendar download</a>
+  </p>
+</section>

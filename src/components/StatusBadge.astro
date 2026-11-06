@@ -1,0 +1,13 @@
+---
+import type { DeadlineStatus } from "../lib/dates";
+import { STATUS_LABELS } from "../lib/view";
+
+interface Props {
+  status: DeadlineStatus;
+  extended?: boolean;
+}
+const { status, extended = false } = Astro.props;
+---
+
+<span class={`status status--${status}`}>{STATUS_LABELS[status]}</span>
+{extended && <span class="status status--extended">Extended</span>}
