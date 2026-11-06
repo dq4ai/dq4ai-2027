@@ -25,16 +25,18 @@
 :root {
   color-scheme: light dark;
 
-  /* Neutral scale, warm like uncoated paper. Accent: Lille brick oxblood. */
-  --color-surface: light-dark(#fbf9f5, #171513);
-  --color-surface-raised: light-dark(#f3efe7, #211e1b);
-  --color-text: light-dark(#1e1b18, #ede8e1);
-  --color-text-muted: light-dark(#5c554e, #b3aaa0);
-  --color-rule: light-dark(#d9d3ca, #3a352f);
-  --color-rule-strong: light-dark(#1e1b18, #ede8e1);
-  --color-accent: light-dark(#8e2a1e, #f0a08f);
-  --color-accent-hover: light-dark(#6e1f15, #f7c2b6);
-  --color-on-accent: light-dark(#fff, #171513);
+  /* Cool neutrals. Accent: deep data blue. Signal: teal, for the idea of checked quality. */
+  --color-surface: light-dark(#f8fafc, #11161e);
+  --color-surface-raised: light-dark(#edf1f6, #1a212c);
+  --color-text: light-dark(#17202c, #e6ebf2);
+  --color-text-muted: light-dark(#4e5a6a, #a8b3c2);
+  --color-rule: light-dark(#d3dbe5, #333d4b);
+  --color-rule-strong: light-dark(#17202c, #e6ebf2);
+  --color-accent: light-dark(#17498a, #93c0f7);
+  --color-accent-hover: light-dark(#0f2c54, #bcd8fb);
+  --color-on-accent: light-dark(#fff, #11161e);
+  --color-signal: light-dark(#0f766e, #5eead4);
+  --color-band: #0f2c54;
   --color-status-open: light-dark(#1f6b45, #7fd1a4);
   --color-status-today: light-dark(#7a4f00, #e8be6a);
   --color-status-passed: var(--color-text-muted);

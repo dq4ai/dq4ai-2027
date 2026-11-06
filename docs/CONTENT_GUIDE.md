@@ -27,7 +27,8 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Deadlines                               | `dates.yaml`                        |
 | Workshop date, contact, submission link | `site.yaml`                         |
 | Template, review model                  | `site.yaml`                         |
-| Page limits, topics, policies           | `cfp.yaml`                          |
+| Page limits, topics, communities        | `cfp.yaml`                          |
+| Dual submission, generative AI policies | `cfp.yaml`                          |
 | Formatting, anonymization, FAQ          | `submission.yaml`                   |
 | People and committees                   | `people.yaml` and `committees.yaml` |
 | Keynotes                                | `keynotes.yaml`                     |

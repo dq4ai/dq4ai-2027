@@ -102,6 +102,32 @@ test("switching the theme in one tab updates another, and the browser toolbar co
   );
 });
 
+test("the home page leads with the workshop's purpose", async ({ page }) => {
+  await page.goto("");
+  const purpose = page.locator(".purpose");
+  await expect(purpose).toContainText("two-way relationship");
+  await expect(purpose).toContainText("bring together researchers and practitioners");
+  const diagram = purpose.locator("figure");
+  await expect(diagram).toContainText("Data quality for AI");
+  await expect(diagram).toContainText("AI for data quality");
+  await expect(purpose.locator(".communities li")).toHaveCount(3);
+  await expect(page.locator("main .topics")).toContainText("Quality across text, images");
+});
+
+test("the color band spans the window without sideways scrolling", async ({ page }) => {
+  for (const width of [320, 390, 1280, 1920]) {
+    await page.setViewportSize({ width, height: 800 });
+    for (const path of ["", "dates/"]) {
+      await page.goto(path);
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `${path} at ${width}px`).toBe(0);
+      await expect(page.locator("main .band").first()).toBeVisible();
+    }
+  }
+});
+
 test("the skip link is the first stop and moves focus to the content", async ({ page }) => {
   await page.goto("");
   await page.keyboard.press("Tab");
