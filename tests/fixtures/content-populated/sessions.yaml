@@ -1,0 +1,17 @@
+- {
+    id: opening,
+    title: Opening session,
+    kind: talks,
+    start: "2027-04-07T09:00:00+02:00",
+    end: "2027-04-07T10:30:00+02:00",
+    room: Room A,
+    chair: john-roe,
+  }
+- {
+    id: coffee,
+    title: Coffee break,
+    kind: break,
+    start: "2027-04-07T10:30:00+02:00",
+    end: "2027-04-07T11:00:00+02:00",
+    room: TBA,
+  }

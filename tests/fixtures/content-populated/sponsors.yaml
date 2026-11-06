@@ -1,0 +1,6 @@
+- {
+    id: example,
+    name: Example Sponsor,
+    url: "https://example.org/",
+    logo: { file: example-portrait.png, alt: Example Sponsor },
+  }

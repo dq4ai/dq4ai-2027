@@ -1,0 +1,6 @@
+- id: doe
+  speaker: jane-doe
+  title: An example keynote title
+  abstract: Test data for the keynote abstract.
+  bio: Test data for the speaker biography.
+  photo: { file: example-portrait.png, alt: Grey placeholder used in test builds }

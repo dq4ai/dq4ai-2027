@@ -1,0 +1,112 @@
+scope:
+  - >-
+    The rapid emergence of artificial intelligence (AI), including knowledge graphs (KGs), large
+    language models (LLMs), and generative AI, is transforming data science and data management.
+    These technologies increasingly rely on large-scale, heterogeneous, dynamic, and continuously
+    evolving data, making the quality of the underlying data, models, and processes fundamental to
+    the reliability of modern AI systems.
+  - >-
+    Ensuring data quality across the AI lifecycle raises multifaceted challenges. KGs face issues
+    such as incompleteness, inconsistency, incorrect links, outdated facts, and lack of provenance,
+    while LLMs raise concerns about hallucinations, bias, factual grounding, and reproducibility.
+    Similar challenges arise in generative and multimodal AI, retrieval-augmented generation, AI
+    agents, and hybrid systems. When these technologies interact, quality issues become intertwined
+    and require new approaches to data preparation, validation, provenance, evaluation, and
+    monitoring.
+  - >-
+    At the same time, AI techniques are increasingly becoming part of data management and
+    data-quality workflows, creating a two-way relationship between AI and data quality: ensuring
+    high-quality data for AI while leveraging AI to improve data quality management.
+goal: >-
+  The goal of the workshop is to bring together researchers and practitioners from the data
+  management, data quality, and AI communities to discuss methods, systems, benchmarks, evaluation
+  frameworks, and applications addressing these challenges. It aims to foster cross-disciplinary
+  exchange at the intersection of data quality, AI, and trustworthy data management.
+topicsIntro: >-
+  The workshop welcomes contributions addressing all aspects of data quality for AI, including but
+  not limited to:
+topics:
+  - title: Data quality for AI
+    description: >-
+      Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and
+      AI agents, including bias, reliability and robustness.
+  - title: AI for data quality
+    description: >-
+      LLMs and other AI techniques for data profiling, cleaning, error detection, data repair,
+      quality assessment, and monitoring.
+  - title: Knowledge graphs
+    description: >-
+      Quality in KG construction, enrichment, and maintenance, including schema validation,
+      constraint checking, entity resolution, ontology alignment, consistency, completeness,
+      provenance, and evolution.
+  - title: Quality in LLMs, NLP, and generative AI
+    description: >-
+      Hallucinations, factual errors, bias, uncertainty, and evaluation of language models and NLP
+      systems.
+  - title: Data management and governance for AI
+    description: >-
+      Quality-aware data management, data preparation and integration, lineage, traceability,
+      versioning, reproducibility, privacy, fairness, transparency, and trustworthy AI across the AI
+      lifecycle.
+  - title: Multimodal data quality
+    description: >-
+      Quality across text, images, audio, video, structured, and sensor data, including cross-modal
+      alignment, consistency, and integration.
+  - title: Evaluation and benchmarks
+    description: >-
+      Metrics, benchmarks, evaluation frameworks, human-in-the-loop approaches, and methods for
+      assessing data quality and its impact on AI systems.
+  - title: Applications and case studies
+    description: >-
+      Real-world and industrial deployments, technology transfer, and lessons learned from
+      maintaining data quality at scale.
+paperTypes:
+  - id: research
+    title: Research papers
+    description: >-
+      Original research contributions addressing challenges in data quality for AI, including new
+      methods, algorithms, frameworks, models, or theoretical approaches.
+    pageLimit: TBA
+  - id: system-application
+    title: System and application papers
+    description: >-
+      The implementation or application of data quality research in real-world settings, including
+      industrial deployments, domain-specific applications, and practical experiences.
+    pageLimit: TBA
+  - id: vision
+    title: Vision papers
+    description: >-
+      Perspectives on emerging challenges, open problems, or research opportunities in data quality
+      for AI. They may highlight gaps in existing approaches, present challenging use cases, and
+      propose directions for future research.
+    pageLimit: TBA
+proceedingsNote: >-
+  Accepted papers will be published in the CEUR Workshop Proceedings, subject to the applicable
+  publication policies.
+presentation: Accepted papers will be presented during the workshop.
+dualSubmission: TBA
+generativeAi: TBA
+relatedVenues:
+  intro: >-
+    Data quality is a fundamental data management concern and is becoming increasingly important as
+    data infrastructures support modern AI systems. DQ4AI brings this perspective to emerging AI
+    systems, connecting established topics such as data cleaning, provenance, lineage, consistency,
+    completeness, benchmarking, and monitoring with the challenges introduced by modern AI
+    architectures. The workshop complements existing venues with related interests:
+  venues:
+    - name: International Workshop on Quality in Databases (QDB)
+      colocation: VLDB
+      focus: >-
+        Brings together database, information systems, and machine learning communities to discuss
+        the future of data quality assessment and improvement.
+    - name: Data Quality meets Machine Learning and Knowledge Graphs (DQMLKG)
+      colocation: ESWC
+      focus: The interplay between data quality, machine learning, and knowledge graphs.
+    - name: "LLM+KG: Data Management Opportunities in Unifying Large Language Models + Knowledge Graphs"
+      colocation: VLDB
+      focus: Data management challenges in LLM–KG integration.
+  distinction: >-
+    DQ4AI builds on venues such as QDB, DQMLKG, and LLM+KG by making data quality in AI systems the
+    central theme and by extending the scope beyond knowledge graphs and LLMs to generative and multimodal AI,
+    retrieval-augmented generation, AI agents, synthetic data, and heterogeneous AI data pipelines,
+    providing a broader data management perspective on quality across the AI lifecycle.

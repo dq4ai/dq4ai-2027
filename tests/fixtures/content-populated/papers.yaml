@@ -1,0 +1,9 @@
+- {
+    id: paper-one,
+    title: An example research paper,
+    authors: [Jane Doe, John Roe],
+    type: research,
+    abstract: Test data for a paper abstract.,
+    url: "https://example.org/paper.pdf",
+  }
+- { id: paper-two, title: An example vision paper, authors: [Ana van der Berg], type: vision }

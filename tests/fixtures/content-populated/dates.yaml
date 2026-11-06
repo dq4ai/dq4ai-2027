@@ -1,0 +1,17 @@
+- id: abstract
+  label: Abstract submission
+  kind: abstract
+  date: "2026-12-01T23:59:00-12:00"
+- id: submission
+  label: Paper submission
+  kind: submission
+  date: "2026-12-11T23:59:00-12:00"
+  extendedTo: "2026-12-18T23:59:00-12:00"
+- id: notification
+  label: Author notification
+  kind: notification
+  date: "2027-02-01T23:59:00-12:00"
+- id: camera-ready
+  label: Camera-ready papers
+  kind: camera-ready
+  date: "2027-02-20T23:59:00-12:00"

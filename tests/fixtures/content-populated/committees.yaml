@@ -1,0 +1,7 @@
+- { id: chairs, title: Workshop Chairs, order: listed, members: [john-roe, jane-doe] }
+- {
+    id: program-committee,
+    title: Program Committee,
+    order: surname,
+    members: [john-roe, jane-doe, ana-van-der-berg],
+  }
