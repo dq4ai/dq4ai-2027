@@ -114,7 +114,7 @@ test.describe("build output", () => {
     const dist = directoryFor(testInfo.project.name);
     const xml = readFileSync(join(dist, "sitemap.xml"), "utf8");
     const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1] ?? "").pathname);
-    expect(urls.length).toBeGreaterThan(10);
+    expect(urls.length).toBeGreaterThanOrEqual(10);
     for (const pathname of urls) {
       expect(existsSync(join(dist, pathname.slice(BASE.length), "index.html")), pathname).toBe(
         true,
@@ -123,6 +123,18 @@ test.describe("build output", () => {
     expect(urls.includes(`${BASE}accepted-papers/`)).toBe(
       testInfo.project.name === "populated-content",
     );
+    expect(urls.includes(`${BASE}program/`)).toBe(testInfo.project.name === "populated-content");
+  });
+
+  test("every page description names the workshop and its host", ({}, testInfo) => {
+    const dist = directoryFor(testInfo.project.name);
+    for (const file of htmlFiles(dist).filter((path) => !path.endsWith("404.html"))) {
+      const description = /name="description" content="([^"]*)"/.exec(
+        readFileSync(file, "utf8"),
+      )?.[1];
+      expect(description, file).toContain("DQ4AI 2027");
+      expect(description, file).toContain("EDBT/ICDT 2027");
+    }
   });
 
   test("the RSS, robots, humans and Open Graph files exist", ({}, testInfo) => {

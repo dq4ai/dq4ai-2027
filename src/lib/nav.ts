@@ -7,6 +7,8 @@ export interface Route {
   primary?: boolean;
   /** Left out of navigation and the sitemap until the page has content. */
   onlyWithPapers?: boolean;
+  /** Stays in navigation, but is left out of the sitemap until the program exists. */
+  sitemapOnlyWithProgram?: boolean;
 }
 
 export const ROUTES: Route[] = [
@@ -43,6 +45,7 @@ export const ROUTES: Route[] = [
     title: "Program",
     description: "Sessions, talks and times.",
     primary: true,
+    sitemapOnlyWithProgram: true,
   },
   {
     path: "/keynotes/",
@@ -70,7 +73,7 @@ export const ROUTES: Route[] = [
     path: "/attend/",
     slug: "attend",
     title: "Attend",
-    description: "Registration, venue, visa letters, travel and accessibility.",
+    description: "Registration and practical information for attending.",
     primary: true,
   },
   {
@@ -102,4 +105,8 @@ export function routeBySlug(slug: string): Route {
 
 export function visibleRoutes(hasPapers: boolean): Route[] {
   return ROUTES.filter((route) => !route.onlyWithPapers || hasPapers);
+}
+
+export function sitemapRoutes(hasPapers: boolean, hasProgram: boolean): Route[] {
+  return visibleRoutes(hasPapers).filter((route) => !route.sitemapOnlyWithProgram || hasProgram);
 }

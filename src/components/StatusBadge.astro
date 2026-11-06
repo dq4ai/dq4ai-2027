@@ -9,5 +9,7 @@ interface Props {
 const { status, extended = false } = Astro.props;
 ---
 
-<span class={`status status--${status}`}>{STATUS_LABELS[status]}</span>
-{extended && <span class="status status--extended">Extended</span>}
+<span class="status-group">
+  <span class={`status status--${status}`}>{STATUS_LABELS[status]}</span>
+  {extended && <span class="status status--extended">Extended</span>}
+</span>
