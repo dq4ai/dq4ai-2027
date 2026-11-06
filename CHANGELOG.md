@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Redesigned around the workshop's purpose: the home page now leads with the two-way relationship
+between data quality and AI, with a diagram, the communities involved and full topic descriptions,
+under a new color identity.
+
 Added a collaboration guide and a structured content request form.
 
 Clearer for visitors: the home page no longer offers a submission link that does not exist yet,

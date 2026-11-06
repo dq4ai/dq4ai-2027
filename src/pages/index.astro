@@ -19,6 +19,11 @@ const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
   getNews(),
   getSponsors(),
 ]);
+// The first scope paragraph says why quality matters; the last states the two-way relationship
+// the diagram draws, and opens by referring back to the first.
+const why = cfp.scope.at(0);
+const relationship = cfp.scope.at(-1);
+const [dataForAi, aiForData] = cfp.topics;
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
@@ -27,7 +32,7 @@ const jsonLd = serializeJsonLd(
 
 <BaseLayout slug="home">
   <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
-  <div class="hero">
+  <div class="hero band">
     <div>
       <p class="eyebrow">
         Co-located with {site.host.name} · {hostLocation(site)}
@@ -72,21 +77,49 @@ const jsonLd = serializeJsonLd(
     <KeyDates />
   </div>
 
+  <section class="purpose">
+    <div>
+      <Heading id="about">Why data quality for AI</Heading>
+      <p>{why}</p>
+      <p>{relationship}</p>
+      <p>{cfp.goal}</p>
+    </div>
+    <div>
+      {dataForAi && aiForData && (
+        <figure class="loop">
+          <div class="loop__diagram">
+            <span class="loop__node">Data quality</span>
+            <span class="loop__flows">
+              <span class="loop__flow">{dataForAi.title}</span>
+              <span class="loop__flow loop__flow--back">{aiForData.title}</span>
+            </span>
+            <span class="loop__node loop__node--ai">AI</span>
+          </div>
+          <figcaption>A two-way relationship</figcaption>
+        </figure>
+      )}
+      <p class="communities__label">Bringing together</p>
+      <ul class="communities">
+        {cfp.communities.map((community) => (
+          <li>{community}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
   <div class="home-grid">
     <div>
       <section>
-        <Heading id="about">About the workshop</Heading>
-        <p>{cfp.goal}</p>
-      </section>
-      <section>
         <Heading id="topics">Topics of interest</Heading>
-        <ol class="topics">
+        <ol class="topics topics--single">
           {cfp.topics.map((topic) => (
-            <li>{topic.title}</li>
+            <li>
+              <strong>{topic.title}</strong> {topic.description}
+            </li>
           ))}
         </ol>
         <p class="ledger__link">
-          <a href={url("/call-for-papers/#topics")}>Full topic descriptions</a>
+          <a href={url("/call-for-papers/")}>Read the full call for papers</a>
         </p>
       </section>
       <section>

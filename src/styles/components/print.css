@@ -30,6 +30,19 @@
     line-height: 1.35;
   }
 
+  .band {
+    --color-text: #000;
+    --color-text-muted: #333;
+    --color-accent: #000;
+    --color-rule: #999;
+
+    margin-block-start: 0;
+    padding-block: 0;
+    background: none;
+    border-image: none;
+    color: #000;
+  }
+
   main {
     inline-size: 100%;
     padding: 0;

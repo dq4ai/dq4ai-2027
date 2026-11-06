@@ -26,10 +26,10 @@ export interface OgInput {
   mark: string;
 }
 
-const PAPER = "#FBF9F5";
-const INK = "#1E1B18";
-const OXBLOOD = "#8E2A1E";
-const MUTED = "#5C554E";
+const PAPER = "#F8FAFC";
+const INK = "#17202C";
+const ACCENT = "#17498A";
+const MUTED = "#4E5A6A";
 
 const element = (style: Record<string, unknown>, children: unknown) => ({
   type: "div",
@@ -53,11 +53,11 @@ export async function renderOgImage({
       backgroundColor: PAPER,
       color: INK,
       padding: "72px",
-      borderTop: `16px solid ${OXBLOOD}`,
+      borderTop: `16px solid ${ACCENT}`,
       fontFamily: "IBM Plex Sans",
     },
     [
-      element({ fontSize: 34, color: OXBLOOD, letterSpacing: "0.04em" }, mark),
+      element({ fontSize: 34, color: ACCENT, letterSpacing: "0.04em" }, mark),
       element({ flexDirection: "column" }, [
         element(
           { fontFamily: "Source Serif 4", fontSize: 88, lineHeight: 1.05, marginBottom: 28 },
