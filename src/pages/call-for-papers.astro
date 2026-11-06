@@ -5,9 +5,9 @@ import PageHeader from "../components/PageHeader.astro";
 import Value from "../components/Value.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getDeadlines, getSite } from "../lib/content";
-import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { formatAoE, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { hostLocation, workshopTitle } from "../lib/view";
+import { hostDatesSentence, workshopTitle } from "../lib/view";
 
 const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadlines()]);
 ---
@@ -15,7 +15,7 @@ const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadli
 <BaseLayout slug="call-for-papers">
   <PageHeader
     title="Call for Papers"
-    lede={`${workshopTitle(site)} (${site.acronym} ${site.year}), co-located with ${site.host.name}, ${hostLocation(site)}, ${formatDayRange(site.host.startDate, site.host.endDate)}.`}
+    lede={`${workshopTitle(site)} (${site.acronym} ${site.year}), co-located with ${site.host.name}. ${hostDatesSentence(site)}`}
   />
   <p class="note no-print">
     Share this call: <a href={url("/cfp.txt")}>plain-text version</a> for mailing lists, or print
@@ -48,6 +48,11 @@ const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadli
         </dd>
       </div>
     </dl>
+    {deadlines.some((deadline) => deadline.due) && (
+      <p class="note">
+        Deadlines are Anywhere on Earth (AoE, UTC−12). See <a href={url("/dates/")}>all dates</a>.
+      </p>
+    )}
   </section>
 
   <section>
@@ -76,8 +81,8 @@ const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadli
       <div class="entry">
         <h3>{type.title}</h3>
         <p>{type.description}</p>
-        <p class="entry__meta">
-          Page limit: <Value of={type.pageLimit} />
+        <p class="entry__fact">
+          <strong>Page limit:</strong> <Value of={type.pageLimit} />
         </p>
       </div>
     ))}

@@ -1,5 +1,13 @@
 /** Pure helpers shaping content for display. Kept apart from astro:content so they are testable. */
-import { deadlineStatus, effectiveDate, parseIso, TBA, type DeadlineStatus } from "./dates";
+import {
+  deadlineStatus,
+  effectiveDate,
+  formatDayRange,
+  formatIsoDay,
+  parseIso,
+  TBA,
+  type DeadlineStatus,
+} from "./dates";
 import type { DateEntry, Person, Site } from "./schemas";
 
 export interface DeadlineView {
@@ -59,6 +67,22 @@ export function workshopTitle(site: Site): string {
 
 export function hostLocation(site: Site): string {
   return `${site.host.city}, ${site.host.country}`;
+}
+
+/** States the host conference's dates apart from the workshop's, which may fall on one day of them. */
+export function hostDatesSentence(site: Site): string {
+  const workshop = site.workshopDate === TBA ? "to be announced" : formatIsoDay(site.workshopDate);
+  return `${site.host.name} runs ${formatDayRange(site.host.startDate, site.host.endDate)} in ${hostLocation(site)}. Workshop date: ${workshop}.`;
+}
+
+/** A self-contained description of the workshop, for the home page's search result. */
+export function siteSummary(site: Site): string {
+  return `${site.acronym} ${site.year}, the ${workshopTitle(site)}, co-located with ${site.host.name} in ${hostLocation(site)}.`;
+}
+
+/** Adds what a search result needs to identify the workshop to a page's own description. */
+export function pageDescription(site: Site, description: string): string {
+  return `${description} ${site.acronym} ${site.year}, workshop on ${site.title} at ${site.host.name}, ${hostLocation(site)}.`;
 }
 
 export function isKnown(value: string | number | undefined): boolean {

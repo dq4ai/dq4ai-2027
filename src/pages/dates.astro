@@ -8,6 +8,8 @@ import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
+// Status adds nothing until a deadline has a date: the date cell already says "To be announced".
+const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
 ---
 
 <BaseLayout slug="dates">
@@ -30,7 +32,7 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
         <tr>
           <th scope="col">Milestone</th>
           <th scope="col">Date</th>
-          <th scope="col">Status</th>
+          {showStatus && <th scope="col">Status</th>}
         </tr>
       </thead>
       <tbody>
@@ -39,10 +41,19 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
             <th scope="row">{deadline.label}</th>
             <td class="tabular">
               {deadline.previous && (
-                <del>
-                  <span>{formatAoE(deadline.previous)}</span>
-                </del>
+                <span class="date-change">
+                  Was{" "}
+                  <del>
+                    <time
+                      datetime={deadline.previous.toISOString()}
+                      data-convert={deadline.previous.toISOString()}
+                    >
+                      {formatAoE(deadline.previous)}
+                    </time>
+                  </del>
+                </span>
               )}
+              {deadline.previous && "Now "}
               {deadline.due ? (
                 <time
                   datetime={deadline.due.toISOString()}
@@ -54,9 +65,16 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
                 <span class="tba">To be announced</span>
               )}
             </td>
-            <td>
-              <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
-            </td>
+            {showStatus && (
+              <td>
+                {deadline.status !== "tba" && (
+                  <StatusBadge
+                    status={deadline.status}
+                    extended={deadline.previous !== undefined}
+                  />
+                )}
+              </td>
+            )}
           </tr>
         ))}
         <tr>
@@ -68,12 +86,12 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
               <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
             )}
           </td>
-          <td></td>
+          {showStatus && <td></td>}
         </tr>
         <tr>
           <th scope="row">{site.host.name}</th>
           <td class="tabular">{formatDayRange(site.host.startDate, site.host.endDate)}</td>
-          <td></td>
+          {showStatus && <td></td>}
         </tr>
       </tbody>
     </table>

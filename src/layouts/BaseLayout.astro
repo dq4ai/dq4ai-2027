@@ -7,6 +7,7 @@ import Header from "../components/Header.astro";
 import NextDeadline from "../components/NextDeadline.astro";
 import { getSite } from "../lib/content";
 import { routeBySlug } from "../lib/nav";
+import { pageDescription, siteSummary } from "../lib/view";
 import { absoluteUrl, url } from "../lib/paths";
 import { contentSecurityPolicy, THEME_INIT_SCRIPT } from "../lib/theme";
 import "../styles/global.css";
@@ -24,8 +25,13 @@ const site = await getSite();
 const route = slug ? routeBySlug(slug) : undefined;
 const label = `${site.acronym} ${site.year}`;
 const pageTitle = Astro.props.title ?? route?.title ?? label;
-const title = slug === "home" ? `${label}: ${site.fullName}` : `${pageTitle} | ${label}`;
-const description = Astro.props.description ?? route?.description ?? site.tagline;
+const title =
+  slug === "home"
+    ? `${label} Workshop at ${site.host.name}: ${site.title}`
+    : `${pageTitle} | ${label}`;
+const routeDescription =
+  slug === "home" ? siteSummary(site) : route && pageDescription(site, route.description);
+const description = Astro.props.description ?? routeDescription ?? site.tagline;
 const canonical = route ? absoluteUrl(route.path, Astro.site) : undefined;
 const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
 ---

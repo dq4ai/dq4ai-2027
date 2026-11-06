@@ -14,6 +14,14 @@ const current = Astro.url.pathname;
     <a class="brand" href={url("/")}>
       {site.acronym} <span>{site.year}</span>
     </a>
+    <button
+      class="icon-button nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      Menu
+    </button>
     <nav id="site-nav" class="site-nav" aria-label="Main">
       <ul>
         {routes.map((route) => {
@@ -29,14 +37,6 @@ const current = Astro.url.pathname;
       </ul>
     </nav>
     <ThemeToggle />
-    <button
-      class="icon-button nav-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="site-nav"
-    >
-      Menu
-    </button>
   </div>
 </header>
 
