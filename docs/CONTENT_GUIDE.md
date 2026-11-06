@@ -1,7 +1,13 @@
 # Content guide
 
 You only need to edit files in `src/content/`, and you can do it in the GitHub web interface: open
-the file, click the pencil, change it, and commit. The site rebuilds itself in about two minutes.
+the file, click the pencil, change it, and commit. In the commit message, say where the fact came
+from. The site rebuilds itself in about two minutes, so open the page afterward and check it: the
+build catches invalid content, but not a valid date that is wrong.
+
+Prefer not to edit files?
+[Open a content update request](https://github.com/dq4ai/dq4ai-2027/issues/new?template=content-update.yml)
+instead.
 
 If something is wrong the build stops, the live site stays as it was, and the failed run under the
 **Actions** tab names the file and field to fix, for example:
