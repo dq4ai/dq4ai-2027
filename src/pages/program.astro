@@ -6,19 +6,26 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getProgram, getSite } from "../lib/content";
 import { formatIsoDay, formatTimeInZone, parseIso, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { isKnown } from "../lib/view";
+import { hostDatesSentence, isKnown, pageDescription } from "../lib/view";
 
 const [site, program] = await Promise.all([getSite(), getProgram()]);
 const zone = site.venueTimezone;
 const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
 ---
 
-<BaseLayout slug="program">
+<BaseLayout
+  slug="program"
+  description={
+    program.length === 0
+      ? pageDescription(site, "The program has not been announced yet.")
+      : undefined
+  }
+>
   <PageHeader
     title="Program"
     lede={
       site.workshopDate === TBA
-        ? `${site.host.city}, ${site.host.country}.`
+        ? hostDatesSentence(site)
         : `${formatIsoDay(site.workshopDate)}, ${site.host.city}, ${site.host.country}.`
     }
   />
@@ -42,7 +49,8 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
             <time data-convert={session.start} data-convert-format="time" datetime={session.start}>
               {time(session.start)}
             </time>
-            –
+            <span aria-hidden="true">–</span>
+            <span class="visually-hidden"> to </span>
             <time data-convert={session.end} data-convert-format="time" datetime={session.end}>
               {time(session.end)}
             </time>
@@ -51,6 +59,7 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
             {" · "}
             <a href={url(`/calendar/session-${session.id}.ics`)} download>
               <span>Add to calendar</span>
+              <span class="visually-hidden">: {session.title}</span>
             </a>
           </p>
           {session.talks.map((talk) => (
@@ -68,9 +77,15 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
               {(talk.paperEntry?.url || talk.slidesUrl) && (
                 <p class="entry__meta">
                   {talk.paperEntry?.url && (
-                    <ExternalLink href={talk.paperEntry.url}>Paper</ExternalLink>
+                    <ExternalLink href={talk.paperEntry.url}>
+                      Paper<span class="visually-hidden">: {talk.title}</span>
+                    </ExternalLink>
                   )}{" "}
-                  {talk.slidesUrl && <ExternalLink href={talk.slidesUrl}>Slides</ExternalLink>}
+                  {talk.slidesUrl && (
+                    <ExternalLink href={talk.slidesUrl}>
+                      Slides<span class="visually-hidden">: {talk.title}</span>
+                    </ExternalLink>
+                  )}
                 </p>
               )}
             </article>

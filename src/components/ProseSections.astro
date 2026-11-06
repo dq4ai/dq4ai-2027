@@ -9,24 +9,47 @@ interface Props {
   sections: ProseSection[];
 }
 const { sections } = Astro.props;
+const liveLinks = (section: ProseSection) =>
+  (section.links ?? []).filter((link) => link.url !== TBA);
+const isPending = (section: ProseSection) =>
+  section.body === TBA && liveLinks(section).length === 0;
+const pending = sections.filter(isPending);
 ---
 
-{sections.map((section) => (
-  <section>
-    <Heading id={section.id}>{section.heading}</Heading>
-    <p>
-      <Value of={section.body} />
-    </p>
-    {section.links && (
-      <ul>
-        {section.links
-          .filter((link) => link.url !== TBA)
-          .map((link) => (
-            <li>
-              <ExternalLink href={link.url}>{link.label}</ExternalLink>
-            </li>
-          ))}
-      </ul>
-    )}
+{sections
+  .filter((section) => !isPending(section))
+  .map((section) => {
+    const links = liveLinks(section);
+    return (
+      <section>
+        <Heading id={section.id}>{section.heading}</Heading>
+        <p>
+          <Value of={section.body} />
+        </p>
+        {links.length === 1 && links[0] && (
+          <p>
+            <ExternalLink href={links[0].url}>{links[0].label}</ExternalLink>
+          </p>
+        )}
+        {links.length > 1 && (
+          <ul>
+            {links.map((link) => (
+              <li>
+                <ExternalLink href={link.url}>{link.label}</ExternalLink>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    );
+  })}
+{pending.length > 0 && (
+  <section class="pending">
+    <Heading id="to-be-announced">To be announced</Heading>
+    <ul>
+      {pending.map((section) => (
+        <li id={section.id}>{section.heading}</li>
+      ))}
+    </ul>
   </section>
-))}
+)}

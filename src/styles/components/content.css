@@ -100,7 +100,6 @@
 
 .ledger__row dd {
   margin: 0;
-  color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
 }
 
@@ -130,8 +129,13 @@
 }
 
 .status--extended {
-  margin-inline-start: var(--space-2);
   color: var(--color-accent);
+}
+
+.status-group {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
 }
 
 .tba {
@@ -207,7 +211,29 @@
   }
 }
 
+.visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.home-aside h2 {
+  font-size: var(--text-h3);
+}
+
+.home-aside .entry h3 {
+  font-size: var(--text-lg);
+}
+
+.entry__fact {
+  margin-block-start: var(--space-2);
+}
+
 .entry {
+  max-inline-size: var(--measure);
   padding-block: var(--space-3);
   border-block-end: 1px solid var(--color-rule);
 }
@@ -282,7 +308,7 @@
   font-weight: 600;
 }
 
-.table del {
+.date-change {
   display: block;
   color: var(--color-text-muted);
   font-size: var(--text-sm);

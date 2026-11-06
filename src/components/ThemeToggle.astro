@@ -33,8 +33,32 @@
     root.dataset.theme
       ? root.dataset.theme === "dark"
       : matchMedia("(prefers-color-scheme: dark)").matches;
-  const sync = () => button?.setAttribute("aria-pressed", String(isDark()));
+  const sync = () => {
+    button?.setAttribute("aria-pressed", String(isDark()));
+    if (!root.dataset.theme) return;
+    // A manual theme overrides the system preference both tags are keyed to.
+    const background = getComputedStyle(document.body).backgroundColor;
+    for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+      meta.setAttribute("content", background);
+    }
+  };
+  const applyStored = () => {
+    try {
+      const stored = localStorage.getItem("theme");
+      if (stored === "dark" || stored === "light") root.dataset.theme = stored;
+    } catch {
+      // Storage can be unavailable in private modes; keep the current theme.
+    }
+    sync();
+  };
   sync();
+  // A page restored by the Back button, or open in another tab, missed the change.
+  addEventListener("pageshow", (event) => {
+    if (event.persisted) applyStored();
+  });
+  addEventListener("storage", (event) => {
+    if (event.key === "theme") applyStored();
+  });
   button?.addEventListener("click", () => {
     const theme = isDark() ? "light" : "dark";
     root.dataset.theme = theme;

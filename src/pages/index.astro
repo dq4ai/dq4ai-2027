@@ -49,17 +49,24 @@ const jsonLd = serializeJsonLd(
       </p>
       <div class="hero__actions">
         {site.submissionUrl === TBA ? (
-          <a class="button button--primary" href={url("/submission/")}>
-            Submit a paper
-          </a>
+          <>
+            <a class="button button--primary" href={url("/call-for-papers/")}>
+              Read the call for papers
+            </a>
+            <a class="button" href={url("/submission/")}>
+              Submission details
+            </a>
+          </>
         ) : (
-          <ExternalLink class="button button--primary" href={site.submissionUrl}>
-            Submit a paper
-          </ExternalLink>
+          <>
+            <ExternalLink class="button button--primary" href={site.submissionUrl}>
+              Submit a paper
+            </ExternalLink>
+            <a class="button" href={url("/call-for-papers/")}>
+              Read the call for papers
+            </a>
+          </>
         )}
-        <a class="button" href={url("/call-for-papers/")}>
-          Read the call for papers
-        </a>
       </div>
     </div>
     <KeyDates />
@@ -87,7 +94,7 @@ const jsonLd = serializeJsonLd(
         <p>{cfp.relatedVenues.distinction}</p>
       </section>
     </div>
-    <div>
+    <div class="home-aside">
       <section>
         <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
         {keynotes.map((keynote) => (

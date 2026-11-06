@@ -5,7 +5,16 @@ import { checkContent } from "../../src/lib/load-content";
 import { buildEventJsonLd, serializeJsonLd } from "../../src/lib/seo";
 import { scriptHash, THEME_INIT_SCRIPT, contentSecurityPolicy } from "../../src/lib/theme";
 import { siteSchema, cfpSchema } from "../../src/lib/schemas";
-import { nextDeadline, sortBySurname, surnameOf, toDeadlineViews } from "../../src/lib/view";
+import {
+  hostDatesSentence,
+  nextDeadline,
+  pageDescription,
+  siteSummary,
+  sortBySurname,
+  surnameOf,
+  toDeadlineViews,
+} from "../../src/lib/view";
+import { formatCountdown } from "../../src/lib/dates";
 import { parse } from "yaml";
 import { readFileSync } from "node:fs";
 
@@ -92,6 +101,60 @@ describe("plain-text CFP", () => {
     expect(text).toContain("Submission link: To be announced");
     expect(text).toContain("Jane Doe, Example University");
     expect(text).not.toContain("TBA");
+  });
+
+  const plainText = () =>
+    buildCfpText({
+      site,
+      cfp,
+      siteUrl: "https://example.org/",
+      chairs: [],
+      deadlines: [],
+    }).replace(/\s+/g, " ");
+
+  it("does not present the host conference's dates as the workshop's", () => {
+    const text = plainText();
+    expect(text).not.toMatch(/Co-located with [^.]*\d+–\d+ April 2027/);
+    expect(text).toContain(hostDatesSentence(site));
+  });
+
+  it("states the dual submission and generative AI policies, even while unknown", () => {
+    const text = plainText();
+    expect(text).toContain("Dual submission: To be announced");
+    expect(text).toContain("Use of generative AI: To be announced");
+  });
+});
+
+describe("sentences for people and search engines", () => {
+  it("keeps the conference's dates apart from an unknown workshop date", () => {
+    expect(hostDatesSentence({ ...site, workshopDate: "TBA" })).toBe(
+      "EDBT/ICDT 2027 runs 6–9 April 2027 in Lille, France. Workshop date: to be announced.",
+    );
+  });
+  it("gives the workshop date once it is known", () => {
+    expect(hostDatesSentence({ ...site, workshopDate: "2027-04-07" })).toContain(
+      "Workshop date: 7 April 2027.",
+    );
+  });
+  it("identifies the workshop and host in the home and page descriptions", () => {
+    for (const description of [siteSummary(site), pageDescription(site, "Sessions and times.")]) {
+      expect(description).toContain("DQ4AI 2027");
+      expect(description).toContain("Data Quality for Artificial Intelligence");
+      expect(description).toContain("EDBT/ICDT 2027");
+    }
+    expect(pageDescription(site, "Sessions and times.")).toMatch(/^Sessions and times\. /);
+  });
+});
+
+describe("formatCountdown", () => {
+  it("uses whole words and drops minutes while days remain", () => {
+    expect(formatCountdown({ days: 42, hours: 14, minutes: 45 })).toBe("42 days 14 hours left");
+  });
+  it("uses the singular for one", () => {
+    expect(formatCountdown({ days: 1, hours: 1, minutes: 0 })).toBe("1 day 1 hour left");
+  });
+  it("shows minutes on the last day", () => {
+    expect(formatCountdown({ days: 0, hours: 3, minutes: 5 })).toBe("3 hours 5 minutes left");
   });
 });
 

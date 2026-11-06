@@ -164,6 +164,15 @@ export function timeUntil(target: Date, now: Date): TimeRemaining | null {
   };
 }
 
+const unit = (count: number, name: string) => `${count} ${name}${count === 1 ? "" : "s"}`;
+
+/** Whole words read better aloud than "42d 14h". Minutes only matter on the last day. */
+export function formatCountdown({ days, hours, minutes }: TimeRemaining): string {
+  return days > 0
+    ? `${unit(days, "day")} ${unit(hours, "hour")} left`
+    : `${unit(hours, "hour")} ${unit(minutes, "minute")} left`;
+}
+
 export function isoDayOrdering(a: string, b: string): number {
   return parseDay(a).getTime() - parseDay(b).getTime();
 }

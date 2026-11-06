@@ -14,13 +14,15 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
       <div class="ledger__row">
         <dt>{deadline.label}</dt>
         <dd>
-          {deadline.due && (
+          {deadline.due ? (
             <>
               <time datetime={deadline.due.toISOString()}>{formatAoE(deadline.due)}</time>
               <br />
+              <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
             </>
+          ) : (
+            <span class="tba">To be announced</span>
           )}
-          <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
         </dd>
       </div>
     ))}
@@ -28,13 +30,16 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
       <dt>Workshop</dt>
       <dd>
         {site.workshopDate === TBA ? (
-          <span class="status status--tba">To be announced</span>
+          <span class="tba">To be announced</span>
         ) : (
           <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
         )}
       </dd>
     </div>
   </dl>
+  {deadlines.some((deadline) => deadline.due) && (
+    <p class="ledger__link">Deadlines are Anywhere on Earth (AoE, UTC−12).</p>
+  )}
   <p class="ledger__link">
     <a href={url("/dates/")}>All dates and calendar download</a>
   </p>

@@ -1,8 +1,8 @@
 /** Builds the plain-text Call for Papers for mailing lists from the same data as the CFP page. */
-import { formatAoE, formatDayRange, formatIsoDay, TBA } from "./dates";
+import { formatAoE, formatIsoDay, TBA } from "./dates";
 import type { Cfp, Person, Site } from "./schemas";
 import type { DeadlineView } from "./view";
-import { hostLocation, isKnown, workshopTitle } from "./view";
+import { hostDatesSentence, isKnown, workshopTitle } from "./view";
 
 const WIDTH = 72;
 const PENDING = "To be announced";
@@ -47,9 +47,8 @@ export function buildCfpText({ site, cfp, deadlines, chairs, siteUrl }: CfpTextI
   return [
     "CALL FOR PAPERS",
     wrapText(`${workshopTitle(site)} (${site.acronym} ${site.year})`),
-    wrapText(
-      `Co-located with ${site.host.name}, ${hostLocation(site)}, ${formatDayRange(site.host.startDate, site.host.endDate)}`,
-    ),
+    `Co-located with ${site.host.name}.`,
+    wrapText(hostDatesSentence(site)),
     siteUrl,
     "",
     heading("Important dates"),
@@ -82,6 +81,10 @@ export function buildCfpText({ site, cfp, deadlines, chairs, siteUrl }: CfpTextI
     `  Review model: ${known(site.reviewModel)}`,
     "",
     wrapText(`${cfp.proceedingsNote} ${cfp.presentation}`),
+    "",
+    heading("Policies"),
+    wrapText(`Dual submission: ${known(cfp.dualSubmission)}`, WIDTH, "  "),
+    wrapText(`Use of generative AI: ${known(cfp.generativeAi)}`, WIDTH, "  "),
     "",
     heading("Workshop chairs"),
     ...chairs.map((chair) => `  ${personLine(chair)}`),

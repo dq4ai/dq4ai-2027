@@ -75,6 +75,33 @@ test("the mobile menu is a keyboard-operable disclosure", async ({ page }) => {
   await expect(toggle).toBeFocused();
 });
 
+test("Tab moves from the opened mobile menu into its links", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 });
+  await page.goto("");
+  await page.locator(".nav-toggle").focus();
+  await page.keyboard.press("Enter");
+  await page.keyboard.press("Tab");
+  await expect(page.locator("#site-nav a").first()).toBeFocused();
+});
+
+test("switching the theme in one tab updates another, and the browser toolbar color", async ({
+  context,
+  baseURL,
+}) => {
+  const first = await context.newPage();
+  await first.goto(baseURL ?? "");
+  const second = await context.newPage();
+  await second.goto(`${baseURL}dates/`);
+  await second.locator(".theme-toggle").click();
+  await expect(first.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(first.locator(".theme-toggle")).toHaveAttribute("aria-pressed", "true");
+  const background = await second.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await expect(second.locator('meta[name="theme-color"]').first()).toHaveAttribute(
+    "content",
+    background,
+  );
+});
+
 test("the skip link is the first stop and moves focus to the content", async ({ page }) => {
   await page.goto("");
   await page.keyboard.press("Tab");
@@ -101,7 +128,7 @@ test("the site works without JavaScript", async ({ browser, baseURL }, testInfo)
   await expect(page.locator("#site-nav a").first()).toBeVisible();
   await expect(page.locator(".nav-toggle")).toBeHidden();
   if (populated(testInfo.project.name)) {
-    await expect(page.locator("[data-countdown]")).toHaveText(/\d+d \d+h \d+m left/);
+    await expect(page.locator("[data-countdown]")).toHaveText(/\d+ days? \d+ hours? left/);
   }
   await context.close();
 });
@@ -152,6 +179,70 @@ test.describe("states that depend on content", () => {
     expect(await session.text()).toContain("DTSTART:20270407T070000Z");
   });
 
+  test("the main button on the home page only promises what exists", async ({ page }, testInfo) => {
+    await page.goto("");
+    const primary = page.locator(".hero__actions .button--primary");
+    if (populated(testInfo.project.name)) {
+      await expect(primary).toHaveText("Submit a paper");
+      return;
+    }
+    await expect(primary).toHaveText("Read the call for papers");
+    await expect(page.locator(".hero__actions")).not.toContainText("Submit a paper");
+    await expect(page.locator(".hero__actions")).toContainText("Submission details");
+  });
+
+  test("the dates table does not repeat itself", async ({ page }, testInfo) => {
+    await page.goto("dates/");
+    const statusHeader = page.locator("thead").getByText("Status");
+    if (populated(testInfo.project.name)) {
+      await expect(statusHeader).toBeVisible();
+      return;
+    }
+    await expect(statusHeader).toHaveCount(0);
+    const row = page.locator("tbody tr", { hasText: "Paper submission" });
+    await expect(row.getByText("To be announced")).toHaveCount(1);
+  });
+
+  test("a section link is not hidden by the deadline bar on a phone", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("call-for-papers/#topics");
+    await page.waitForTimeout(800);
+    const heading = await page.locator("#topics").boundingBox();
+    const bar = await page.locator(".deadline-strip").boundingBox();
+    expect(heading).not.toBeNull();
+    if (bar && bar.y + bar.height > 0) {
+      expect(heading?.y ?? 0).toBeGreaterThanOrEqual(bar.y + bar.height);
+    }
+  });
+
+  test("the conference's dates are not given as the workshop's", async ({ page }, testInfo) => {
+    const expected = populated(testInfo.project.name)
+      ? "Workshop date: 7 April 2027."
+      : "Workshop date: to be announced.";
+    for (const path of ["call-for-papers/", "attend/"]) {
+      await page.goto(path);
+      await expect(page.locator(".page-header, main").first()).toContainText(expected);
+    }
+  });
+
+  test("the page limit is on the submission page", async ({ page }) => {
+    await page.goto("submission/");
+    await expect(page.locator("#details ~ dl, .facts").first()).toContainText("Page limit");
+  });
+
+  test("details not yet known are listed once, and keep their addresses", async ({
+    page,
+  }, testInfo) => {
+    test.skip(populated(testInfo.project.name), "needs unknown sections");
+    await page.goto("attend/");
+    const pending = page.locator(".pending");
+    await expect(pending.locator("#venue")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Venue" })).toHaveCount(0);
+  });
+
   test("accepted papers join the navigation only once populated", async ({ page }, testInfo) => {
     await page.goto("");
     const link = page.locator("#site-nav").getByRole("link", { name: "Accepted Papers" });
@@ -164,6 +255,22 @@ test.describe("states that depend on content", () => {
     await expect(page.locator("del")).toHaveText("11 December 2026, 23:59 AoE");
     await expect(page.locator("tbody").getByText("18 December 2026, 23:59 AoE")).toBeVisible();
     await expect(page.locator(".status--extended").first()).toBeVisible();
+    const row = page.locator("tbody tr", { hasText: "Paper submission" });
+    await expect(row).toContainText("Was");
+    await expect(row).toContainText("Now");
+  });
+
+  test("the time-zone toggle converts an extended deadline's old and new dates", async ({
+    browser,
+    baseURL,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs an extended deadline");
+    const context = await browser.newContext({ timezoneId: "Asia/Tokyo" });
+    const page = await context.newPage();
+    await page.goto(`${baseURL}dates/`);
+    await page.locator(".tz-toggle").click();
+    await expect(page.locator("del")).toContainText("GMT+9");
+    await context.close();
   });
 
   test("the time-zone toggle converts deadlines and restores AoE", async ({
