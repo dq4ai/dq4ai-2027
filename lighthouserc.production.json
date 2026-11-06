@@ -3,10 +3,10 @@
     "collect": {
       "numberOfRuns": 3,
       "url": [
-        "https://kaaaziz.github.io/dq4ai-2027/",
-        "https://kaaaziz.github.io/dq4ai-2027/call-for-papers/",
-        "https://kaaaziz.github.io/dq4ai-2027/program/",
-        "https://kaaaziz.github.io/dq4ai-2027/organization/"
+        "https://dq4ai.github.io/dq4ai-2027/",
+        "https://dq4ai.github.io/dq4ai-2027/call-for-papers/",
+        "https://dq4ai.github.io/dq4ai-2027/program/",
+        "https://dq4ai.github.io/dq4ai-2027/organization/"
       ],
       "settings": {
         "chromeFlags": "--no-sandbox --headless=new"

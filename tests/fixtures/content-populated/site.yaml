@@ -26,6 +26,6 @@ proceedings:
 paperTemplate: Example template
 reviewModel: double-blind
 deployment:
-  githubOwner: kaaaziz
+  githubOwner: dq4ai
   repoName: dq4ai-2027
   customDomain: "" # e.g. dq4ai-workshop.org. Leave empty to use GitHub Pages.

@@ -26,7 +26,7 @@ const site = siteSchema.parse({
   proceedings: { name: "CEUR Workshop Proceedings", url: "https://ceur-ws.org/" },
   paperTemplate: "TBA",
   reviewModel: "TBA",
-  deployment: { githubOwner: "kaaaziz", repoName: "dq4ai-2027", customDomain: "" },
+  deployment: { githubOwner: "dq4ai", repoName: "dq4ai-2027", customDomain: "" },
 });
 
 const bundle = (overrides: Partial<ContentBundle> = {}): ContentBundle => ({

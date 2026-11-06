@@ -1,12 +1,12 @@
 # DQ4AI 2027 website
 
-[![CI](https://github.com/kaaaziz/dq4ai-2027/actions/workflows/ci.yml/badge.svg)](https://github.com/kaaaziz/dq4ai-2027/actions/workflows/ci.yml)
-[![Deploy](https://github.com/kaaaziz/dq4ai-2027/actions/workflows/deploy.yml/badge.svg)](https://github.com/kaaaziz/dq4ai-2027/actions/workflows/deploy.yml)
+[![CI](https://github.com/dq4ai/dq4ai-2027/actions/workflows/ci.yml/badge.svg)](https://github.com/dq4ai/dq4ai-2027/actions/workflows/ci.yml)
+[![Deploy](https://github.com/dq4ai/dq4ai-2027/actions/workflows/deploy.yml/badge.svg)](https://github.com/dq4ai/dq4ai-2027/actions/workflows/deploy.yml)
 
 Website of the Second International Workshop on Data Quality for Artificial Intelligence, co-located
 with EDBT/ICDT 2027 in Lille, France.
 
-**Live site:** <https://kaaaziz.github.io/dq4ai-2027/>
+**Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
 ![Home page of the DQ4AI 2027 website](docs/screenshot.png)
 

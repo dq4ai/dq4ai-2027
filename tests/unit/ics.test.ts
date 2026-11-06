@@ -28,7 +28,7 @@ describe("foldLine", () => {
 describe("buildCalendar", () => {
   const ics = buildCalendar({
     name: "DQ4AI 2027, deadlines",
-    domain: "kaaaziz.github.io",
+    domain: "dq4ai.github.io",
     stamp,
     events: [
       {
@@ -76,7 +76,7 @@ describe("buildCalendar", () => {
   });
 
   it("gives every event a stable unique id and stamp", () => {
-    expect(ics).toContain("UID:submission@kaaaziz.github.io");
+    expect(ics).toContain("UID:submission@dq4ai.github.io");
     expect(ics.match(/DTSTAMP:20261106T120000Z/g)).toHaveLength(3);
   });
 });
