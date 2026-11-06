@@ -1,0 +1,59 @@
+---
+import { getPapers, getSite } from "../lib/content";
+import { visibleRoutes } from "../lib/nav";
+import { url } from "../lib/paths";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const [site, papers] = await Promise.all([getSite(), getPapers()]);
+const routes = visibleRoutes(papers.length > 0).filter((route) => route.primary);
+const current = Astro.url.pathname;
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href={url("/")}>
+      {site.acronym} <span>{site.year}</span>
+    </a>
+    <nav id="site-nav" class="site-nav" aria-label="Main">
+      <ul>
+        {routes.map((route) => {
+          const href = url(route.path);
+          return (
+            <li>
+              <a {href} aria-current={current === href ? "page" : undefined}>
+                {route.title}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+    <ThemeToggle />
+    <button
+      class="icon-button nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+    >
+      Menu
+    </button>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".nav-toggle");
+  const nav = document.getElementById("site-nav");
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute("aria-expanded", String(open));
+    nav?.toggleAttribute("data-open", open);
+  };
+  toggle?.addEventListener("click", () => {
+    setOpen(toggle.getAttribute("aria-expanded") !== "true");
+  });
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && toggle?.getAttribute("aria-expanded") === "true") {
+      setOpen(false);
+      toggle.focus();
+    }
+  });
+</script>

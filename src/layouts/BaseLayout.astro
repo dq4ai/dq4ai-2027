@@ -1,0 +1,82 @@
+---
+import plexRegular from "../assets/fonts/ibm-plex-sans-latin-400-normal.woff2?url";
+import plexSemibold from "../assets/fonts/ibm-plex-sans-latin-600-normal.woff2?url";
+import serifMedium from "../assets/fonts/source-serif-4-latin-500-normal.woff2?url";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import NextDeadline from "../components/NextDeadline.astro";
+import { getSite } from "../lib/content";
+import { routeBySlug } from "../lib/nav";
+import { absoluteUrl, url } from "../lib/paths";
+import { contentSecurityPolicy, THEME_INIT_SCRIPT } from "../lib/theme";
+import "../styles/global.css";
+
+interface Props {
+  /** A route slug from lib/nav.ts: gives the title, description and social image. */
+  slug?: string;
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const { slug, noindex = false } = Astro.props;
+const site = await getSite();
+const route = slug ? routeBySlug(slug) : undefined;
+const label = `${site.acronym} ${site.year}`;
+const pageTitle = Astro.props.title ?? route?.title ?? label;
+const title = slug === "home" ? `${label}: ${site.fullName}` : `${pageTitle} | ${label}`;
+const description = Astro.props.description ?? route?.description ?? site.tagline;
+const canonical = route ? absoluteUrl(route.path, Astro.site) : undefined;
+const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    {import.meta.env.PROD && (
+      <meta http-equiv="Content-Security-Policy" content={contentSecurityPolicy()} />
+    )}
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {noindex && <meta name="robots" content="noindex" />}
+    <script is:inline set:html={THEME_INIT_SCRIPT} />
+    <link rel="preload" href={serifMedium} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={plexRegular} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={plexSemibold} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
+    <link rel="author" href={url("/humans.txt")} />
+    <link
+      rel="alternate"
+      type="application/rss+xml"
+      title={`${label} news`}
+      href={url("/rss.xml")}
+    />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf9f5" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#171513" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={label} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">
+      Skip to content
+    </a>
+    <Header />
+    <NextDeadline />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

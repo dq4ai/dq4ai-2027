@@ -1,0 +1,40 @@
+---
+import { getDeadlines, getNow } from "../lib/content";
+import { formatAoE, timeUntil } from "../lib/dates";
+import { url } from "../lib/paths";
+import { nextDeadline } from "../lib/view";
+
+const next = nextDeadline(await getDeadlines());
+const now = getNow();
+const remaining = next ? timeUntil(next.due, now) : null;
+---
+
+{next && (
+  <aside class="deadline-strip" aria-label="Next deadline">
+    <a href={url("/dates/")}>
+      <span>
+        <strong>Next deadline:</strong> {next.label}, {formatAoE(next.due)}
+      </span>
+      <span class="deadline-strip__countdown" data-countdown={next.due.toISOString()}>
+        {remaining && `${remaining.days}d ${remaining.hours}h ${remaining.minutes}m left`}
+      </span>
+    </a>
+  </aside>
+)}
+
+<script>
+  import { timeUntil } from "../lib/dates";
+
+  const countdown = document.querySelector<HTMLElement>("[data-countdown]");
+  const target = countdown?.dataset.countdown;
+  if (countdown && target) {
+    const update = () => {
+      const left = timeUntil(new Date(target), new Date());
+      countdown.textContent = left
+        ? `${left.days}d ${left.hours}h ${left.minutes}m left`
+        : "Deadline passed";
+    };
+    update();
+    setInterval(update, 60_000);
+  }
+</script>

@@ -1,0 +1,93 @@
+@media print {
+  :root {
+    color-scheme: light;
+    --color-surface: #fff;
+    --color-text: #000;
+    --color-text-muted: #333;
+    --color-accent: #000;
+    --color-rule: #999;
+    --color-rule-strong: #000;
+    --text-base: 10pt;
+    --text-lg: 11pt;
+    --text-h3: 11pt;
+    --text-h2: 13pt;
+    --text-h1: 20pt;
+  }
+
+  .site-header,
+  .site-footer,
+  .deadline-strip,
+  .skip-link,
+  .toolbar,
+  .anchor,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    display: block;
+    min-block-size: 0;
+    line-height: 1.35;
+  }
+
+  main {
+    inline-size: 100%;
+    padding: 0;
+  }
+
+  .page-header {
+    margin-block-end: 6pt;
+    padding-block-end: 6pt;
+  }
+
+  h2 {
+    margin-block: 10pt 3pt;
+    break-after: avoid;
+  }
+
+  h3 {
+    margin-block: 6pt 2pt;
+    break-after: avoid;
+  }
+
+  p + p {
+    margin-block-start: 4pt;
+  }
+
+  p,
+  ul,
+  ol,
+  dl {
+    max-inline-size: none;
+  }
+
+  .topics {
+    display: block;
+  }
+
+  .topics li,
+  .entry,
+  .facts div {
+    padding-block: 2pt;
+    break-inside: avoid;
+  }
+
+  .topics li {
+    padding-inline-start: 0;
+    border: 0;
+  }
+
+  .topics li::before {
+    content: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+  }
+}

@@ -1,0 +1,95 @@
+html {
+  scroll-padding-block-start: var(--space-7);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 100dvh;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-synthesis: none;
+  line-height: 1.6;
+}
+
+main {
+  flex: 1;
+  inline-size: min(100% - 2 * var(--space-4), var(--page-width));
+  margin-inline: auto;
+  padding-block: var(--space-6) var(--space-8);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--text-h1);
+  letter-spacing: -0.015em;
+}
+
+h2 {
+  font-size: var(--text-h2);
+  margin-block: var(--space-6) var(--space-3);
+}
+
+h3 {
+  font-size: var(--text-h3);
+  margin-block: var(--space-5) var(--space-2);
+}
+
+p,
+ul,
+ol,
+dl {
+  max-inline-size: var(--measure);
+}
+
+p + p {
+  margin-block-start: var(--space-3);
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+  transition: color 120ms ease;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+  text-decoration-thickness: 2px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius);
+}
+
+time,
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
