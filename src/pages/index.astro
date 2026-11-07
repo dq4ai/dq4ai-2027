@@ -2,14 +2,14 @@
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
-import KeyDates from "../components/KeyDates.astro";
 import Value from "../components/Value.astro";
+import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getCommittees, getKeynotes, getNews, getSite, getSponsors } from "../lib/content";
-import { formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { formatIsoDay, TBA } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation } from "../lib/view";
+import { siteSummary } from "../lib/view";
 
 const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
   getSite(),
@@ -20,7 +20,7 @@ const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
   getSponsors(),
 ]);
 // The first scope paragraph says why quality matters; the last states the two-way relationship
-// the diagram draws, and opens by referring back to the first.
+// that the two topic titles say in type, and opens by referring back to the first.
 const why = cfp.scope.at(0);
 const relationship = cfp.scope.at(-1);
 const [dataForAi, aiForData] = cfp.topics;
@@ -32,134 +32,100 @@ const jsonLd = serializeJsonLd(
 
 <BaseLayout slug="home">
   <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
-  <div class="hero band">
-    <div>
-      <p class="eyebrow">
-        Co-located with {site.host.name} · {hostLocation(site)}
-      </p>
-      <h1>{site.title}</h1>
-      <p class="hero__edition">
-        {`${site.edition} International Workshop · ${site.acronym} ${site.year}`}
-      </p>
-      <p class="lede">{site.tagline}</p>
-      <p class="lede">
-        {site.workshopDate === TBA ? (
-          <>
-            {site.host.name} runs {formatDayRange(site.host.startDate, site.host.endDate)}. Workshop
-            date to be announced.
-          </>
-        ) : (
-          <>Workshop date: {formatIsoDay(site.workshopDate)}.</>
-        )}
-      </p>
-      <div class="hero__actions">
-        {site.submissionUrl === TBA ? (
-          <>
-            <a class="button button--primary" href={url("/call-for-papers/")}>
-              Read the call for papers
-            </a>
-            <a class="button" href={url("/submission/")}>
-              Submission details
-            </a>
-          </>
-        ) : (
-          <>
-            <ExternalLink class="button button--primary" href={site.submissionUrl}>
-              Submit a paper
-            </ExternalLink>
-            <a class="button" href={url("/call-for-papers/")}>
-              Read the call for papers
-            </a>
-          </>
-        )}
+  <div class="hero">
+    <h1>{site.title}</h1>
+    <div class="hero__body">
+      <div>
+        <p class="lede">{siteSummary(site)}</p>
+        <div class="hero__actions">
+          {site.submissionUrl === TBA ? (
+            <>
+              <a class="button button--primary" href={url("/call-for-papers/")}>
+                Read the call for papers
+              </a>
+              <a class="button" href={url("/submission/")}>
+                Submission details
+              </a>
+            </>
+          ) : (
+            <>
+              <ExternalLink class="button button--primary" href={site.submissionUrl}>
+                Submit a paper
+              </ExternalLink>
+              <a class="button" href={url("/call-for-papers/")}>
+                Read the call for papers
+              </a>
+            </>
+          )}
+        </div>
       </div>
+      <WorkshopRecord />
     </div>
-    <KeyDates />
   </div>
 
   <section class="purpose">
-    <div>
-      <Heading id="about">Why data quality for AI</Heading>
-      <p>{why}</p>
-      <p>{relationship}</p>
-      <p>{cfp.goal}</p>
-    </div>
-    <div>
-      {dataForAi && aiForData && (
-        <figure class="loop">
-          <div class="loop__diagram">
-            <span class="loop__node">Data quality</span>
-            <span class="loop__flows">
-              <span class="loop__flow">{dataForAi.title}</span>
-              <span class="loop__flow loop__flow--back">{aiForData.title}</span>
-            </span>
-            <span class="loop__node loop__node--ai">AI</span>
-          </div>
-          <figcaption>A two-way relationship</figcaption>
-        </figure>
-      )}
-      <p class="communities__label">Bringing together</p>
-      <ul class="communities">
-        {cfp.communities.map((community) => (
-          <li>{community}</li>
-        ))}
-      </ul>
-    </div>
+    <Heading id="about">Why data quality for AI</Heading>
+    <p>{why}</p>
+    {dataForAi && aiForData && (
+      <p class="exchange">
+        <span>{dataForAi.title}</span>
+        <span>{aiForData.title}</span>
+      </p>
+    )}
+    <p>{relationship}</p>
+    <p>{cfp.goal}</p>
   </section>
 
-  <div class="home-grid">
-    <div>
-      <section>
-        <Heading id="topics">Topics of interest</Heading>
-        <ol class="topics topics--single">
-          {cfp.topics.map((topic) => (
-            <li>
-              <strong>{topic.title}</strong> {topic.description}
-            </li>
-          ))}
-        </ol>
-        <p class="ledger__link">
-          <a href={url("/call-for-papers/")}>Read the full call for papers</a>
+  <section>
+    <Heading id="topics">Topics of interest</Heading>
+    <ul class="topics">
+      {cfp.topics.map((topic) => (
+        <li>
+          <strong>{topic.title}</strong> <span>{topic.description}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="more-link">
+      <a href={url("/call-for-papers/")}>Read the full call for papers</a>
+    </p>
+  </section>
+
+  <section>
+    <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
+    {keynotes.map((keynote) => (
+      <div class="entry">
+        <h3>{keynote.person.name}</h3>
+        <p class="entry__meta">
+          <Value of={keynote.person.affiliation} />
         </p>
-      </section>
-      <section>
-        <Heading id="related-venues">How DQ4AI relates to other venues</Heading>
-        <p>{cfp.relatedVenues.distinction}</p>
-      </section>
-    </div>
-    <div class="home-aside">
-      <section>
-        <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
-        {keynotes.map((keynote) => (
-          <div class="entry">
-            <h3>{keynote.person.name}</h3>
-            <p class="entry__meta">
-              <Value of={keynote.person.affiliation} />
-            </p>
-            <p>
-              <a href={url(`/keynotes/#${keynote.id}`)}>
-                {keynote.title === TBA ? "Talk title to be announced" : keynote.title}
-              </a>
-            </p>
-          </div>
-        ))}
-      </section>
-      <section>
-        <Heading id="latest-news">Latest news</Heading>
-        {news.slice(0, 3).map((item) => (
-          <div class="entry">
-            <p class="entry__meta">
-              <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
-            </p>
-            <h3>
-              <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
-            </h3>
-            <p>{item.data.summary}</p>
-          </div>
-        ))}
-      </section>
-    </div>
-  </div>
+        <p>
+          <a href={url(`/keynotes/#${keynote.id}`)}>
+            {keynote.title === TBA ? "Keynote details" : keynote.title}
+          </a>
+        </p>
+      </div>
+    ))}
+  </section>
+
+  <section>
+    <Heading id="related-venues">How DQ4AI relates to other venues</Heading>
+    <p>{cfp.relatedVenues.distinction}</p>
+  </section>
+
+  <section>
+    <Heading id="latest-news">Latest news</Heading>
+    {news.slice(0, 3).map((item) => (
+      <div class="entry">
+        <p class="entry__meta">
+          <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
+        </p>
+        <h3>
+          <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
+        </h3>
+        <p>{item.data.summary}</p>
+      </div>
+    ))}
+  </section>
 
   {sponsors.length > 0 && (
     <section>

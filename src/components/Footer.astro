@@ -5,6 +5,7 @@ import { routeBySlug } from "../lib/nav";
 import { url } from "../lib/paths";
 import { workshopTitle } from "../lib/view";
 import ExternalLink from "./ExternalLink.astro";
+import Wordmark from "./Wordmark.astro";
 
 const site = await getSite();
 const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
@@ -13,45 +14,38 @@ const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
 <footer class="site-footer">
   <div class="site-footer__inner">
     <div>
-      <h2>
-        {site.acronym} {site.year}
-      </h2>
-      <p>{workshopTitle(site)}</p>
+      <Wordmark />
+    </div>
+    <div>
       <p>
-        Co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>.
+        {workshopTitle(site)}, co-located with{" "}
+        <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>.
+        {site.contactEmail !== TBA && (
+          <>
+            {" "}
+            Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+          </>
+        )}
       </p>
-      {site.contactEmail !== TBA && (
-        <p>
-          Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
-        </p>
-      )}
-      <p class="site-footer__legal">
-        Code under the MIT License, content under CC BY 4.0. No cookies, no tracking.
-      </p>
-    </div>
-    <div>
-      <h2>More</h2>
-      <ul class="plain-list">
-        {moreLinks.map((route) => (
+      <nav aria-label="More">
+        <ul class="site-footer__links">
+          {moreLinks.map((route) => (
+            <li>
+              <a href={url(route.path)}>{route.title}</a>
+            </li>
+          ))}
           <li>
-            <a href={url(route.path)}>{route.title}</a>
+            <a href={url("/cfp.txt")}>Call for papers as plain text</a>
           </li>
-        ))}
-      </ul>
-    </div>
-    <div>
-      <h2>Take away</h2>
-      <ul class="plain-list">
-        <li>
-          <a href={url("/cfp.txt")}>Plain-text CFP</a>
-        </li>
-        <li>
-          <a href={url("/calendar/deadlines.ics")}>Deadlines calendar</a>
-        </li>
-        <li>
-          <a href={url("/rss.xml")}>News feed (RSS)</a>
-        </li>
-      </ul>
+          <li>
+            <a href={url("/calendar/deadlines.ics")}>Deadlines calendar</a>
+          </li>
+          <li>
+            <a href={url("/rss.xml")}>News feed</a>
+          </li>
+        </ul>
+      </nav>
+      <p class="site-footer__legal">Content under CC BY 4.0. No cookies, no tracking.</p>
     </div>
   </div>
 </footer>

@@ -45,11 +45,16 @@ const pending = sections.filter(isPending);
   })}
 {pending.length > 0 && (
   <section class="pending">
-    <Heading id="to-be-announced">To be announced</Heading>
-    <ul>
+    <Heading id="to-be-announced">Details to come</Heading>
+    <dl class="facts">
       {pending.map((section) => (
-        <li id={section.id}>{section.heading}</li>
+        <div id={section.id}>
+          <dt>{section.heading}</dt>
+          <dd>
+            <Value of={TBA} />
+          </dd>
+        </div>
       ))}
-    </ul>
+    </dl>
   </section>
 )}

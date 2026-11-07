@@ -1,15 +1,19 @@
 ---
+import Heading from "../components/Heading.astro";
 import LocalTimeToggle from "../components/LocalTimeToggle.astro";
 import PageHeader from "../components/PageHeader.astro";
 import StatusBadge from "../components/StatusBadge.astro";
+import Value from "../components/Value.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDeadlines, getSite } from "../lib/content";
 import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
+import { nextDeadline } from "../lib/view";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
-// Status adds nothing until a deadline has a date: the date cell already says "To be announced".
+// Status adds nothing until a deadline has a date: the date cell already says "Not yet set".
 const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
+const next = nextDeadline(deadlines);
 ---
 
 <BaseLayout slug="dates">
@@ -17,83 +21,91 @@ const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
     title="Important dates"
     lede="All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended everywhere on Earth."
   />
-  <div class="toolbar">
-    <a class="button" href={url("/calendar/deadlines.ics")} download>
-      Add to calendar (.ics)
-    </a>
-    <LocalTimeToggle />
-  </div>
-  <p class="note" data-zone-note>
-    Times shown in AoE.
-  </p>
-  <div class="table-wrap">
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">Milestone</th>
-          <th scope="col">Date</th>
-          {showStatus && <th scope="col">Status</th>}
-        </tr>
-      </thead>
-      <tbody>
-        {deadlines.map((deadline) => (
+  <section>
+    <Heading id="milestones">Milestones</Heading>
+    {showStatus && (
+      <>
+        <div class="toolbar">
+          <a class="button" href={url("/calendar/deadlines.ics")} download>
+            Add to calendar (.ics)
+          </a>
+          <LocalTimeToggle />
+        </div>
+        <p class="note" data-zone-note role="status">
+          Times shown in AoE.
+        </p>
+      </>
+    )}
+    <section class="table-wrap" tabindex="0" aria-label="Important dates">
+      <table class="table">
+        <thead>
           <tr>
-            <th scope="row">{deadline.label}</th>
-            <td class="tabular">
-              {deadline.previous && (
-                <span class="date-change">
-                  Was{" "}
-                  <del>
-                    <time
-                      datetime={deadline.previous.toISOString()}
-                      data-convert={deadline.previous.toISOString()}
-                    >
-                      {formatAoE(deadline.previous)}
-                    </time>
-                  </del>
-                </span>
-              )}
-              {deadline.previous && "Now "}
-              {deadline.due ? (
-                <time
-                  datetime={deadline.due.toISOString()}
-                  data-convert={deadline.due.toISOString()}
-                >
-                  {formatAoE(deadline.due)}
-                </time>
-              ) : (
-                <span class="tba">To be announced</span>
-              )}
-            </td>
-            {showStatus && (
-              <td>
-                {deadline.status !== "tba" && (
-                  <StatusBadge
-                    status={deadline.status}
-                    extended={deadline.previous !== undefined}
-                  />
+            <th scope="col">Milestone</th>
+            <th scope="col">Date</th>
+            {showStatus && <th scope="col">Status</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {deadlines.map((deadline) => (
+            <tr>
+              <th scope="row">{deadline.label}</th>
+              <td class="tabular">
+                {deadline.previous && (
+                  <span class="date-change">
+                    Was{" "}
+                    <del>
+                      <time
+                        datetime={deadline.previous.toISOString()}
+                        data-convert={deadline.previous.toISOString()}
+                      >
+                        {formatAoE(deadline.previous)}
+                      </time>
+                    </del>
+                  </span>
+                )}
+                {deadline.previous && "Now "}
+                {deadline.due ? (
+                  <time
+                    class={deadline.id === next?.id ? "flag" : undefined}
+                    datetime={deadline.due.toISOString()}
+                    data-convert={deadline.due.toISOString()}
+                  >
+                    {formatAoE(deadline.due)}
+                  </time>
+                ) : (
+                  <Value of={TBA} />
                 )}
               </td>
-            )}
+              {showStatus && (
+                <td>
+                  {deadline.status !== "tba" && (
+                    <StatusBadge
+                      status={deadline.status}
+                      extended={deadline.previous !== undefined}
+                    />
+                  )}
+                </td>
+              )}
+            </tr>
+          ))}
+          <tr>
+            <th scope="row">Workshop</th>
+            <td class="tabular">
+              {site.workshopDate === TBA ? (
+                <Value of={TBA} />
+              ) : (
+                <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
+              )}
+            </td>
+            {showStatus && <td></td>}
           </tr>
-        ))}
-        <tr>
-          <th scope="row">Workshop</th>
-          <td class="tabular">
-            {site.workshopDate === TBA ? (
-              <span class="tba">To be announced</span>
-            ) : (
-              <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
-            )}
-          </td>
-          {showStatus && <td></td>}
-        </tr>
-        <tr>
-          <th scope="row">{site.host.name}</th>
-          <td class="tabular">{formatDayRange(site.host.startDate, site.host.endDate)}</td>
-          {showStatus && <td></td>}
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          <tr>
+            <th scope="row">{site.host.name}</th>
+            <td class="tabular">{formatDayRange(site.host.startDate, site.host.endDate)}</td>
+            {showStatus && <td></td>}
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
 </BaseLayout>

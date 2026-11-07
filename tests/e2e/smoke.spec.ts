@@ -107,25 +107,54 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   const purpose = page.locator(".purpose");
   await expect(purpose).toContainText("two-way relationship");
   await expect(purpose).toContainText("bring together researchers and practitioners");
-  const diagram = purpose.locator("figure");
-  await expect(diagram).toContainText("Data quality for AI");
-  await expect(diagram).toContainText("AI for data quality");
-  await expect(purpose.locator(".communities li")).toHaveCount(3);
+  const exchange = purpose.locator(".exchange");
+  await expect(exchange).toContainText("Data quality for AI");
+  await expect(exchange).toContainText("AI for data quality");
   await expect(page.locator("main .topics")).toContainText("Quality across text, images");
 });
 
-test("the color band spans the window without sideways scrolling", async ({ page }) => {
+test("the first screen states what is known as a record", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("");
+  const record = page.locator(".record");
+  await expect(record).toContainText("Lille, France");
+  await expect(record).toContainText("EDBT/ICDT 2027");
+  await expect(record).toContainText("CEUR Workshop Proceedings");
+  await expect(record).toBeInViewport();
+});
+
+test("no page has sideways scrolling or a color band", async ({ page }) => {
   for (const width of [320, 390, 1280, 1920]) {
     await page.setViewportSize({ width, height: 800 });
-    for (const path of ["", "dates/"]) {
+    for (const path of ["", "dates/", "call-for-papers/"]) {
       await page.goto(path);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );
       expect(overflow, `${path} at ${width}px`).toBe(0);
-      await expect(page.locator("main .band").first()).toBeVisible();
+      await expect(page.locator("main .band")).toHaveCount(0);
     }
   }
+});
+
+test("a heading's name is its text, without its section link", async ({ page }) => {
+  await page.goto("call-for-papers/");
+  await expect(page.getByRole("heading", { name: "Scope", exact: true })).toBeVisible();
+});
+
+test("the open menu's keyboard order matches what is on screen", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("");
+  await page.locator(".nav-toggle").click();
+  const lastLink = await page.locator("#site-nav a").last().boundingBox();
+  const theme = await page.locator(".theme-toggle").boundingBox();
+  expect(theme?.y ?? 0).toBeGreaterThan(lastLink?.y ?? Infinity);
+});
+
+test("a table that may scroll can be reached by keyboard", async ({ page }) => {
+  await page.goto("previous-editions/");
+  await expect(page.locator(".table-wrap")).toHaveAttribute("tabindex", "0");
+  await expect(page.locator(".table-wrap")).toHaveRole("region");
 });
 
 test("the skip link is the first stop and moves focus to the content", async ({ page }) => {
@@ -166,7 +195,11 @@ test("the deadlines calendar downloads and parses", async ({ request, baseURL },
   const summaries = calendar
     .getAllSubcomponents("vevent")
     .map((component) => new ICAL.Event(component).summary);
-  expect(summaries).toContain("EDBT/ICDT 2027");
+  expect(summaries).toContain(
+    populated(testInfo.project.name)
+      ? "EDBT/ICDT 2027 (host conference)"
+      : "EDBT/ICDT 2027 (host conference; DQ4AI date TBA)",
+  );
   expect(summaries).toHaveLength(populated(testInfo.project.name) ? 5 : 1);
 });
 
@@ -226,7 +259,19 @@ test.describe("states that depend on content", () => {
     }
     await expect(statusHeader).toHaveCount(0);
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
-    await expect(row.getByText("To be announced")).toHaveCount(1);
+    await expect(row.getByText("Not yet set")).toHaveCount(1);
+  });
+
+  test("only the next deadline is flagged, and tools need dates to act on", async ({
+    page,
+  }, testInfo) => {
+    for (const path of ["", "dates/"]) {
+      await page.goto(path);
+      await expect(page.locator("main .flag")).toHaveCount(
+        populated(testInfo.project.name) ? 1 : 0,
+      );
+    }
+    await expect(page.locator(".toolbar")).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
   });
 
   test("a section link is not hidden by the deadline bar on a phone", async ({
@@ -266,6 +311,7 @@ test.describe("states that depend on content", () => {
     await page.goto("attend/");
     const pending = page.locator(".pending");
     await expect(pending.locator("#venue")).toBeVisible();
+    await expect(pending.locator("#venue")).toContainText("Not yet set");
     await expect(page.getByRole("heading", { name: "Venue" })).toHaveCount(0);
   });
 

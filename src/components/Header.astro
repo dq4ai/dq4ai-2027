@@ -1,19 +1,18 @@
 ---
-import { getPapers, getSite } from "../lib/content";
+import { getPapers } from "../lib/content";
 import { visibleRoutes } from "../lib/nav";
 import { url } from "../lib/paths";
 import ThemeToggle from "./ThemeToggle.astro";
+import Wordmark from "./Wordmark.astro";
 
-const [site, papers] = await Promise.all([getSite(), getPapers()]);
+const papers = await getPapers();
 const routes = visibleRoutes(papers.length > 0).filter((route) => route.primary);
 const current = Astro.url.pathname;
 ---
 
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="brand" href={url("/")}>
-      {site.acronym} <span>{site.year}</span>
-    </a>
+    <Wordmark />
     <button
       class="icon-button nav-toggle"
       type="button"

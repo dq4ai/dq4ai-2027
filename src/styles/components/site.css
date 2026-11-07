@@ -15,7 +15,6 @@
 }
 
 .site-header {
-  border-block-start: 6px solid var(--color-accent);
   border-block-end: 1px solid var(--color-rule);
 }
 
@@ -30,16 +29,32 @@
 }
 
 .brand {
+  display: inline-flex;
+  align-items: baseline;
   margin-inline-end: auto;
   color: var(--color-text);
-  font-family: var(--font-serif);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-.brand span {
-  color: var(--color-accent);
+.brand:hover {
+  color: var(--color-text);
+}
+
+.brand__flag {
+  margin-inline: 0.04em;
+  padding-inline: 0.18em;
+  background: var(--color-flag);
+  color: var(--color-on-flag);
+}
+
+.brand__year {
+  margin-inline-start: 0.4em;
+  color: var(--color-text-muted);
+  font-weight: 400;
 }
 
 .icon-button {
@@ -111,16 +126,13 @@
   padding-block: var(--space-2);
   color: var(--color-text);
   text-decoration: none;
-  background-image: linear-gradient(var(--color-accent), var(--color-accent));
-  background-position: 0 100%;
-  background-repeat: no-repeat;
-  background-size: 0 2px;
-  transition: background-size 160ms ease;
 }
 
 .site-nav a:hover,
 .site-nav a[aria-current="page"] {
-  background-size: 100% 2px;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
 }
 
 .site-nav a[aria-current="page"] {
@@ -138,6 +150,11 @@
 
   .site-nav a {
     inline-size: fit-content;
+  }
+
+  /* The toggle follows the links in the keyboard order, so it follows them on screen too. */
+  .site-header__inner:has(.site-nav[data-open]) .theme-toggle {
+    order: 4;
   }
 }
 
@@ -194,48 +211,57 @@
 }
 
 .deadline-strip__countdown {
-  color: var(--color-accent);
+  padding-inline: var(--space-2);
+  background: var(--color-flag);
+  color: var(--color-on-flag);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
 }
 
 .site-footer {
-  border-block-start: 1px solid var(--color-rule);
-  background: var(--color-surface-raised);
+  border-block-start: 1px solid var(--color-rule-strong);
+  color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
 
 .site-footer__inner {
   display: grid;
-  gap: var(--space-5);
+  gap: var(--space-3) var(--rail-gap);
   inline-size: min(100% - 2 * var(--space-4), var(--page-width));
   margin-inline: auto;
-  padding-block: var(--space-6);
+  padding-block: var(--space-5);
 }
 
-@media (width >= 48rem) {
+@media (width >= 60rem) {
   .site-footer__inner {
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
   }
 }
 
-.site-footer h2 {
-  margin-block: 0 var(--space-2);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  font-weight: 600;
+.site-footer .brand {
+  font-size: var(--text-base);
 }
 
-.site-footer li {
-  padding-block: var(--space-1);
+.site-footer__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  max-inline-size: none;
+  margin-block-start: var(--space-2);
+}
+
+@media (width < 40rem) {
+  .site-footer__links {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.site-footer__legal {
+  margin-block-start: var(--space-3);
 }
 
 .site-footer a {
   display: inline-block;
   min-block-size: 1.5rem;
-}
-
-.site-footer__legal {
-  margin-block-start: var(--space-3);
-  color: var(--color-text-muted);
 }

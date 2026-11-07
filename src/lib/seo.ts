@@ -44,8 +44,10 @@ export function buildEventJsonLd({ site, url, organizers }: EventJsonLdInput) {
       "@type": "Event",
       name: site.host.name,
       url: site.host.url,
-      startDate: site.host.startDate,
-      endDate: site.host.endDate,
+      // Left out too while the workshop date is TBA: alone, they would read as the workshop's dates.
+      ...(site.workshopDate === TBA
+        ? {}
+        : { startDate: site.host.startDate, endDate: site.host.endDate }),
       eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
       location,
     },

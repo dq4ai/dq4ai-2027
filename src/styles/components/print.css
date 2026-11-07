@@ -19,7 +19,6 @@
   .deadline-strip,
   .skip-link,
   .toolbar,
-  .anchor,
   .no-print {
     display: none !important;
   }
@@ -30,27 +29,33 @@
     line-height: 1.35;
   }
 
-  .band {
-    --color-text: #000;
-    --color-text-muted: #333;
-    --color-accent: #000;
-    --color-rule: #999;
-
-    margin-block-start: 0;
-    padding-block: 0;
-    background: none;
-    border-image: none;
-    color: #000;
-  }
-
   main {
     inline-size: 100%;
     padding: 0;
   }
 
-  .page-header {
-    margin-block-end: 6pt;
-    padding-block-end: 6pt;
+  .page-header,
+  main > section:not(.session, .table-wrap),
+  .hero__body,
+  .session,
+  .keynote,
+  main > .entry {
+    display: block;
+    padding-block: 4pt;
+  }
+
+  main > * {
+    margin-inline-start: 0 !important;
+  }
+
+  .tba {
+    border: 0;
+    padding: 0;
+  }
+
+  .flag {
+    background: none;
+    padding: 0;
   }
 
   h2 {
@@ -74,24 +79,16 @@
     max-inline-size: none;
   }
 
-  .topics {
-    display: block;
-  }
-
   .topics li,
   .entry,
-  .facts div {
+  .facts > div {
     padding-block: 2pt;
     break-inside: avoid;
   }
 
   .topics li {
-    padding-inline-start: 0;
+    display: block;
     border: 0;
-  }
-
-  .topics li::before {
-    content: none;
   }
 
   a {

@@ -1,0 +1,21 @@
+---
+import { getSite } from "../lib/content";
+import { url } from "../lib/paths";
+
+const site = await getSite();
+// The digit in the acronym is the flagged cell. An acronym without one is shown plain.
+const [, before, digit, after] = /^(\D*)(\d)(.*)$/.exec(site.acronym) ?? [];
+---
+
+<a class="brand" href={url("/")}>
+  {digit ? (
+    <span>
+      {before}
+      <span class="brand__flag">{digit}</span>
+      {after}
+    </span>
+  ) : (
+    <span>{site.acronym}</span>
+  )}
+  <span class="brand__year">{site.year}</span>
+</a>

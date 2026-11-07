@@ -1,7 +1,7 @@
 import type { APIRoute, GetStaticPaths } from "astro";
 import { getDeadlines, getNow, getProgram, getSite } from "../../lib/content";
 import { buildCalendar, type CalendarEvent } from "../../lib/ics";
-import { parseIso } from "../../lib/dates";
+import { parseIso, TBA } from "../../lib/dates";
 import { absoluteUrl } from "../../lib/paths";
 import { hostLocation, isKnown } from "../../lib/view";
 
@@ -54,7 +54,11 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
       // Always present: a calendar file must hold at least one event, even while dates are TBA.
       {
         id: "host-conference",
-        summary: site.host.name,
+        // Labelled so subscribers do not read the host's dates as the workshop's.
+        summary:
+          site.workshopDate === TBA
+            ? `${site.host.name} (host conference; ${site.acronym} date TBA)`
+            : `${site.host.name} (host conference)`,
         start: { day: site.host.startDate },
         end: { day: site.host.endDate },
         location: locationName,

@@ -98,15 +98,16 @@ test.describe("build output", () => {
       superEvent: {
         "@type": "Event",
         name: "EDBT/ICDT 2027",
-        startDate: "2027-04-06",
-        endDate: "2027-04-09",
       },
     });
     expect((data.organizer as unknown[]).length).toBeGreaterThan(0);
     if (testInfo.project.name === "populated-content") {
       expect(data.startDate).toBe("2027-04-07");
+      expect(data.superEvent).toMatchObject({ startDate: "2027-04-06", endDate: "2027-04-09" });
     } else {
       expect(data).not.toHaveProperty("startDate");
+      expect(data.superEvent).not.toHaveProperty("startDate");
+      expect(data.superEvent).not.toHaveProperty("endDate");
     }
   });
 

@@ -11,33 +11,41 @@ const keynotes = await getKeynotes();
 <BaseLayout slug="keynotes">
   <PageHeader title="Keynotes" />
   {keynotes.map((keynote) => (
-    <article class:list={["keynote", { "keynote--photo": keynote.photo }]}>
-      {keynote.photo && (
-        <ContentImage
-          file={keynote.photo.file}
-          alt={keynote.photo.alt}
-          widths={[224, 448]}
-          sizes="(min-width: 48rem) 14rem, 100vw"
-        />
-      )}
+    <article class="keynote">
       <div>
+        {keynote.photo && (
+          <ContentImage
+            file={keynote.photo.file}
+            alt={keynote.photo.alt}
+            widths={[192, 384]}
+            sizes="(min-width: 60rem) 12rem, 14rem"
+          />
+        )}
         <h2 id={keynote.id}>{keynote.person.name}</h2>
         <p class="entry__meta">
           <Value of={keynote.person.affiliation} />
         </p>
-        <h3>Talk title</h3>
-        <p>
-          <Value of={keynote.title} />
-        </p>
-        <h3>Abstract</h3>
-        <p>
-          <Value of={keynote.abstract} />
-        </p>
-        <h3>Biography</h3>
-        <p>
-          <Value of={keynote.bio} />
-        </p>
       </div>
+      <dl class="facts">
+        <div>
+          <dt>Talk title</dt>
+          <dd>
+            <Value of={keynote.title} />
+          </dd>
+        </div>
+        <div>
+          <dt>Abstract</dt>
+          <dd>
+            <Value of={keynote.abstract} />
+          </dd>
+        </div>
+        <div>
+          <dt>Biography</dt>
+          <dd>
+            <Value of={keynote.bio} />
+          </dd>
+        </div>
+      </dl>
     </article>
   ))}
 </BaseLayout>

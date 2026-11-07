@@ -9,6 +9,7 @@ import { TBA } from "../lib/dates";
 import { url } from "../lib/paths";
 
 const [site, submission, cfp] = await Promise.all([getSite(), getSubmission(), getCfp()]);
+const pageLimitsUnknown = cfp.paperTypes.every((type) => type.pageLimit === TBA);
 ---
 
 <BaseLayout slug="submission">
@@ -55,14 +56,23 @@ const [site, submission, cfp] = await Promise.all([getSite(), getSubmission(), g
           )}
         </dd>
       </div>
-      {cfp.paperTypes.map((type) => (
+      {pageLimitsUnknown ? (
         <div>
-          <dt>Page limit: {type.title}</dt>
+          <dt>Page limits</dt>
           <dd>
-            <Value of={type.pageLimit} />
+            <Value of={TBA} />
           </dd>
         </div>
-      ))}
+      ) : (
+        cfp.paperTypes.map((type) => (
+          <div>
+            <dt>Page limit: {type.title}</dt>
+            <dd>
+              <Value of={type.pageLimit} />
+            </dd>
+          </div>
+        ))
+      )}
       <div>
         <dt>Template</dt>
         <dd>

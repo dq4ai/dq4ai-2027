@@ -17,7 +17,7 @@ dates.yaml → notification.date: Author notification (1 December 2026, 23:59 Ao
 Paper submission (11 December 2026, 23:59 AoE)
 ```
 
-Write `TBA` for anything not known yet. The site shows "To be announced", and each build lists what
+Write `TBA` for anything not known yet. The site shows "Not yet set" in its rows, "to be announced" in its sentences, and each build lists what
 is left. Keep the quotes around dates, and keep the indentation as it is.
 
 ## Common edits
