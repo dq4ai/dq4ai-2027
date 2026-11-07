@@ -17,6 +17,9 @@ selected again, with their link beside them rather than around them. The footer 
 only once deadlines have dates, empty home page sections are left out, the dates table fits phones,
 printed pages use document sizes, and the home page's statement is its own field in `cfp.yaml`.
 
+Added a photo of Lille to the Attend page, with its credit and a note that it shows the host city,
+not the workshop venue. The build now fails if such a photo lacks its author, license or source.
+
 Redesigned around the workshop's purpose: the home page now leads with the two-way relationship
 between data quality and AI, with a diagram, the communities involved and full topic descriptions,
 under a new color identity.

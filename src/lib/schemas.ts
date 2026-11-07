@@ -27,6 +27,16 @@ export const imageSchema = z.strictObject({
   alt: text.describe("Describes the image for people who cannot see it"),
 });
 
+/** A photo of someone else's work: everything its license asks the page to say is required. */
+const creditedPhotoSchema = imageSchema.extend({
+  subject: text,
+  author: text,
+  license: text,
+  licenseUrl: httpUrl,
+  source: text,
+  sourceUrl: httpUrl,
+});
+
 export const siteSchema = z.strictObject({
   acronym: text,
   title: text,
@@ -51,6 +61,7 @@ export const siteSchema = z.strictObject({
   proceedings: z.strictObject({ name: text, url: httpUrl }),
   paperTemplate: text,
   reviewModel: text,
+  hostPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
     githubOwner: text,
     repoName: text,

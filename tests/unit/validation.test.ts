@@ -221,6 +221,55 @@ describe("crossValidate", () => {
   });
 });
 
+describe("host city photo", () => {
+  const hostPhoto = {
+    file: "city.jpg",
+    alt: "A street in the city",
+    subject: "A street",
+    author: "A Photographer",
+    license: "CC BY 4.0",
+    licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
+    source: "An archive",
+    sourceUrl: "https://example.org/city",
+  };
+
+  it("accepts a fully credited photo", () => {
+    expect(siteSchema.safeParse({ ...site, hostPhoto }).success).toBe(true);
+  });
+
+  it("needs its file in the images folder", () => {
+    const issues = crossValidate(bundle({ site: { ...site, hostPhoto } }), {
+      imageExists: () => false,
+    });
+    expect(issues[0]?.file).toBe("site.yaml");
+    expect(issues[0]?.field).toBe("hostPhoto.file");
+  });
+
+  it("is optional", () => {
+    expect(siteSchema.safeParse(site).success).toBe(true);
+  });
+
+  it.each(["alt", "author", "license", "licenseUrl", "source", "sourceUrl"] as const)(
+    "cannot be published without its %s",
+    (field) => {
+      const incomplete = Object.entries(hostPhoto).filter(([key]) => key !== field);
+      const result = siteSchema.safeParse({
+        ...site,
+        hostPhoto: Object.fromEntries(incomplete),
+      });
+      expect(result.success).toBe(false);
+    },
+  );
+
+  it("needs a real link to its license", () => {
+    const result = siteSchema.safeParse({
+      ...site,
+      hostPhoto: { ...hostPhoto, licenseUrl: "CC BY 4.0" },
+    });
+    expect(result.success).toBe(false);
+  });
+});
+
 describe("schemas", () => {
   it("rejects a date without a time zone", () => {
     const result = datesSchema.safeParse({

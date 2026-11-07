@@ -217,6 +217,55 @@ test("no page shows the raw value TBA or the old wording", async ({ page }) => {
   }
 });
 
+test("the host city photo is credited and does not claim to be the venue", async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("attend/");
+  const section = page.locator("main > section").last();
+  await expect(section.getByRole("heading", { name: "Host city", exact: true })).toBeVisible();
+  const image = section.locator("img");
+  await expect(image).toHaveAttribute("alt", /\S/);
+  await image.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
+    .toBeGreaterThan(0);
+  const caption = section.locator("figcaption");
+  await expect(caption).toContainText("not the workshop venue");
+  const real = !populated(testInfo.project.name);
+  await expect(caption).toContainText(real ? "Caugris" : "Example Photographer");
+  await expect(
+    caption.getByRole("link", { name: real ? "CC BY-SA 4.0" : "Example License" }),
+  ).toHaveAttribute(
+    "href",
+    real ? "https://creativecommons.org/licenses/by-sa/4.0/" : "https://example.org/license",
+  );
+  await expect(
+    caption.getByRole("link", { name: real ? "Wikimedia Commons" : "Example Archive" }),
+  ).toHaveAttribute(
+    "href",
+    real ? /commons\.wikimedia\.org\/wiki\/File:Le_beffroi/ : "https://example.org/photo",
+  );
+  await expect(caption).toContainText("resized");
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(512);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(342);
+});
+
+test("the photo does not reach the first screen of the home page", async ({ page }, testInfo) => {
+  test.skip(populated(testInfo.project.name), "the fixture has its own images");
+  await page.goto("");
+  await expect(page.locator("main img")).toHaveCount(0);
+});
+
+test("the footer's license notice leaves room for credited work", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator(".site-footer__legal")).toContainText(
+    "Content under CC BY 4.0, except where a credit says otherwise.",
+  );
+});
+
 test("a past edition's unknown details are not promised as coming", async ({ page }, testInfo) => {
   test.skip(populated(testInfo.project.name), "needs a past edition with unknown details");
   await page.goto("previous-editions/");

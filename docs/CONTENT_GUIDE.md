@@ -123,6 +123,15 @@ see it. Check that you may publish the image first.
 photo: { file: jane-doe.jpg, alt: Portrait of Jane Doe }
 ```
 
+## Change the host city photo
+
+The photo at the end of the Attend page is set by `hostPhoto` in `site.yaml`. It always needs its
+author, license, source and a description, and the build fails without them. Use a photo you may
+publish, never one copied from a search results page. The caption says it shows the city and not the
+workshop venue, so once the venue is known, change that sentence in `src/pages/attend.astro` if you
+switch to a photo of the venue itself. Remove `hostPhoto` to remove the section. List a photo that
+is not CC BY 4.0 in `LICENSE`.
+
 ## Post news
 
 Add a file such as `news/2026-12-01-deadline-extended.md`:

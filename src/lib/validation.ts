@@ -262,6 +262,17 @@ function validateKeynotes(
   return issues;
 }
 
+function validateHostPhoto(site: Site, imageExists: (file: string) => boolean): ContentIssue[] {
+  if (!site.hostPhoto || imageExists(site.hostPhoto.file)) return [];
+  return [
+    {
+      file: "site.yaml",
+      field: "hostPhoto.file",
+      message: `"${site.hostPhoto.file}" is not in the images folder`,
+    },
+  ];
+}
+
 function validateSponsors(
   sponsors: Sponsor[],
   imageExists: (file: string) => boolean,
@@ -282,6 +293,7 @@ export function crossValidate(
   const { site, dates, people, committees, keynotes, sessions, talks, papers } = bundle;
   const personIds = new Set(people.map((person) => person.id));
   return [
+    ...validateHostPhoto(site, imageExists),
     ...uniqueIds("dates.yaml", dates),
     ...uniqueIds("people.yaml", people),
     ...uniqueIds("committees.yaml", committees),

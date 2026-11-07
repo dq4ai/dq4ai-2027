@@ -25,6 +25,18 @@ proceedings:
   url: https://ceur-ws.org/
 paperTemplate: TBA
 reviewModel: TBA # e.g. double-blind
+# Shown at the end of the Attend page. Keep every field: the license requires the credit.
+hostPhoto:
+  file: lille-beffroi-vieille-bourse.jpg
+  alt: >-
+    The Chamber of Commerce belfry rising above steep slate roofs, beside the ornate facade of the
+    Vieille Bourse, under a clear blue sky.
+  subject: The Chamber of Commerce belfry and the Vieille Bourse, Lille
+  author: Caugris
+  license: CC BY-SA 4.0
+  licenseUrl: https://creativecommons.org/licenses/by-sa/4.0/
+  source: Wikimedia Commons
+  sourceUrl: https://commons.wikimedia.org/wiki/File:Le_beffroi_de_la_Chambre_de_Commerce_de_Lille_avec_la_Vieille_Bourse.jpg
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027
