@@ -5,16 +5,25 @@ import Heading from "../components/Heading.astro";
 import Value from "../components/Value.astro";
 import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCfp, getCommittees, getKeynotes, getNews, getSite, getSponsors } from "../lib/content";
+import {
+  getCfp,
+  getCommittees,
+  getDeadlines,
+  getKeynotes,
+  getNews,
+  getSite,
+  getSponsors,
+} from "../lib/content";
 import { formatIsoDay, TBA } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { siteSummary } from "../lib/view";
+import { isKnown, siteSummary, submissionCloses, submissionOpen } from "../lib/view";
 
-const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
+const [site, cfp, committees, deadlines, keynotes, news, sponsors] = await Promise.all([
   getSite(),
   getCfp(),
   getCommittees(),
+  getDeadlines(),
   getKeynotes(),
   getNews(),
   getSponsors(),
@@ -37,8 +46,9 @@ const jsonLd = serializeJsonLd(
     <div class="hero__body">
       <div>
         <p class="lede">{siteSummary(site)}</p>
+        {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
         <div class="hero__actions">
-          {site.submissionUrl === TBA ? (
+          {!submissionOpen(site, deadlines) ? (
             <>
               <a class="button button--primary" href={url("/call-for-papers/")}>
                 Read the call for papers
@@ -49,7 +59,11 @@ const jsonLd = serializeJsonLd(
             </>
           ) : (
             <>
-              <ExternalLink class="button button--primary" href={site.submissionUrl}>
+              <ExternalLink
+                class="button button--primary"
+                href={site.submissionUrl}
+                data-closes={submissionCloses(deadlines)}
+              >
                 Submit a paper
               </ExternalLink>
               <a class="button" href={url("/call-for-papers/")}>
@@ -93,14 +107,26 @@ const jsonLd = serializeJsonLd(
       {keynotes.map((keynote) => (
         <div class="entry">
           <h3>
-            <Value of={keynote.person.name} />
+            <Value of={keynote.person.name} unknown="Speaker to be announced" />
           </h3>
-          <p class="entry__meta">
-            <Value of={keynote.person.affiliation} />
-          </p>
+          {isKnown(keynote.person.name) && (
+            <p class="entry__meta">
+              <Value of={keynote.person.affiliation} />
+            </p>
+          )}
           <p>
             <a href={url(`/keynotes/#${keynote.id}`)}>
-              {keynote.title === TBA ? "Keynote details" : keynote.title}
+              {keynote.title === TBA ? (
+                <>
+                  Keynote details
+                  <span class="visually-hidden">
+                    :{" "}
+                    {isKnown(keynote.person.name) ? keynote.person.name : "speaker to be announced"}
+                  </span>
+                </>
+              ) : (
+                keynote.title
+              )}
             </a>
           </p>
         </div>

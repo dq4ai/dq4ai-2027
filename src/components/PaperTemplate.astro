@@ -1,0 +1,17 @@
+---
+import { getSite } from "../lib/content";
+import { TBA } from "../lib/dates";
+import { isKnown } from "../lib/view";
+import ExternalLink from "./ExternalLink.astro";
+import Value from "./Value.astro";
+
+const site = await getSite();
+---
+
+{site.paperTemplateUrl && isKnown(site.paperTemplateUrl) ? (
+  <ExternalLink href={site.paperTemplateUrl}>
+    {site.paperTemplate === TBA ? "Paper template" : site.paperTemplate}
+  </ExternalLink>
+) : (
+  <Value of={site.paperTemplate} />
+)}

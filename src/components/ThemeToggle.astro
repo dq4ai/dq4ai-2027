@@ -27,46 +27,44 @@
 </button>
 
 <script>
+  // The inline bootstrap in src/lib/theme.ts handles clicks, so the button works without this file.
   const root = document.documentElement;
   const button = document.querySelector<HTMLButtonElement>(".theme-toggle");
-  const isDark = () =>
-    root.dataset.theme
-      ? root.dataset.theme === "dark"
-      : matchMedia("(prefers-color-scheme: dark)").matches;
-  const sync = () => {
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === "dark" : systemDark.matches);
+  const syncState = () => {
     button?.setAttribute("aria-pressed", String(isDark()));
-    if (!root.dataset.theme) return;
-    // A manual theme overrides the system preference both tags are keyed to.
+  };
+  const syncToolbar = () => {
+    // Both tags are keyed to the system preference, which a changed theme can override.
     const background = getComputedStyle(document.body).backgroundColor;
     for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
       meta.setAttribute("content", background);
     }
   };
+  const changed = () => {
+    syncState();
+    syncToolbar();
+  };
   const applyStored = () => {
     try {
       const stored = localStorage.getItem("theme");
       if (stored === "dark" || stored === "light") root.dataset.theme = stored;
+      else delete root.dataset.theme;
     } catch {
       // Storage can be unavailable in private modes; keep the current theme.
     }
-    sync();
+    changed();
   };
-  sync();
+  syncState();
+  if (root.dataset.theme) syncToolbar();
+  document.addEventListener("themechange", changed);
+  systemDark.addEventListener("change", changed);
   // A page restored by the Back button, or open in another tab, missed the change.
   addEventListener("pageshow", (event) => {
     if (event.persisted) applyStored();
   });
   addEventListener("storage", (event) => {
     if (event.key === "theme") applyStored();
-  });
-  button?.addEventListener("click", () => {
-    const theme = isDark() ? "light" : "dark";
-    root.dataset.theme = theme;
-    try {
-      localStorage.setItem("theme", theme);
-    } catch {
-      // Storage can be unavailable in private modes; the theme still applies to this page.
-    }
-    sync();
   });
 </script>

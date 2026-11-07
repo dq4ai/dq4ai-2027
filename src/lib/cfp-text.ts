@@ -78,6 +78,9 @@ export function buildCfpText({ site, cfp, deadlines, chairs, siteUrl }: CfpTextI
     `  Submission system: ${known(site.submissionSystem)}`,
     `  Submission link: ${known(site.submissionUrl)}`,
     `  Template: ${known(site.paperTemplate)}`,
+    ...(site.paperTemplateUrl && isKnown(site.paperTemplateUrl)
+      ? [`  Template link: ${site.paperTemplateUrl}`]
+      : []),
     `  Review model: ${known(site.reviewModel)}`,
     "",
     wrapText(`${cfp.proceedingsNote} ${cfp.presentation}`),

@@ -20,7 +20,9 @@ const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
       <p>
         {workshopTitle(site)}, co-located with{" "}
         <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>.
-        {site.contactEmail !== TBA && (
+        {site.contactEmail === TBA ? (
+          " Contact: to be announced."
+        ) : (
           <>
             {" "}
             Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.

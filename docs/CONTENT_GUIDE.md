@@ -39,6 +39,30 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Venue, visa and travel information      | `attend.yaml`                       |
 | Code of conduct, conflicts, ethics      | `policies.yaml`                     |
 
+## Say when details will be known
+
+If you know roughly when the missing details will be announced, add one sentence to `site.yaml`. It
+appears on the home, Submission and Dates pages. Leave it out if you do not know.
+
+```yaml
+statusNote: Your sentence here.
+```
+
+## Link the paper template
+
+`paperTemplate` in `site.yaml` is the template's name, and `paperTemplateUrl` is where to get it.
+Once both are set, the name becomes a link.
+
+## Link a checklist step
+
+Each step in `submission.yaml` can link to a page of this site with an optional `link`:
+
+```yaml
+link:
+  label: See the dates
+  path: /dates/
+```
+
 ## Set or extend a deadline
 
 Deadlines end at 23:59 Anywhere on Earth, which is written with `-12:00`:

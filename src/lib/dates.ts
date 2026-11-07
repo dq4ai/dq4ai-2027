@@ -93,6 +93,23 @@ export function formatTimeInZone(date: Date, zone: string): string {
   }).format(date);
 }
 
+/** A session's start in a visitor's zone. A bare time under the venue's date would misstate the day. */
+export function formatLocalSessionTime(date: Date, zone: string, venueZone: string): string {
+  const time = formatTimeInZone(date, zone);
+  if (dayKeyInZone(date, zone) === dayKeyInZone(date, venueZone)) return time;
+  const day = new Intl.DateTimeFormat(LOCALE, {
+    timeZone: zone,
+    day: "numeric",
+    month: "long",
+  }).format(date);
+  return `${time} (${day})`;
+}
+
+/** A moment in the form `parseIso` accepts. */
+export function toIsoInstant(date: Date): string {
+  return date.toISOString().replace(/\.\d{3}Z$/, "Z");
+}
+
 export function formatAoEDay(date: Date): string {
   return formatDayInZone(date, AOE_ZONE);
 }
@@ -168,9 +185,9 @@ const unit = (count: number, name: string) => `${count} ${name}${count === 1 ? "
 
 /** Whole words read better aloud than "42d 14h". Minutes only matter on the last day. */
 export function formatCountdown({ days, hours, minutes }: TimeRemaining): string {
-  return days > 0
-    ? `${unit(days, "day")} ${unit(hours, "hour")} left`
-    : `${unit(hours, "hour")} ${unit(minutes, "minute")} left`;
+  if (days > 0) return `${unit(days, "day")} ${unit(hours, "hour")} left`;
+  if (hours === 0 && minutes === 0) return "Less than a minute left";
+  return `${unit(hours, "hour")} ${unit(minutes, "minute")} left`;
 }
 
 export function isoDayOrdering(a: string, b: string): number {

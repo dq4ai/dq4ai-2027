@@ -8,7 +8,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getDeadlines, getSite } from "../lib/content";
 import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { nextDeadline } from "../lib/view";
+import { nextDeadline, stripPrefix } from "../lib/view";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
 // Status adds nothing until a deadline has a date: the date cell already says it is unknown.
@@ -21,15 +21,16 @@ const next = nextDeadline(deadlines);
     title="Important dates"
     lede="All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended everywhere on Earth."
   />
+  {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
   <section>
-    <Heading id="milestones">Milestones</Heading>
+    <Heading id="all-dates">All dates</Heading>
     {showStatus && (
       <>
         <div class="toolbar">
           <a class="button" href={url("/calendar/deadlines.ics")} download>
-            Add to calendar (.ics)
+            Deadlines calendar (.ics)
           </a>
-          <LocalTimeToggle />
+          <LocalTimeToggle activeLabel="Show in AoE" />
         </div>
         <p class="note" data-zone-note role="status">
           Times shown in AoE.
@@ -40,7 +41,7 @@ const next = nextDeadline(deadlines);
       <table class="table">
         <thead>
           <tr>
-            <th scope="col">Milestone</th>
+            <th scope="col">Item</th>
             <th scope="col">Date</th>
             {showStatus && (
               <th scope="col" class="status-column">
@@ -67,12 +68,16 @@ const next = nextDeadline(deadlines);
                     </del>
                   </span>
                 )}
-                {deadline.previous && "Now "}
+                {deadline.previous && <span class="visually-hidden now-label">Now</span>}
+                {deadline.id === next?.id && (
+                  <span class="visually-hidden next-label">{stripPrefix(deadline.kind)}</span>
+                )}
                 {deadline.due ? (
                   <time
                     class={deadline.id === next?.id ? "flag" : undefined}
                     datetime={deadline.due.toISOString()}
                     data-convert={deadline.due.toISOString()}
+                    data-due={deadline.due.toISOString()}
                   >
                     {formatAoE(deadline.due)}
                   </time>
@@ -84,6 +89,7 @@ const next = nextDeadline(deadlines);
                     <StatusBadge
                       status={deadline.status}
                       extended={deadline.previous !== undefined}
+                      due={deadline.due}
                     />
                   </span>
                 )}
@@ -94,6 +100,7 @@ const next = nextDeadline(deadlines);
                     <StatusBadge
                       status={deadline.status}
                       extended={deadline.previous !== undefined}
+                      due={deadline.due}
                     />
                   )}
                 </td>
@@ -101,7 +108,7 @@ const next = nextDeadline(deadlines);
             </tr>
           ))}
           <tr>
-            <th scope="row">Workshop</th>
+            <th scope="row">Workshop date</th>
             <td class="tabular">
               {site.workshopDate === TBA ? (
                 <Value of={TBA} />

@@ -24,6 +24,7 @@ proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/
 paperTemplate: TBA
+paperTemplateUrl: TBA # Address of the template file or page
 reviewModel: TBA # e.g. double-blind
 # Shown at the end of the Attend page. Keep every field: the license requires the credit.
 hostPhoto:

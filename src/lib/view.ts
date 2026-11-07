@@ -51,6 +51,22 @@ export const STATUS_LABELS: Record<DeadlineStatus, string> = {
   passed: "Passed",
 };
 
+/** Whether to offer the submit button. An unknown deadline has not passed. */
+export function submissionOpen(site: Pick<Site, "submissionUrl">, views: DeadlineView[]): boolean {
+  if (site.submissionUrl === TBA) return false;
+  return views.find((view) => view.id === "submission")?.status !== "passed";
+}
+
+/** The moment a page already built should stop offering the submit button. */
+export function submissionCloses(views: DeadlineView[]): string | undefined {
+  return views.find((view) => view.id === "submission")?.due?.toISOString();
+}
+
+/** Authors must meet a deadline; a notification is only a date to wait for. */
+export function stripPrefix(kind: DateEntry["kind"]): string {
+  return kind === "notification" ? "Next date:" : "Next deadline:";
+}
+
 export function surnameOf(person: Person): string {
   return person.surname ?? person.name.trim().split(/\s+/).at(-1) ?? person.name;
 }
@@ -86,6 +102,14 @@ export function hostLocation(site: Site): string {
 export function hostDatesSentence(site: Site): string {
   const workshop = site.workshopDate === TBA ? "to be announced" : formatIsoDay(site.workshopDate);
   return `${site.host.name} runs ${formatDayRange(site.host.startDate, site.host.endDate)} in ${hostLocation(site)}. Workshop date: ${workshop}.`;
+}
+
+/** What this is, for someone who arrives on an inner page. Host dates are never the workshop's. */
+export function pageContext(site: Site): string {
+  const label = `${site.acronym} ${site.year} workshop`;
+  return site.workshopDate === TBA
+    ? `${label} at ${site.host.name} (${formatDayRange(site.host.startDate, site.host.endDate)}), ${hostLocation(site)}`
+    : `${label}, ${formatIsoDay(site.workshopDate)}, at ${site.host.name}, ${hostLocation(site)}`;
 }
 
 /** A self-contained description of the workshop, for the home page's search result. */

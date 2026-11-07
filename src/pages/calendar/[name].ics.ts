@@ -7,9 +7,16 @@ import { hostLocation, isKnown } from "../../lib/view";
 
 type Program = Awaited<ReturnType<typeof getProgram>>;
 
-const sessionEvent = (session: Program[number], locationName: string): CalendarEvent => ({
+const sessionEvent = (
+  session: Program[number],
+  label: string,
+  locationName: string,
+  programUrl: string,
+): CalendarEvent => ({
   id: `session-${session.id}`,
-  summary: session.title,
+  // Read in a calendar among other events, so it has to say what it belongs to.
+  summary: `${label}: ${session.title}`,
+  url: programUrl,
   start: { instant: parseIso(session.start) },
   end: { instant: parseIso(session.end) },
   location: isKnown(session.room) ? `${session.room}, ${locationName}` : locationName,
@@ -33,6 +40,7 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
   const locationName = hostLocation(site);
   const domain = new URL(absoluteUrl("/", astroSite)).hostname;
   const name = params.name ?? "";
+  const programUrl = absoluteUrl("/program/", astroSite);
 
   let events: CalendarEvent[];
   let title: string;
@@ -51,6 +59,18 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
             ]
           : [],
       ),
+      ...(site.workshopDate === TBA
+        ? []
+        : [
+            {
+              id: "workshop",
+              summary: `${label} workshop`,
+              start: { day: site.workshopDate },
+              end: { day: site.workshopDate },
+              location: locationName,
+              url: absoluteUrl("/", astroSite),
+            },
+          ]),
       // Always present: a calendar file must hold at least one event, even while dates are TBA.
       {
         id: "host-conference",
@@ -67,12 +87,12 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
     ];
   } else if (name === "program") {
     title = `${label} program`;
-    events = program.map((session) => sessionEvent(session, locationName));
+    events = program.map((session) => sessionEvent(session, label, locationName, programUrl));
   } else {
     const session = program.find((candidate) => `session-${candidate.id}` === name);
     if (!session) throw new Error(`Unknown calendar "${name}"`);
     title = `${label}: ${session.title}`;
-    events = [sessionEvent(session, locationName)];
+    events = [sessionEvent(session, label, locationName, programUrl)];
   }
 
   return new Response(buildCalendar({ name: title, domain, stamp: getNow(), events }), {

@@ -1,4 +1,5 @@
 ---
+import ContactSection from "../components/ContactSection.astro";
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
@@ -15,6 +16,7 @@ const photo = site.hostPhoto;
 <BaseLayout slug="attend">
   <PageHeader title="Attend" lede={hostDatesSentence(site)} />
   <ProseSections {sections} />
+  <ContactSection label="Questions about attending" />
   {photo && (
     <section>
       <Heading id="host-city">Host city</Heading>
@@ -24,6 +26,7 @@ const photo = site.hostPhoto;
           alt={photo.alt}
           widths={[480, 800, 1024]}
           sizes="(min-width: 40rem) 32rem, 100vw"
+          loading="eager"
         />
         <figcaption class="note">
           {photo.subject}. This shows the host city, not the workshop venue. Photo: {photo.author},{" "}

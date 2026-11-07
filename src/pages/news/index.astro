@@ -15,7 +15,7 @@ const items = await Promise.all(
 <BaseLayout slug="news">
   <PageHeader title="News" />
   <p class="note">
-    <a href={url("/rss.xml")}>Subscribe with RSS</a>
+    <a href={url("/rss.xml")}>News feed</a>
   </p>
   {items.map(({ entry, Content }) => (
     <article class="entry" id={`news-${entry.id}`}>
