@@ -40,6 +40,12 @@
   --color-on-accent: light-dark(#fff, #0d1626);
   --color-primary: var(--color-brand-a);
   --color-primary-hover: light-dark(#142a66, #b9cdff);
+  /* Over a photo, whatever it holds: white on a navy scrim, both themes. */
+  --color-on-photo: #fff;
+  --color-photo-base: #0d1626;
+  --color-scrim: rgb(13 22 38 / 0.82);
+  --color-scrim-text: rgb(13 22 38 / 0.9);
+  --color-scrim-clear: rgb(13 22 38 / 0.35);
   --color-flag: #f6c945;
   --color-on-flag: #141c26;
   --color-status-today: light-dark(#7a4f00, #e8be6a);

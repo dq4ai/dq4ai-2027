@@ -7,6 +7,7 @@
     --color-accent: #000;
     --color-rule: #999;
     --color-rule-strong: #000;
+    --color-on-photo: #000;
     --text-base: 10pt;
     --text-lg: 11pt;
     --text-h3: 11pt;
@@ -56,6 +57,24 @@
 
   .page-header {
     border-image: none;
+  }
+
+  .page-header__photo {
+    display: none !important;
+  }
+
+  .page-header--photo {
+    margin: 0;
+    padding: 4pt 0;
+    background: none;
+  }
+
+  .page-header--photo::before {
+    content: none;
+  }
+
+  .page-header--photo .page-header__text {
+    max-inline-size: none;
   }
 
   .hero__mark,

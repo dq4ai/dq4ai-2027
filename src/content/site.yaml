@@ -15,6 +15,7 @@ host:
   endDate: "2027-04-09"
   city: Lille
   country: France
+  cityUrl: https://fr.wikipedia.org/wiki/Lille # A description of the host city
 venueTimezone: Europe/Paris
 workshopDate: TBA # Format: "2027-04-06"
 contactEmail: TBA
@@ -28,16 +29,29 @@ paperTemplateUrl: TBA # Address of the template file or page
 reviewModel: TBA # e.g. double-blind
 # Shown at the end of the Attend page. Keep every field: the license requires the credit.
 hostPhoto:
-  file: lille-beffroi-vieille-bourse.jpg
+  file: lille-grand-place-dusk.jpg
   alt: >-
-    The Chamber of Commerce belfry rising above steep slate roofs, beside the ornate facade of the
-    Vieille Bourse, under a clear blue sky.
-  subject: The Chamber of Commerce belfry and the Vieille Bourse, Lille
-  author: Caugris
+    The Grand'Place of Lille at dusk: lit facades around the square, the column of the goddess at its
+    centre, and the Vieille Bourse with the Chamber of Commerce belfry on the right, under a deep blue
+    sky.
+  subject: The Grand'Place at dusk, Lille
+  author: Velvet
   license: CC BY-SA 4.0
   licenseUrl: https://creativecommons.org/licenses/by-sa/4.0/
   source: Wikimedia Commons
-  sourceUrl: https://commons.wikimedia.org/wiki/File:Le_beffroi_de_la_Chambre_de_Commerce_de_Lille_avec_la_Vieille_Bourse.jpg
+  sourceUrl: https://commons.wikimedia.org/wiki/File:Lille_gd_place_pano_ter.jpg
+# Shown behind the title of the Call for Papers. Keep every field, as above.
+cfpPhoto:
+  file: lille-grand-place-panorama.jpg
+  alt: >-
+    A panorama of the Grand'Place of Lille by day: the column of the goddess in the square, with the
+    Vieille Bourse and the Chamber of Commerce belfry on the right, under a blue sky with white clouds.
+  subject: The Grand'Place, Lille
+  author: Velvet
+  license: CC BY-SA 3.0
+  licenseUrl: https://creativecommons.org/licenses/by-sa/3.0/
+  source: Wikimedia Commons
+  sourceUrl: https://commons.wikimedia.org/wiki/File:Lille_gd_place.jpg
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

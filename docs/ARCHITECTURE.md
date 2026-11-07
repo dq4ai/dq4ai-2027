@@ -24,6 +24,13 @@ data quality. `src/lib/brand.ts` draws it once, for the page, the favicon's shap
 images. Amber is only ever the next deadline. The home page opens with the logo and the eight topic
 icons, so a researcher sees what the workshop is about before reading anything.
 
+**The header stays on screen.** Any page is one click away. The deadline bar scrolls with the page,
+because stacked they would take too much of a small screen. A very large browser font turns the
+sticky header off, since it would pin half the screen.
+
+**No banner photo on phones.** The Call for Papers panorama would be the page's largest paint on a
+phone and missed the 1200 ms budget at about 1800 ms, so screens under 40rem get the title on navy.
+
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.
 

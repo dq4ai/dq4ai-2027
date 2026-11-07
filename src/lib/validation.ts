@@ -263,14 +263,17 @@ function validateKeynotes(
 }
 
 function validateHostPhoto(site: Site, imageExists: (file: string) => boolean): ContentIssue[] {
-  if (!site.hostPhoto || imageExists(site.hostPhoto.file)) return [];
-  return [
-    {
-      file: "site.yaml",
-      field: "hostPhoto.file",
-      message: `"${site.hostPhoto.file}" is not in the images folder`,
-    },
-  ];
+  return (["hostPhoto", "cfpPhoto"] as const).flatMap((name) => {
+    const photo = site[name];
+    if (!photo || imageExists(photo.file)) return [];
+    return [
+      {
+        file: "site.yaml",
+        field: `${name}.file`,
+        message: `"${photo.file}" is not in the images folder`,
+      },
+    ];
+  });
 }
 
 function validateSponsors(

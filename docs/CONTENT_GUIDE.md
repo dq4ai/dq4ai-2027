@@ -158,7 +158,12 @@ see it. Check that you may publish the image first.
 photo: { file: jane-doe.jpg, alt: Portrait of Jane Doe }
 ```
 
-## Change the host city photo
+## Change the host city photos
+
+Two photos come from `site.yaml`: `hostPhoto` at the end of the Attend page, which links to
+`host.cityUrl`, and `cfpPhoto` behind the title of the Call for Papers. The same rules apply to both.
+`hostPhoto` is credited in its caption. `cfpPhoto` shows no credit on the site, by the organizers'
+choice: its author and license are in `site.yaml` and `LICENSE`.
 
 The photo at the end of the Attend page is set by `hostPhoto` in `site.yaml`. It always needs its
 author, license, source and a description, and the build fails without them. Use a photo you may

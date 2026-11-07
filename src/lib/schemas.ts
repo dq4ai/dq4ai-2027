@@ -65,6 +65,7 @@ export const siteSchema = z.strictObject({
     endDate: isoDay,
     city: text,
     country: text,
+    cityUrl: httpUrl.optional(),
   }),
   venueTimezone: z.string().refine(isValidTimeZone, "must be an IANA time zone, e.g. Europe/Paris"),
   workshopDate: dayOrTba,
@@ -78,6 +79,7 @@ export const siteSchema = z.strictObject({
   statusNote: text.optional(),
   reviewModel: text,
   hostPhoto: creditedPhotoSchema.optional(),
+  cfpPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
     githubOwner: text,
     repoName: text,

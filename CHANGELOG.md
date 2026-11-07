@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+The header now stays on screen while scrolling, so any page is one click away. The host city photo is
+now the Grand'Place at dusk and links to a description of Lille, and the Call for Papers opens with a
+panorama of the square behind its title.
+
 New identity built around a logo and topic icons. The logo, a two-way loop around checked data, is in
 the header and footer, and in the favicon and social images. The site's colors now come from it:
 navy and teal, with amber kept for the next deadline. The home page opens with the logo and the eight

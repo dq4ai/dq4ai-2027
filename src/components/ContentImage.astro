@@ -9,8 +9,9 @@ interface Props {
   sizes: string;
   /** Eager only for an image that can be the largest thing on the first screen. */
   loading?: "lazy" | "eager";
+  class?: string;
 }
-const { file, alt, widths, sizes, loading = "lazy" } = Astro.props;
+const { file, alt, widths, sizes, loading = "lazy", class: className } = Astro.props;
 
 const images = {
   ...import.meta.glob<{ default: ImageMetadata }>("/src/content/images/*.{jpg,jpeg,png,webp,avif}"),
@@ -23,4 +24,4 @@ if (!loader) throw new Error(`Image "${file}" is not in the images folder`);
 const { default: src } = await loader();
 ---
 
-<Picture {src} {alt} {widths} {sizes} formats={["avif", "webp"]} {loading} />
+<Picture {src} {alt} {widths} {sizes} formats={["avif", "webp"]} {loading} class={className} />

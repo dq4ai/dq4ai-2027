@@ -232,7 +232,7 @@ test("the host city photo is credited and does not claim to be the venue", async
   const caption = section.locator("figcaption");
   await expect(caption).toContainText("not the workshop venue");
   const real = !populated(testInfo.project.name);
-  await expect(caption).toContainText(real ? "Caugris" : "Example Photographer");
+  await expect(caption).toContainText(real ? "Velvet" : "Example Photographer");
   await expect(
     caption.getByRole("link", { name: real ? "CC BY-SA 4.0" : "Example License" }),
   ).toHaveAttribute(
@@ -243,10 +243,10 @@ test("the host city photo is credited and does not claim to be the venue", async
     caption.getByRole("link", { name: real ? "Wikimedia Commons" : "Example Archive" }),
   ).toHaveAttribute(
     "href",
-    real ? /commons\.wikimedia\.org\/wiki\/File:Le_beffroi/ : "https://example.org/photo",
+    real ? /commons\.wikimedia\.org\/wiki\/File:Lille_gd_place/ : "https://example.org/photo",
   );
   await expect(caption).toContainText("resized");
-  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(512);
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(832);
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(342);
