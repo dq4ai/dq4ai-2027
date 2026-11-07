@@ -1,5 +1,5 @@
 ---
-import { getSite } from "../lib/content";
+import { getDeadlines, getSite } from "../lib/content";
 import { TBA } from "../lib/dates";
 import { routeBySlug } from "../lib/nav";
 import { url } from "../lib/paths";
@@ -7,7 +7,7 @@ import { workshopTitle } from "../lib/view";
 import ExternalLink from "./ExternalLink.astro";
 import Wordmark from "./Wordmark.astro";
 
-const site = await getSite();
+const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
 const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
 ---
 
@@ -37,9 +37,11 @@ const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
           <li>
             <a href={url("/cfp.txt")}>Call for papers as plain text</a>
           </li>
-          <li>
-            <a href={url("/calendar/deadlines.ics")}>Deadlines calendar</a>
-          </li>
+          {deadlines.some((deadline) => deadline.due) && (
+            <li>
+              <a href={url("/calendar/deadlines.ics")}>Deadlines calendar</a>
+            </li>
+          )}
           <li>
             <a href={url("/rss.xml")}>News feed</a>
           </li>

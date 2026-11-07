@@ -70,7 +70,8 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
                   session.chairPerson && `Chair: ${session.chairPerson.name}`,
                 ]
                   .filter(Boolean)
-                  .join(". ")}{" "}
+                  .map((detail) => `${detail}. `)
+                  .join("")}
                 <a href={url(`/calendar/session-${session.id}.ics`)} download>
                   <span>Add to calendar</span>
                   <span class="visually-hidden">: {session.title}</span>

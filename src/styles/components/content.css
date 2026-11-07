@@ -14,32 +14,32 @@
   line-height: 1.5;
 }
 
-main > section:not(.session, .table-wrap) {
+main > section:not(.session) {
   padding-block: var(--space-5) var(--space-6);
   border-block-start: 1px solid var(--color-rule);
 }
 
-main > section:not(.session, .table-wrap) > h2 {
+main > section:not(.session) > h2 {
   margin-block: 0 var(--space-3);
 }
 
-.page-header + section:not(.session, .table-wrap),
-.toc + section:not(.session, .table-wrap) {
+.page-header + section:not(.session),
+.toc + section:not(.session) {
   border-block-start: 0;
 }
 
 @media (width >= 60rem) {
-  main > section:not(.session, .table-wrap) {
+  main > section:not(.session) {
     display: grid;
     grid-template-columns: var(--rail) minmax(0, 1fr);
     column-gap: var(--rail-gap);
   }
 
-  main > section:not(.session, .table-wrap) > * {
+  main > section:not(.session) > * {
     grid-column: 2;
   }
 
-  main > section:not(.session, .table-wrap) > h2 {
+  main > section:not(.session) > h2 {
     grid-row: 1 / span 40;
     grid-column: 1;
     align-self: start;
@@ -120,9 +120,9 @@ main > section:not(.session, .table-wrap) > h2 {
 /* Two directions of one idea, said in type. */
 .exchange {
   max-inline-size: none;
-  margin-block: var(--space-5);
+  margin-block: 0 var(--space-3);
   font-family: var(--font-serif);
-  font-size: var(--text-exchange);
+  font-size: var(--text-h3);
   font-weight: 500;
   letter-spacing: -0.015em;
   line-height: 1.2;
@@ -148,6 +148,7 @@ main > section:not(.session, .table-wrap) > h2 {
 
 .facts > div {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 0 var(--space-4);
   padding-block: var(--space-2);
   border-block-end: 1px solid var(--color-rule);
@@ -181,10 +182,15 @@ main > section:not(.session, .table-wrap) > h2 {
 .facts dd {
   margin: 0;
   font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
 }
 
-.facts dd > p {
-  max-inline-size: var(--measure);
+/* A date and its status: when they wrap, the status starts on the date's column. */
+.deadline-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  align-items: baseline;
 }
 
 /* A value nobody has supplied yet, shown as an empty cell. */
@@ -211,10 +217,6 @@ main > section:not(.session, .table-wrap) > h2 {
 .facts .flag,
 .table .flag {
   margin-inline-start: calc(-1 * var(--space-2));
-}
-
-.table .status-group {
-  margin-inline-start: 0;
 }
 
 .status {
@@ -245,7 +247,26 @@ main > section:not(.session, .table-wrap) > h2 {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 0 var(--space-2);
-  margin-inline-start: var(--space-2);
+}
+
+/* On a phone, status moves under the date so the date keeps the width it needs. */
+.status-inline {
+  display: none;
+}
+
+@media (width < 40rem) {
+  .status-column {
+    display: none;
+  }
+
+  .status-inline {
+    display: block;
+  }
+
+  /* One solid cell, not two fragments, when the date needs two lines. */
+  .table .flag {
+    display: inline-block;
+  }
 }
 
 .record__note {
@@ -254,16 +275,30 @@ main > section:not(.session, .table-wrap) > h2 {
   font-size: var(--text-sm);
 }
 
-/* A heading links to its own section, and looks like a link only when pointed at. */
-.section-heading__link {
-  color: inherit;
+/* A section's own link sits in the margin before its heading, shown when pointed at or focused.
+   Phones have no margin to spare and no pointer to reveal it, so they do without. */
+.section-anchor {
+  position: absolute;
+  display: none;
+  margin-inline-start: -0.8em;
+  color: var(--color-text-muted);
+  font-family: var(--font-serif);
+  font-size: var(--text-h2);
+  line-height: 1.15;
+  opacity: 0;
   text-decoration: none;
 }
 
-.section-heading__link:hover {
-  color: inherit;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
+.section-anchor:hover,
+.section-anchor:focus-visible,
+.section-anchor:has(+ :hover) {
+  opacity: 1;
+}
+
+@media (width >= 48rem) {
+  .section-anchor {
+    display: block;
+  }
 }
 
 /* "On this page", for long documents. */
@@ -325,10 +360,6 @@ main > section:not(.session, .table-wrap) > h2 {
 .entry {
   padding-block: var(--space-3);
   border-block-end: 1px solid var(--color-rule);
-}
-
-.entry > p {
-  max-inline-size: var(--measure);
 }
 
 .entry h2,
@@ -655,9 +686,12 @@ main > section > .page-limits > div:first-child {
   padding-block-start: var(--space-2);
 }
 
-/* An extended deadline reads "Now" before its date, so its fill cannot hang left. */
-.table td:has(.date-change) .flag {
-  margin-inline-start: var(--space-1);
+/* An extended deadline reads "Now" before its date, so its fill cannot hang left. On a phone the
+   date takes its own line, so it can. */
+@media (width >= 40rem) {
+  .table td:has(.date-change) .flag {
+    margin-inline-start: var(--space-1);
+  }
 }
 
 main > section > .toolbar:first-of-type {

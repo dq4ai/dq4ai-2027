@@ -1,21 +1,21 @@
 ---
 import { getSite } from "../lib/content";
 import { url } from "../lib/paths";
+import { wordmarkParts } from "../lib/view";
 
 const site = await getSite();
-// The digit in the acronym is the flagged cell. An acronym without one is shown plain.
-const [, before, digit, after] = /^(\D*)(\d)(.*)$/.exec(site.acronym) ?? [];
+const parts = wordmarkParts(site.acronym);
 ---
 
 <a class="brand" href={url("/")}>
-  {digit ? (
+  {parts ? (
     <span>
-      {before}
-      <span class="brand__flag">{digit}</span>
-      {after}
+      {parts.before}
+      <span class="brand__flag">{parts.digit}</span>
+      {parts.after}
     </span>
   ) : (
     <span>{site.acronym}</span>
-  )}
+  )}{" "}
   <span class="brand__year">{site.year}</span>
 </a>

@@ -20,10 +20,10 @@ const [site, cfp, committees, keynotes, news, sponsors] = await Promise.all([
   getSponsors(),
 ]);
 // The first scope paragraph says why quality matters; the last states the two-way relationship
-// that the two topic titles say in type, and opens by referring back to the first.
+// and opens by referring back to the first, so they stay together.
 const why = cfp.scope.at(0);
 const relationship = cfp.scope.at(-1);
-const [dataForAi, aiForData] = cfp.topics;
+const [dataForAi, aiForData] = cfp.exchange;
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
@@ -65,13 +65,10 @@ const jsonLd = serializeJsonLd(
 
   <section class="purpose">
     <Heading id="about">Why data quality for AI</Heading>
+    <p class="exchange">
+      <span>{dataForAi}</span> <span>{aiForData}</span>
+    </p>
     <p>{why}</p>
-    {dataForAi && aiForData && (
-      <p class="exchange">
-        <span>{dataForAi.title}</span>
-        <span>{aiForData.title}</span>
-      </p>
-    )}
     <p>{relationship}</p>
     <p>{cfp.goal}</p>
   </section>
@@ -90,42 +87,48 @@ const jsonLd = serializeJsonLd(
     </p>
   </section>
 
-  <section>
-    <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
-    {keynotes.map((keynote) => (
-      <div class="entry">
-        <h3>{keynote.person.name}</h3>
-        <p class="entry__meta">
-          <Value of={keynote.person.affiliation} />
-        </p>
-        <p>
-          <a href={url(`/keynotes/#${keynote.id}`)}>
-            {keynote.title === TBA ? "Keynote details" : keynote.title}
-          </a>
-        </p>
-      </div>
-    ))}
-  </section>
+  {keynotes.length > 0 && (
+    <section>
+      <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
+      {keynotes.map((keynote) => (
+        <div class="entry">
+          <h3>
+            <Value of={keynote.person.name} />
+          </h3>
+          <p class="entry__meta">
+            <Value of={keynote.person.affiliation} />
+          </p>
+          <p>
+            <a href={url(`/keynotes/#${keynote.id}`)}>
+              {keynote.title === TBA ? "Keynote details" : keynote.title}
+            </a>
+          </p>
+        </div>
+      ))}
+    </section>
+  )}
 
   <section>
     <Heading id="related-venues">How DQ4AI relates to other venues</Heading>
     <p>{cfp.relatedVenues.distinction}</p>
   </section>
 
-  <section>
-    <Heading id="latest-news">Latest news</Heading>
-    {news.slice(0, 3).map((item) => (
-      <div class="entry">
-        <p class="entry__meta">
-          <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
-        </p>
-        <h3>
-          <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
-        </h3>
-        <p>{item.data.summary}</p>
-      </div>
-    ))}
-  </section>
+  {news.length > 0 && (
+    <section>
+      <Heading id="latest-news">Latest news</Heading>
+      {news.slice(0, 3).map((item) => (
+        <div class="entry">
+          <p class="entry__meta">
+            <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
+          </p>
+          <h3>
+            <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
+          </h3>
+          <p>{item.data.summary}</p>
+        </div>
+      ))}
+    </section>
+  )}
 
   {sponsors.length > 0 && (
     <section>

@@ -14,7 +14,7 @@ const anyDated = deadlines.some((deadline) => deadline.due);
   deadlines.map((deadline) => (
     <div>
       <dt>{deadline.label}</dt>
-      <dd>
+      <dd class={deadline.due ? "deadline-cell" : undefined}>
         {deadline.due ? (
           <>
             <time
@@ -23,7 +23,7 @@ const anyDated = deadlines.some((deadline) => deadline.due);
             >
               {formatAoE(deadline.due)}
             </time>
-            {(deadline.id === next?.id || deadline.status !== "upcoming") && (
+            {(deadline.id === next?.id || deadline.status !== "upcoming" || deadline.previous) && (
               <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
             )}
           </>

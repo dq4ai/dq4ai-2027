@@ -139,7 +139,7 @@
   font-weight: 600;
 }
 
-@media (width < 76rem) {
+@media (width < 65rem) {
   .js .nav-toggle {
     display: inline-flex;
   }
@@ -158,7 +158,7 @@
   }
 }
 
-@media (width >= 76rem) {
+@media (width >= 65rem) {
   .brand {
     margin-inline-end: 0;
   }
@@ -262,6 +262,9 @@
 }
 
 .site-footer a {
-  display: inline-block;
   min-block-size: 1.5rem;
+}
+
+.site-footer a:not(.brand) {
+  display: inline-block;
 }

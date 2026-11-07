@@ -9,6 +9,14 @@ on every page, the circles diagram, the pills and the topic numbers. New wordmar
 images. Fixed screen readers hearing each heading twice, and scrolling tables that the keyboard could
 not reach.
 
+Fixed after review of the redesign: an extended deadline now says so even when it is not the next
+one, the navigation stays visible on small laptops, long links no longer make phone pages scroll
+sideways, and a keynote speaker not yet known no longer appears as a raw "TBA". Unknown values now
+read "To be announced" everywhere, or "Not recorded" for a past edition. Section titles can be
+selected again, with their link beside them rather than around them. The footer offers the calendar
+only once deadlines have dates, empty home page sections are left out, the dates table fits phones,
+printed pages use document sizes, and the home page's statement is its own field in `cfp.yaml`.
+
 Redesigned around the workshop's purpose: the home page now leads with the two-way relationship
 between data quality and AI, with a diagram, the communities involved and full topic descriptions,
 under a new color identity.

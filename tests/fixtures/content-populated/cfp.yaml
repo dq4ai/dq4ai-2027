@@ -26,18 +26,21 @@ communities:
   - Data management
   - Data quality
   - AI
+exchange:
+  - Data quality for AI
+  - AI for data quality
 topicsIntro: >-
   The workshop welcomes contributions addressing all aspects of data quality for AI, including but
   not limited to:
 topics:
-  - title: Data quality for AI
-    description: >-
-      Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and
-      AI agents, including bias, reliability and robustness.
   - title: AI for data quality
     description: >-
       LLMs and other AI techniques for data profiling, cleaning, error detection, data repair,
       quality assessment, and monitoring.
+  - title: Data quality for AI
+    description: >-
+      Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and
+      AI agents, including bias, reliability and robustness.
   - title: Knowledge graphs
     description: >-
       Quality in KG construction, enrichment, and maintenance, including schema validation,

@@ -159,6 +159,7 @@ export const cfpSchema = z.strictObject({
   scope: z.array(text).min(1),
   goal: text,
   communities: z.array(text).min(1),
+  exchange: z.tuple([text, text]),
   topicsIntro: text,
   topics: z.array(z.strictObject({ title: text, description: text })).min(1),
   paperTypes: z

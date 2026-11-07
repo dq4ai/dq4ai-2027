@@ -49,7 +49,11 @@ const [site, cfp, deadlines, keynotes] = await Promise.all([
           {keynotes.map((keynote, index) => (
             <>
               {index > 0 && "; "}
-              <a href={url(`/keynotes/#${keynote.id}`)}>{keynote.person.name}</a>
+              {isKnown(keynote.person.name) ? (
+                <a href={url(`/keynotes/#${keynote.id}`)}>{keynote.person.name}</a>
+              ) : (
+                <Value of={TBA} />
+              )}
               {isKnown(keynote.person.affiliation) && `, ${keynote.person.affiliation}`}
             </>
           ))}

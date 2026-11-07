@@ -36,13 +36,13 @@ const editions = await getEditions();
                 {edition.current && <span class="note"> (this edition)</span>}
               </th>
               <td class="tabular">
-                <Value of={edition.year} />
+                <Value of={edition.year} unknown="Not recorded" />
               </td>
               <td>
-                <Value of={edition.host} />
+                <Value of={edition.host} unknown="Not recorded" />
               </td>
               <td>
-                <Value of={edition.city} />
+                <Value of={edition.city} unknown="Not recorded" />
               </td>
             </tr>
           ))}

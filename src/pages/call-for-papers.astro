@@ -8,7 +8,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getDeadlines, getSite } from "../lib/content";
 import { formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { hostDatesSentence, workshopTitle } from "../lib/view";
+import { hostDatesSentence, pageLimitsUnknown, workshopTitle } from "../lib/view";
 
 const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadlines()]);
 const sections = [
@@ -20,7 +20,7 @@ const sections = [
   ["policies", "Policies"],
   ["related-venues", "Related venues"],
 ];
-const pageLimitsUnknown = cfp.paperTypes.every((type) => type.pageLimit === TBA);
+const limitsUnknown = pageLimitsUnknown(cfp);
 ---
 
 <BaseLayout slug="call-for-papers">
@@ -85,14 +85,14 @@ const pageLimitsUnknown = cfp.paperTypes.every((type) => type.pageLimit === TBA)
       <div class="entry">
         <h3>{type.title}</h3>
         <p>{type.description}</p>
-        {!pageLimitsUnknown && (
+        {!limitsUnknown && (
           <p class="entry__fact">
             <strong>Page limit:</strong> <Value of={type.pageLimit} />
           </p>
         )}
       </div>
     ))}
-    {pageLimitsUnknown && (
+    {limitsUnknown && (
       <dl class="facts page-limits">
         <div>
           <dt>Page limits</dt>

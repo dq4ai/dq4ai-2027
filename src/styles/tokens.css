@@ -54,7 +54,6 @@
   --text-h2: clamp(1.375rem, 1.3rem + 0.35vw, 1.625rem);
   --text-h1: clamp(2.25rem, 1.9rem + 1.6vw, 3.25rem);
   --text-hero: clamp(2.75rem, 1.6rem + 4.6vw, 5rem);
-  --text-exchange: clamp(1.75rem, 1.5rem + 1.2vw, 2.5rem);
 
   /* 8-point spacing scale. */
   --space-1: 0.25rem;
@@ -64,7 +63,6 @@
   --space-5: 2rem;
   --space-6: 3rem;
   --space-7: 4rem;
-  --space-8: 6rem;
 
   --measure: 58ch;
   --page-width: 66rem;

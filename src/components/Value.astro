@@ -3,8 +3,10 @@ import { TBA } from "../lib/dates";
 
 interface Props {
   of: string | number;
+  /** What an unknown value reads as. Past facts are not "to be announced". */
+  unknown?: string;
 }
-const { of: value } = Astro.props;
+const { of: value, unknown = "To be announced" } = Astro.props;
 ---
 
-{value === TBA ? <span class="tba">Not yet set</span> : value}
+{value === TBA ? <span class="tba">{unknown}</span> : value}

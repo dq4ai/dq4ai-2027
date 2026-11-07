@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import satori from "satori";
 import sharp from "sharp";
+import { wordmarkParts } from "./view";
 
 const fontPath = (name: string) => resolve("src/assets/fonts", name);
 
@@ -23,7 +24,8 @@ export interface OgInput {
   pageTitle: string;
   workshopName: string;
   detail: string;
-  mark: string;
+  acronym: string;
+  year: number;
 }
 
 const PAPER = "#FCFDFD";
@@ -37,14 +39,14 @@ const element = (style: Record<string, unknown>, children: unknown) => ({
 });
 
 /** The wordmark: the acronym's digit is the flagged cell, as on the site. */
-const markElement = (mark: string) => {
-  const [, before, digit, after] = /^(\D*)(\d)(.*)$/.exec(mark) ?? [];
+const markElement = (acronym: string, year: number) => {
+  const parts = wordmarkParts(acronym);
   const style = { fontSize: 38, color: INK };
-  if (!digit) return element(style, mark);
+  if (!parts) return element(style, `${acronym} ${year}`);
   return element({ ...style, whiteSpace: "pre" }, [
-    element({}, before),
-    element({ backgroundColor: FLAG, paddingLeft: 8, paddingRight: 8 }, digit),
-    element({}, after),
+    element({}, parts.before),
+    element({ backgroundColor: FLAG, paddingLeft: 8, paddingRight: 8 }, parts.digit),
+    element({}, `${parts.after} ${year}`),
   ]);
 };
 
@@ -52,7 +54,8 @@ export async function renderOgImage({
   pageTitle,
   workshopName,
   detail,
-  mark,
+  acronym,
+  year,
 }: OgInput): Promise<Buffer> {
   fonts ??= loadFonts();
   const node = element(
@@ -68,7 +71,7 @@ export async function renderOgImage({
       fontFamily: "IBM Plex Sans",
     },
     [
-      markElement(mark),
+      markElement(acronym, year),
       element({ flexDirection: "column" }, [
         element(
           { fontFamily: "Source Serif 4", fontSize: 88, lineHeight: 1.05, marginBottom: 28 },

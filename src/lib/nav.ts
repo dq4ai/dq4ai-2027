@@ -29,7 +29,7 @@ export const ROUTES: Route[] = [
     path: "/dates/",
     slug: "dates",
     title: "Dates",
-    description: "Important dates, in Anywhere on Earth, with a calendar download.",
+    description: "Important dates, in Anywhere on Earth.",
     primary: true,
   },
   {

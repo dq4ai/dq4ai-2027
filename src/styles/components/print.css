@@ -12,6 +12,7 @@
     --text-h3: 11pt;
     --text-h2: 13pt;
     --text-h1: 20pt;
+    --text-hero: 20pt;
   }
 
   .site-header,
@@ -19,6 +20,8 @@
   .deadline-strip,
   .skip-link,
   .toolbar,
+  .hero__actions,
+  .section-anchor,
   .no-print {
     display: none !important;
   }
@@ -35,7 +38,7 @@
   }
 
   .page-header,
-  main > section:not(.session, .table-wrap),
+  main > section:not(.session),
   .hero__body,
   .session,
   .keynote,
@@ -55,6 +58,7 @@
 
   .flag {
     background: none;
+    margin-inline-start: 0 !important;
     padding: 0;
   }
 

@@ -17,11 +17,13 @@ const keynotes = await getKeynotes();
           <ContentImage
             file={keynote.photo.file}
             alt={keynote.photo.alt}
-            widths={[192, 384]}
+            widths={[192, 224, 384, 448]}
             sizes="(min-width: 60rem) 12rem, 14rem"
           />
         )}
-        <h2 id={keynote.id}>{keynote.person.name}</h2>
+        <h2 id={keynote.id}>
+          <Value of={keynote.person.name} />
+        </h2>
         <p class="entry__meta">
           <Value of={keynote.person.affiliation} />
         </p>

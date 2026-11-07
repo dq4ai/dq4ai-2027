@@ -11,7 +11,7 @@ import { url } from "../lib/paths";
 import { nextDeadline } from "../lib/view";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
-// Status adds nothing until a deadline has a date: the date cell already says "Not yet set".
+// Status adds nothing until a deadline has a date: the date cell already says it is unknown.
 const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
 const next = nextDeadline(deadlines);
 ---
@@ -42,7 +42,11 @@ const next = nextDeadline(deadlines);
           <tr>
             <th scope="col">Milestone</th>
             <th scope="col">Date</th>
-            {showStatus && <th scope="col">Status</th>}
+            {showStatus && (
+              <th scope="col" class="status-column">
+                Status
+              </th>
+            )}
           </tr>
         </thead>
         <tbody>
@@ -75,9 +79,17 @@ const next = nextDeadline(deadlines);
                 ) : (
                   <Value of={TBA} />
                 )}
+                {deadline.status !== "tba" && (
+                  <span class="status-inline">
+                    <StatusBadge
+                      status={deadline.status}
+                      extended={deadline.previous !== undefined}
+                    />
+                  </span>
+                )}
               </td>
               {showStatus && (
-                <td>
+                <td class="status-column">
                   {deadline.status !== "tba" && (
                     <StatusBadge
                       status={deadline.status}
@@ -97,12 +109,12 @@ const next = nextDeadline(deadlines);
                 <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
               )}
             </td>
-            {showStatus && <td></td>}
+            {showStatus && <td class="status-column"></td>}
           </tr>
           <tr>
             <th scope="row">{site.host.name}</th>
             <td class="tabular">{formatDayRange(site.host.startDate, site.host.endDate)}</td>
-            {showStatus && <td></td>}
+            {showStatus && <td class="status-column"></td>}
           </tr>
         </tbody>
       </table>

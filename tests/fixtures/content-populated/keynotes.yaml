@@ -4,3 +4,8 @@
   abstract: Test data for the keynote abstract.
   bio: Test data for the speaker biography.
   photo: { file: example-portrait.png, alt: Grey placeholder used in test builds }
+- id: speaker-pending
+  speaker: speaker-pending
+  title: TBA
+  abstract: TBA
+  bio: TBA
