@@ -2,7 +2,11 @@ This repository is dual-licensed.
 
 Website code: MIT License (below).
 Site content in src/content/: Creative Commons Attribution 4.0 International
-(https://creativecommons.org/licenses/by/4.0/).
+(https://creativecommons.org/licenses/by/4.0/), except as follows.
+src/content/images/lille-beffroi-vieille-bourse.jpg: by Caugris, resized,
+Creative Commons Attribution-ShareAlike 4.0 International
+(https://creativecommons.org/licenses/by-sa/4.0/). Source:
+https://commons.wikimedia.org/wiki/File:Le_beffroi_de_la_Chambre_de_Commerce_de_Lille_avec_la_Vieille_Bourse.jpg
 Fonts in src/assets/fonts/: SIL Open Font License 1.1, see the license files there.
 
 MIT License

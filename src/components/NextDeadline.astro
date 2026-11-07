@@ -13,7 +13,7 @@ const remaining = next ? timeUntil(next.due, now) : null;
   <aside class="deadline-strip" aria-label="Next deadline">
     <a href={url("/dates/")}>
       <span>
-        <strong>Next deadline:</strong> {next.label}, {formatAoE(next.due)}
+        <strong data-deadline-prefix>Next deadline:</strong> {next.label}, {formatAoE(next.due)}
       </span>
       <span class="deadline-strip__countdown" data-countdown={next.due.toISOString()}>
         {remaining && formatCountdown(remaining)}
@@ -31,6 +31,10 @@ const remaining = next ? timeUntil(next.due, now) : null;
     const update = () => {
       const left = timeUntil(new Date(target), new Date());
       countdown.textContent = left ? formatCountdown(left) : "Deadline passed";
+      if (!left) {
+        const prefix = document.querySelector("[data-deadline-prefix]");
+        if (prefix) prefix.textContent = "Deadline:";
+      }
     };
     update();
     setInterval(update, 60_000);

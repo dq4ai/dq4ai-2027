@@ -1,197 +1,101 @@
-.eyebrow {
-  margin-block-end: var(--space-3);
-  color: var(--color-accent);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+/* Every page shares one axis: a rail on the left for names and times, the content beside it. */
+.page-header {
+  padding-block: var(--space-6) var(--space-5);
+  border-block-end: 1px solid var(--color-rule-strong);
+}
+
+.page-header + p {
+  padding-block: var(--space-3);
 }
 
 .lede {
-  margin-block-start: var(--space-4);
+  margin-block-start: var(--space-3);
   font-size: var(--text-lg);
   line-height: 1.5;
 }
 
-/* A full-width color band. The border image paints past the page column without adding overflow,
-   and the plain background keeps contrast checkable. Colors are overridden for everything inside. */
-.band {
-  --color-text: #f4f7fb;
-  --color-text-muted: #c9d6e8;
-  --color-rule: #3d5a85;
-  --color-rule-strong: #f4f7fb;
-  --color-accent: #fff;
-  --color-accent-hover: #dbe6f5;
-  --color-on-accent: var(--color-band);
-  --color-signal: #5eead4;
-  --color-status-open: #7fd1a4;
-  --color-status-today: #e8be6a;
-  --color-status-passed: #c9d6e8;
-  --color-focus: #8cc4ff;
-
-  margin-block-start: calc(-1 * var(--space-6));
-  padding-block: var(--space-6);
-  background-color: var(--color-band);
-  border-image: conic-gradient(var(--color-band) 0 0) 0 fill / 0 / 0 100vmax;
-  color: var(--color-text);
+main > section:not(.session) {
+  padding-block: var(--space-5) var(--space-6);
+  border-block-start: 1px solid var(--color-rule);
 }
 
-.page-header {
-  margin-block-end: var(--space-5);
+main > section:not(.session) > h2 {
+  margin-block: 0 var(--space-3);
 }
 
-.hero {
-  display: grid;
-  gap: var(--space-6);
-  align-items: start;
-}
-
-.purpose {
-  display: grid;
-  gap: var(--space-5);
-  align-items: start;
-  margin-block-start: var(--space-6);
+.page-header + section:not(.session),
+.toc + section:not(.session) {
+  border-block-start: 0;
 }
 
 @media (width >= 60rem) {
-  .purpose {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: var(--space-7);
+  main > section:not(.session) {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--rail-gap);
+  }
+
+  main > section:not(.session) > * {
+    grid-column: 2;
+  }
+
+  main > section:not(.session) > h2 {
+    grid-row: 1 / span 40;
+    grid-column: 1;
+    align-self: start;
+    margin: 0;
+  }
+
+  /* Loose content at the top level of a page lines up with the column beside the rail. */
+  main > :is(p, .toolbar, .table-wrap, .toc) {
+    margin-inline-start: calc(var(--rail) + var(--rail-gap));
   }
 }
 
-.loop {
-  margin: 0;
-  padding: var(--space-4);
-  background: var(--color-surface-raised);
-  border-radius: var(--radius);
-}
-
-.loop figcaption {
-  margin-block-start: var(--space-3);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  text-align: center;
-}
-
-.loop__diagram {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: var(--space-2);
-  align-items: center;
-}
-
-.loop__node {
-  display: grid;
-  place-items: center;
-  inline-size: 4.75rem;
-  aspect-ratio: 1;
-  padding: var(--space-1);
-  background: var(--color-band);
-  border-radius: 50%;
-  color: #f4f7fb;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 1.2;
-  text-align: center;
-}
-
-.loop__node--ai {
-  outline: 3px solid var(--color-signal);
-  outline-offset: 2px;
-}
-
-.loop__flows {
-  display: grid;
-  gap: var(--space-3);
-}
-
-.loop__flow {
-  position: relative;
-  display: block;
-  padding-block-end: var(--space-1);
-  border-block-end: 2px solid var(--color-signal);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 1.25;
-  text-align: center;
-}
-
-.loop__flow::after {
-  position: absolute;
-  inset-block-end: -6px;
-  inset-inline-end: -1px;
-  border-block: 5px solid transparent;
-  border-inline-start: 8px solid var(--color-signal);
-  content: "";
-}
-
-.loop__flow--back::after {
-  inset-inline: -1px auto;
-  border-inline: 0 solid transparent;
-  border-inline-end: 8px solid var(--color-signal);
-}
-
-.communities__label {
-  margin-block-start: var(--space-4);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  font-weight: 600;
-}
-
-.communities {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-block-start: var(--space-2);
-  padding: 0;
-  list-style: none;
-}
-
-.communities li {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-rule-strong);
-  border-radius: 999px;
-  font-size: var(--text-sm);
-}
-
-h2.section-heading {
-  padding-inline-start: var(--space-3);
-  border-inline-start: 4px solid var(--color-signal);
+/* The opening of the home page: the title, then what is known. */
+.hero {
+  padding-block: var(--space-6) var(--space-6);
 }
 
 .hero h1 {
+  max-inline-size: 13em;
   font-size: var(--text-hero);
-  line-height: 1.02;
-  letter-spacing: -0.025em;
+  line-height: 1.03;
+  letter-spacing: -0.028em;
 }
 
-.hero__edition {
-  margin-block-start: var(--space-3);
-  font-family: var(--font-serif);
-  font-size: var(--text-h3);
-  line-height: 1.25;
+.hero__body {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+  margin-block-start: var(--space-5);
+}
+
+.hero__body .lede {
+  margin-block-start: 0;
+}
+
+@media (width >= 60rem) {
+  .hero__body {
+    /* The record starts where values start in the rows below it. */
+    grid-template-columns: calc(var(--rail) + var(--rail-gap) + var(--label)) minmax(0, 1fr);
+    gap: var(--space-4);
+    margin-block-start: var(--space-6);
+  }
 }
 
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3);
-  margin-block-start: var(--space-5);
-}
-
-@media (width >= 60rem) {
-  .hero {
-    grid-template-columns: minmax(0, 7fr) minmax(19rem, 4fr);
-    gap: var(--space-7);
-  }
+  gap: var(--space-2) var(--space-3);
+  margin-block-start: var(--space-4);
 }
 
 .button {
   display: inline-flex;
   align-items: center;
-  min-block-size: 3rem;
-  padding: var(--space-2) var(--space-4);
+  min-block-size: 2.75rem;
+  padding: var(--space-2) var(--space-3);
   border: 1px solid var(--color-accent);
   border-radius: var(--radius);
   font-weight: 600;
@@ -202,43 +106,117 @@ h2.section-heading {
 }
 
 .button--primary {
-  background: var(--color-accent);
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: var(--color-on-accent);
 }
 
 .button--primary:hover {
-  background: var(--color-accent-hover);
-  border-color: var(--color-accent-hover);
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
   color: var(--color-on-accent);
 }
 
-.ledger {
-  padding-block-start: var(--space-3);
-  border-block-start: 3px solid var(--color-rule-strong);
-}
-
-.ledger h2 {
-  margin-block: 0 var(--space-2);
+/* Two directions of one idea, said in type. */
+.exchange {
+  max-inline-size: none;
+  margin-block: 0 var(--space-3);
+  font-family: var(--font-serif);
   font-size: var(--text-h3);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
 }
 
-.ledger__row {
-  padding-block: var(--space-3);
+.exchange span {
+  display: block;
+}
+
+.exchange + p {
+  margin-block-start: 0;
+}
+
+/* Rows of label and value: the site's main form. */
+.facts {
+  max-inline-size: none;
+  border-block-start: 1px solid var(--color-rule);
+}
+
+.record {
+  border-block-start: 1px solid var(--color-rule-strong);
+}
+
+.facts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 var(--space-4);
+  padding-block: var(--space-2);
   border-block-end: 1px solid var(--color-rule);
 }
 
-.ledger__row dt {
+@media (width >= 40rem) {
+  .facts > div {
+    grid-template-columns: var(--label) minmax(0, 1fr);
+  }
+
+  .record > div {
+    grid-template-columns: 10rem minmax(0, 1fr);
+  }
+}
+
+@media (width < 40rem) {
+  .record > div {
+    grid-template-columns: 7.5rem minmax(0, 1fr);
+  }
+
+  .hero__actions .button {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+.facts dt {
+  color: var(--color-text-muted);
+}
+
+.facts dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+/* A date and its status: when they wrap, the status starts on the date's column. */
+.deadline-cell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  align-items: baseline;
+}
+
+/* A value nobody has supplied yet, shown as an empty cell. */
+.tba {
+  display: inline-block;
+  padding-inline: var(--space-2);
+  border: 1px dashed var(--color-text-muted);
+  border-radius: var(--radius);
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-style: normal;
+  line-height: 1.5;
+}
+
+/* The next deadline: the only flagged cell on a page. */
+.flag {
+  padding-inline: var(--space-2);
+  background: var(--color-flag);
+  color: var(--color-on-flag);
   font-weight: 600;
 }
 
-.ledger__row dd {
-  margin: 0;
-  font-variant-numeric: tabular-nums;
-}
-
-.ledger__link {
-  margin-block-start: var(--space-3);
-  font-size: var(--text-sm);
+/* The fill hangs outside the text, so the date stays on its column. */
+.facts .flag,
+.table .flag {
+  margin-inline-start: calc(-1 * var(--space-2));
 }
 
 .status {
@@ -249,7 +227,7 @@ h2.section-heading {
 }
 
 .status--upcoming {
-  color: var(--color-status-open);
+  color: var(--color-text);
 }
 
 .status--today {
@@ -271,77 +249,99 @@ h2.section-heading {
   gap: 0 var(--space-2);
 }
 
-.tba {
-  color: var(--color-text-muted);
-  font-style: normal;
+/* On a phone, status moves under the date so the date keeps the width it needs. */
+.status-inline {
+  display: none;
 }
 
-.section-heading .anchor {
-  margin-inline-start: 0.35em;
+@media (width < 40rem) {
+  .status-column {
+    display: none;
+  }
+
+  .status-inline {
+    display: block;
+  }
+
+  /* One solid cell, not two fragments, when the date needs two lines. */
+  .table .flag {
+    display: inline-block;
+  }
+}
+
+.record__note {
+  margin-block-start: var(--space-2);
   color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  font-size: 0.7em;
-  text-decoration: none;
+  font-size: var(--text-sm);
+}
+
+/* A section's own link sits in the margin before its heading, shown when pointed at or focused.
+   Phones have no margin to spare and no pointer to reveal it, so they do without. */
+.section-anchor {
+  position: absolute;
+  display: none;
+  margin-inline-start: -0.8em;
+  color: var(--color-text-muted);
+  font-family: var(--font-serif);
+  font-size: var(--text-h2);
+  line-height: 1.15;
   opacity: 0;
-  transition: opacity 120ms ease;
+  text-decoration: none;
 }
 
-.section-heading:hover .anchor,
-.section-heading .anchor:focus-visible {
+.section-anchor:hover,
+.section-anchor:focus-visible,
+.section-anchor:has(+ :hover) {
   opacity: 1;
 }
 
-@media (hover: none) {
-  .section-heading .anchor {
-    opacity: 1;
+@media (width >= 48rem) {
+  .section-anchor {
+    display: block;
   }
+}
+
+/* "On this page", for long documents. */
+.toc {
+  padding-block: var(--space-3);
+  border-block-end: 1px solid var(--color-rule);
+  font-size: var(--text-sm);
+}
+
+.toc ul {
+  display: flex;
+  padding: 0;
+  list-style: none;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+  max-inline-size: none;
+}
+
+.toc a {
+  display: inline-block;
+  min-block-size: 1.5rem;
 }
 
 .topics {
-  display: grid;
-  gap: 0 var(--space-6);
   max-inline-size: none;
-  counter-reset: topic;
-}
-
-@media (width >= 60rem) {
-  .topics:not(.topics--single) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  border-block-end: 1px solid var(--color-rule);
 }
 
 .topics li {
-  position: relative;
+  display: grid;
+  gap: 0 var(--space-4);
   padding-block: var(--space-3);
-  padding-inline-start: var(--space-6);
   border-block-start: 1px solid var(--color-rule);
-  counter-increment: topic;
 }
 
-.topics li::before {
-  position: absolute;
-  inset-inline-start: 0;
-  color: var(--color-accent);
-  font-family: var(--font-serif);
-  font-size: var(--text-lg);
-  font-variant-numeric: tabular-nums;
-  content: counter(topic, decimal-leading-zero);
+@media (width >= 40rem) {
+  .topics li {
+    grid-template-columns: var(--label) minmax(0, 1fr);
+  }
 }
 
 .topics strong {
-  display: block;
   font-weight: 600;
-}
-
-.home-grid {
-  display: grid;
-  gap: 0 var(--space-7);
-}
-
-@media (width >= 60rem) {
-  .home-grid {
-    grid-template-columns: minmax(0, 7fr) minmax(19rem, 4fr);
-  }
 }
 
 .visually-hidden {
@@ -353,24 +353,16 @@ h2.section-heading {
   white-space: nowrap;
 }
 
-.home-aside h2 {
-  font-size: var(--text-h3);
-}
-
-.home-aside .entry h3 {
-  font-size: var(--text-lg);
-}
-
-.entry__fact {
-  margin-block-start: var(--space-2);
+.more-link {
+  margin-block-start: var(--space-3);
 }
 
 .entry {
-  max-inline-size: var(--measure);
   padding-block: var(--space-3);
   border-block-end: 1px solid var(--color-rule);
 }
 
+.entry h2,
 .entry h3 {
   margin-block: 0 var(--space-1);
 }
@@ -381,9 +373,31 @@ h2.section-heading {
   font-variant-numeric: tabular-nums;
 }
 
+.entry__fact {
+  margin-block-start: var(--space-2);
+}
+
+/* News items at page level put their date in the rail. */
+@media (width >= 60rem) {
+  main > .entry {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--rail-gap);
+  }
+
+  main > .entry > * {
+    grid-column: 2;
+  }
+
+  main > .entry > .entry__meta {
+    grid-row: 1 / span 10;
+    grid-column: 1;
+  }
+}
+
 .people {
   display: grid;
-  gap: 0 var(--space-6);
+  gap: 0 var(--space-5);
   max-inline-size: none;
 }
 
@@ -419,26 +433,22 @@ h2.section-heading {
 
 .table {
   inline-size: 100%;
-  max-inline-size: 60rem;
   border-collapse: collapse;
 }
 
 .table th,
 .table td {
-  padding: var(--space-3) var(--space-3) var(--space-3) 0;
+  padding: var(--space-2) var(--space-3) var(--space-2) 0;
   border-block-end: 1px solid var(--color-rule);
+  font-weight: 400;
   text-align: start;
   vertical-align: top;
 }
 
 .table thead th {
-  border-block-end: 2px solid var(--color-rule-strong);
+  border-block-end: 1px solid var(--color-rule);
+  color: var(--color-text-muted);
   font-size: var(--text-sm);
-  font-weight: 600;
-}
-
-.table tbody th {
-  font-weight: 600;
 }
 
 .date-change {
@@ -447,46 +457,27 @@ h2.section-heading {
   font-size: var(--text-sm);
 }
 
-.facts {
-  max-inline-size: 48rem;
-}
-
-.facts div {
-  display: grid;
-  gap: 0 var(--space-4);
-  padding-block: var(--space-2);
-  border-block-end: 1px solid var(--color-rule);
-}
-
-@media (width >= 40rem) {
-  .facts div {
-    grid-template-columns: 12rem 1fr;
-  }
-}
-
-.facts dt {
-  font-weight: 600;
-}
-
-.facts dd {
-  margin: 0;
-}
-
 .toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
   align-items: center;
-  margin-block: var(--space-4);
+  margin-block: var(--space-4) var(--space-3);
 }
 
 .tz-toggle {
-  min-block-size: 3rem;
+  min-block-size: 2.75rem;
   padding-inline: var(--space-3);
 }
 
 .tz-toggle[hidden] {
   display: none;
+}
+
+.tz-toggle[aria-pressed="true"] {
+  border-color: var(--color-rule-strong);
+  background: var(--color-surface-raised);
+  font-weight: 600;
 }
 
 [data-zone-note] {
@@ -498,15 +489,20 @@ h2.section-heading {
   font-size: var(--text-sm);
 }
 
+main > .note,
+main > .lede {
+  margin-block-start: var(--space-3);
+}
+
 .steps {
-  max-inline-size: var(--measure);
+  max-inline-size: none;
   counter-reset: step;
 }
 
 .steps li {
   position: relative;
   padding-block: var(--space-3);
-  padding-inline-start: var(--space-6);
+  padding-inline-start: var(--space-5);
   border-block-start: 1px solid var(--color-rule);
   counter-increment: step;
 }
@@ -514,10 +510,9 @@ h2.section-heading {
 .steps li::before {
   position: absolute;
   inset-inline-start: 0;
-  color: var(--color-accent);
-  font-family: var(--font-serif);
-  font-size: var(--text-lg);
+  color: var(--color-text-muted);
   font-variant-numeric: tabular-nums;
+  font-weight: 600;
   content: counter(step);
 }
 
@@ -541,14 +536,34 @@ details p {
   margin-block-start: var(--space-2);
 }
 
+/* A program reads down its times. */
 .session {
+  display: grid;
+  gap: var(--space-1) var(--rail-gap);
   padding-block: var(--space-4);
-  border-block-start: 1px solid var(--color-rule-strong);
+  border-block-start: 1px solid var(--color-rule);
+}
+
+.session__time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
 .session h2 {
   margin-block: 0 var(--space-1);
-  font-size: var(--text-h3);
+}
+
+.session--brief {
+  padding-block: var(--space-2);
+}
+
+.session--brief h2 {
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
 .session__meta {
@@ -557,28 +572,33 @@ details p {
   font-variant-numeric: tabular-nums;
 }
 
+@media (width >= 60rem) {
+  .session {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+  }
+}
+
 .talk {
-  padding-block: var(--space-3);
-  padding-inline-start: var(--space-3);
-  border-inline-start: 2px solid var(--color-rule);
-  margin-block-start: var(--space-3);
+  padding-block: var(--space-3) 0;
 }
 
 .talk h3 {
   margin-block: 0 var(--space-1);
-  font-size: var(--text-lg);
 }
 
 .keynote {
   display: grid;
-  gap: var(--space-4);
+  gap: var(--space-4) var(--rail-gap);
   padding-block: var(--space-5);
-  border-block-start: 1px solid var(--color-rule-strong);
 }
 
-@media (width >= 48rem) {
-  .keynote--photo {
-    grid-template-columns: 14rem minmax(0, 1fr);
+.keynote + .keynote {
+  border-block-start: 1px solid var(--color-rule);
+}
+
+@media (width >= 60rem) {
+  .keynote {
+    grid-template-columns: var(--rail) minmax(0, 1fr);
   }
 }
 
@@ -586,14 +606,33 @@ details p {
   margin-block: 0 var(--space-1);
 }
 
-.keynote h3 {
-  margin-block-start: var(--space-4);
-  font-size: var(--text-lg);
-}
-
 .keynote img {
   inline-size: 100%;
+  max-inline-size: 14rem;
+  margin-block-end: var(--space-3);
   border-radius: var(--radius);
+}
+
+.keynote .facts {
+  border-block-start: 0;
+}
+
+.keynote .facts > div:first-child {
+  padding-block-start: 0;
+}
+
+.city-photo {
+  margin: 0;
+  max-inline-size: 32rem;
+}
+
+.city-photo img {
+  inline-size: 100%;
+  block-size: auto;
+}
+
+.city-photo figcaption {
+  margin-block-start: var(--space-2);
 }
 
 .sponsors {
@@ -613,15 +652,62 @@ details p {
   padding-block: var(--space-7);
 }
 
-@media (width < 48rem) {
-  .section-heading .anchor {
-    display: none;
-  }
-}
-
 .entry__meta a,
 .person__links a {
   display: inline-block;
   min-block-size: 1.5rem;
   margin-inline-end: var(--space-2);
+}
+
+/* Inside a section the section's own rule starts the list, so it needs no second one. */
+main > section > :is(.facts, .topics) {
+  border-block-start: 0;
+}
+
+main > section > .topics li:first-child,
+main > section > .steps li:first-child,
+main > section > .people li:first-child {
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+
+@media (width >= 48rem) {
+  main > section > .people li:nth-child(2) {
+    padding-block-start: 0;
+    border-block-start: 0;
+  }
+}
+
+main > section > .facts > div:first-child {
+  padding-block-start: 0;
+}
+
+main > section > .entry:first-of-type {
+  padding-block-start: 0;
+}
+
+main > section > .entry:last-child {
+  padding-block-end: 0;
+  border-block-end: 0;
+}
+
+.toolbar .button,
+.toolbar .tz-toggle {
+  font-size: var(--text-sm);
+}
+
+main > section > .page-limits > div:first-child {
+  padding-block-start: var(--space-2);
+}
+
+/* An extended deadline reads "Now" before its date, so its fill cannot hang left. On a phone the
+   date takes its own line, so it can. */
+@media (width >= 40rem) {
+  .table td:has(.date-change) .flag {
+    margin-inline-start: var(--space-1);
+  }
+}
+
+main > section > .toolbar:first-of-type {
+  margin-block-start: 0;
 }

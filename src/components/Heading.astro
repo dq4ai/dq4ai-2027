@@ -5,13 +5,18 @@ interface Props {
 }
 const { id, level = 2 } = Astro.props;
 const Tag = `h${level}` as const;
-const label = await Astro.slots.render("default");
-const plainLabel = label.replace(/<[^>]*>/g, "").trim();
+const linkId = `${id}-link`;
 ---
 
+<a
+  id={linkId}
+  class="section-anchor"
+  href={`#${id}`}
+  aria-label="Link to section:"
+  aria-labelledby={`${linkId} ${id}`}
+>
+  #
+</a>
 <Tag {id} class="section-heading">
-  <Fragment set:html={label} />
-  <a class="anchor" href={`#${id}`} aria-label={`Link to section: ${plainLabel}`}>
-    #
-  </a>
+  <slot />
 </Tag>

@@ -11,6 +11,7 @@
   label: Author notification
   kind: notification
   date: "2027-02-01T23:59:00-12:00"
+  extendedTo: "2027-02-08T23:59:00-12:00"
 - id: camera-ready
   label: Camera-ready papers
   kind: camera-ready

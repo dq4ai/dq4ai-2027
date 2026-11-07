@@ -1,0 +1,21 @@
+---
+import { getSite } from "../lib/content";
+import { url } from "../lib/paths";
+import { wordmarkParts } from "../lib/view";
+
+const site = await getSite();
+const parts = wordmarkParts(site.acronym);
+---
+
+<a class="brand" href={url("/")}>
+  {parts ? (
+    <span>
+      {parts.before}
+      <span class="brand__flag">{parts.digit}</span>
+      {parts.after}
+    </span>
+  ) : (
+    <span>{site.acronym}</span>
+  )}{" "}
+  <span class="brand__year">{site.year}</span>
+</a>

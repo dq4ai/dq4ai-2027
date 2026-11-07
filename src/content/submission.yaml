@@ -18,4 +18,5 @@ faq:
   - question: What does Anywhere on Earth mean?
     answer: >-
       Anywhere on Earth (AoE) is the time zone UTC−12. A deadline is open as long as that day has
-      not ended anywhere on Earth. The dates page can show each deadline in your own time zone.
+      not ended anywhere on Earth. Once deadlines are set, the dates page can show each one in your
+      own time zone.

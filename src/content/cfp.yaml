@@ -26,6 +26,10 @@ communities:
   - Data management
   - Data quality
   - AI
+# The two directions of the workshop, set as a statement at the top of the home page.
+exchange:
+  - Data quality for AI
+  - AI for data quality
 topicsIntro: >-
   The workshop welcomes contributions addressing all aspects of data quality for AI, including but
   not limited to:

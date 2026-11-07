@@ -18,13 +18,22 @@ host:
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-07"
 contactEmail: chairs@example.org
-submissionSystem: ExampleCRP
-submissionUrl: https://example.org/submit
+submissionSystem: TBA
+submissionUrl: https://example.org/submit?conference=dq4ai2027secondeditionworkshoppaperentryformtoken
 proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/
 paperTemplate: Example template
 reviewModel: double-blind
+hostPhoto:
+  file: example-portrait.png
+  alt: Grey placeholder used in test builds
+  subject: An example view of the host city
+  author: Example Photographer
+  license: Example License
+  licenseUrl: https://example.org/license
+  source: Example Archive
+  sourceUrl: https://example.org/photo
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

@@ -8,7 +8,7 @@ import {
   TBA,
   type DeadlineStatus,
 } from "./dates";
-import type { DateEntry, Person, Site } from "./schemas";
+import type { Cfp, DateEntry, Person, Site } from "./schemas";
 
 export interface DeadlineView {
   id: string;
@@ -59,6 +59,19 @@ export function sortBySurname<T extends Person>(people: T[]): T[] {
   return [...people].sort((a, b) =>
     surnameOf(a).localeCompare(surnameOf(b), "en", { sensitivity: "base" }),
   );
+}
+
+/** The wordmark's parts: the acronym's digit is the flagged cell. No digit, no parts. */
+export function wordmarkParts(
+  acronym: string,
+): { before: string; digit: string; after: string } | undefined {
+  const [, before = "", digit, after = ""] = /^(\D*)(\d)(.*)$/.exec(acronym) ?? [];
+  return digit ? { before, digit, after } : undefined;
+}
+
+/** True until at least one paper type has a page limit. */
+export function pageLimitsUnknown(cfp: Pick<Cfp, "paperTypes">): boolean {
+  return cfp.paperTypes.every((type) => type.pageLimit === TBA);
 }
 
 export function workshopTitle(site: Site): string {

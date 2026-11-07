@@ -1,4 +1,7 @@
 ---
+import ContentImage from "../components/ContentImage.astro";
+import ExternalLink from "../components/ExternalLink.astro";
+import Heading from "../components/Heading.astro";
 import PageHeader from "../components/PageHeader.astro";
 import ProseSections from "../components/ProseSections.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -6,9 +9,28 @@ import { getAttend, getSite } from "../lib/content";
 import { hostDatesSentence } from "../lib/view";
 
 const [site, sections] = await Promise.all([getSite(), getAttend()]);
+const photo = site.hostPhoto;
 ---
 
 <BaseLayout slug="attend">
   <PageHeader title="Attend" lede={hostDatesSentence(site)} />
   <ProseSections {sections} />
+  {photo && (
+    <section>
+      <Heading id="host-city">Host city</Heading>
+      <figure class="city-photo">
+        <ContentImage
+          file={photo.file}
+          alt={photo.alt}
+          widths={[480, 800, 1024]}
+          sizes="(min-width: 40rem) 32rem, 100vw"
+        />
+        <figcaption class="note">
+          {photo.subject}. This shows the host city, not the workshop venue. Photo: {photo.author},{" "}
+          <ExternalLink href={photo.licenseUrl}>{photo.license}</ExternalLink>, via{" "}
+          <ExternalLink href={photo.sourceUrl}>{photo.source}</ExternalLink>, resized.
+        </figcaption>
+      </figure>
+    </section>
+  )}
 </BaseLayout>

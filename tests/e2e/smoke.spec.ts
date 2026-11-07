@@ -107,25 +107,219 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   const purpose = page.locator(".purpose");
   await expect(purpose).toContainText("two-way relationship");
   await expect(purpose).toContainText("bring together researchers and practitioners");
-  const diagram = purpose.locator("figure");
-  await expect(diagram).toContainText("Data quality for AI");
-  await expect(diagram).toContainText("AI for data quality");
-  await expect(purpose.locator(".communities li")).toHaveCount(3);
+  const exchange = purpose.locator(".exchange");
+  await expect(exchange).toContainText("Data quality for AI");
+  await expect(exchange).toContainText("AI for data quality");
   await expect(page.locator("main .topics")).toContainText("Quality across text, images");
 });
 
-test("the color band spans the window without sideways scrolling", async ({ page }) => {
+test("the first screen states what is known as a record", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("");
+  const record = page.locator(".record");
+  await expect(record).toContainText("Lille, France");
+  await expect(record).toContainText("EDBT/ICDT 2027");
+  await expect(record).toContainText("CEUR Workshop Proceedings");
+  await expect(record).toBeInViewport({ ratio: 1 });
+});
+
+test("a phone's first screen reaches the record", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("");
+  await expect(page.locator(".record > div").first()).toBeInViewport({ ratio: 1 });
+});
+
+test("no page has sideways scrolling or a color band", async ({ page }) => {
+  test.setTimeout(120_000);
   for (const width of [320, 390, 1280, 1920]) {
     await page.setViewportSize({ width, height: 800 });
-    for (const path of ["", "dates/"]) {
+    for (const path of PAGES) {
       await page.goto(path);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );
       expect(overflow, `${path} at ${width}px`).toBe(0);
-      await expect(page.locator("main .band").first()).toBeVisible();
+      await expect(page.locator("main .band")).toHaveCount(0);
     }
   }
+});
+
+test("a heading's name is its text, without its section link", async ({ page }) => {
+  await page.goto("call-for-papers/");
+  await expect(page.getByRole("heading", { name: "Scope", exact: true })).toBeVisible();
+});
+
+test("the navigation stays visible wherever its links fit", async ({ page }) => {
+  await page.setViewportSize({ width: 1040, height: 800 });
+  await page.goto("");
+  await expect(page.locator(".nav-toggle")).toBeHidden();
+  const links = page.locator("#site-nav a");
+  const boxes = await links.evaluateAll((all) =>
+    all.map((link) => {
+      const { top, right } = link.getBoundingClientRect();
+      return { top, right };
+    }),
+  );
+  expect(new Set(boxes.map((box) => box.top)).size, "links share one row").toBe(1);
+  const toggle = await page.locator(".theme-toggle").boundingBox();
+  expect(Math.max(...boxes.map((box) => box.right))).toBeLessThanOrEqual(toggle?.x ?? 0);
+  await page.setViewportSize({ width: 1024, height: 800 });
+  await expect(page.locator(".nav-toggle")).toBeVisible();
+});
+
+test("the wordmark and the home statement keep their words apart", async ({ page }) => {
+  await page.goto("");
+  for (const area of [".site-header", ".site-footer"]) {
+    await expect(
+      page.locator(area).getByRole("link", { name: "DQ4AI 2027", exact: true }),
+    ).toHaveCount(1);
+    const text = await page.locator(`${area} .brand`).textContent();
+    expect(text?.trim()).toBe("DQ4AI 2027");
+  }
+  const statement = await page.locator(".exchange").textContent();
+  expect(statement?.trim()).toBe("Data quality for AI AI for data quality");
+});
+
+test("the wordmark looks the same in the footer as in the header", async ({ page }) => {
+  await page.goto("");
+  const gap = (area: string) =>
+    page.locator(`${area} .brand`).evaluate((brand) => {
+      const [name, year] = [...brand.children];
+      const nameBox = name?.getBoundingClientRect();
+      const yearBox = year?.getBoundingClientRect();
+      const size = parseFloat(getComputedStyle(brand).fontSize);
+      return ((yearBox?.left ?? 0) - (nameBox?.right ?? 0)) / size;
+    });
+  expect(await gap(".site-footer")).toBeCloseTo(await gap(".site-header"), 1);
+});
+
+test("the home statement does not depend on the order of the topics", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator(".exchange span")).toHaveText([
+    "Data quality for AI",
+    "AI for data quality",
+  ]);
+  const sizes = await page.evaluate(() => {
+    const size = (selector: string) =>
+      parseFloat(getComputedStyle(document.querySelector(selector) as Element).fontSize);
+    return { statement: size(".exchange"), heading: size(".purpose h2") };
+  });
+  expect(sizes.statement).toBeLessThan(sizes.heading);
+  const first = page.locator(".purpose > p").first();
+  await expect(first).toHaveClass("exchange");
+});
+
+test("no page shows the raw value TBA or the old wording", async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    await expect(page.locator("main"), path).not.toContainText(/\bTBA\b/);
+    await expect(page.locator("main"), path).not.toContainText(/not yet set/i);
+  }
+});
+
+test("the host city photo is credited and does not claim to be the venue", async ({
+  page,
+}, testInfo) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto("attend/");
+  const section = page.locator("main > section").last();
+  await expect(section.getByRole("heading", { name: "Host city", exact: true })).toBeVisible();
+  const image = section.locator("img");
+  await expect(image).toHaveAttribute("alt", /\S/);
+  await image.scrollIntoViewIfNeeded();
+  await expect
+    .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
+    .toBeGreaterThan(0);
+  const caption = section.locator("figcaption");
+  await expect(caption).toContainText("not the workshop venue");
+  const real = !populated(testInfo.project.name);
+  await expect(caption).toContainText(real ? "Caugris" : "Example Photographer");
+  await expect(
+    caption.getByRole("link", { name: real ? "CC BY-SA 4.0" : "Example License" }),
+  ).toHaveAttribute(
+    "href",
+    real ? "https://creativecommons.org/licenses/by-sa/4.0/" : "https://example.org/license",
+  );
+  await expect(
+    caption.getByRole("link", { name: real ? "Wikimedia Commons" : "Example Archive" }),
+  ).toHaveAttribute(
+    "href",
+    real ? /commons\.wikimedia\.org\/wiki\/File:Le_beffroi/ : "https://example.org/photo",
+  );
+  await expect(caption).toContainText("resized");
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(512);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(342);
+});
+
+test("the photo does not reach the first screen of the home page", async ({ page }, testInfo) => {
+  test.skip(populated(testInfo.project.name), "the fixture has its own images");
+  await page.goto("");
+  await expect(page.locator("main img")).toHaveCount(0);
+});
+
+test("the footer's license notice leaves room for credited work", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator(".site-footer__legal")).toContainText(
+    "Content under CC BY 4.0, except where a credit says otherwise.",
+  );
+});
+
+test("a past edition's unknown details are not promised as coming", async ({ page }, testInfo) => {
+  test.skip(populated(testInfo.project.name), "needs a past edition with unknown details");
+  await page.goto("previous-editions/");
+  const first = page.locator("tbody tr", { hasText: "First" });
+  await expect(first).toContainText("Not recorded");
+  await expect(first).not.toContainText("To be announced");
+});
+
+test("a section heading is plain text with its link beside it", async ({ page }) => {
+  await page.goto("call-for-papers/");
+  await expect(page.locator("#scope a")).toHaveCount(0);
+  const anchor = page.getByRole("link", { name: "Link to section: Scope", exact: true });
+  await expect(anchor).toHaveAttribute("href", "#scope");
+  await page.setViewportSize({ width: 1100, height: 800 });
+  await anchor.focus();
+  await expect(anchor).toHaveCSS("opacity", "1");
+  // Measured together: focusing the link starts a smooth scroll.
+  const boxes = await anchor.evaluate((link) => {
+    const own = link.getBoundingClientRect();
+    const heading = document.querySelector("#scope")?.getBoundingClientRect();
+    return { linkX: own.left, linkY: own.top, headingX: heading?.left, headingY: heading?.top };
+  });
+  expect(boxes.linkX).toBeLessThan(boxes.headingX ?? 0);
+  expect(boxes.linkX, "the link is not cut off by the page edge").toBeGreaterThanOrEqual(0);
+  expect(Math.abs(boxes.linkY - (boxes.headingY ?? Infinity))).toBeLessThan(2);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(anchor).toBeHidden();
+});
+
+test("the footer offers the calendar only once deadlines have dates", async ({
+  page,
+}, testInfo) => {
+  await page.goto("");
+  await expect(
+    page.locator(".site-footer").getByRole("link", { name: "Deadlines calendar" }),
+  ).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
+  await page.goto("dates/");
+  await expect(page.locator('meta[name="description"]')).not.toHaveAttribute("content", /calendar/);
+});
+
+test("the open menu's keyboard order matches what is on screen", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("");
+  await page.locator(".nav-toggle").click();
+  const lastLink = await page.locator("#site-nav a").last().boundingBox();
+  const theme = await page.locator(".theme-toggle").boundingBox();
+  expect(theme?.y ?? 0).toBeGreaterThan(lastLink?.y ?? Infinity);
+});
+
+test("a table that may scroll can be reached by keyboard", async ({ page }) => {
+  await page.goto("previous-editions/");
+  await expect(page.locator(".table-wrap")).toHaveAttribute("tabindex", "0");
+  await expect(page.locator(".table-wrap")).toHaveRole("region");
 });
 
 test("the skip link is the first stop and moves focus to the content", async ({ page }) => {
@@ -166,7 +360,11 @@ test("the deadlines calendar downloads and parses", async ({ request, baseURL },
   const summaries = calendar
     .getAllSubcomponents("vevent")
     .map((component) => new ICAL.Event(component).summary);
-  expect(summaries).toContain("EDBT/ICDT 2027");
+  expect(summaries).toContain(
+    populated(testInfo.project.name)
+      ? "EDBT/ICDT 2027 (host conference)"
+      : "EDBT/ICDT 2027 (host conference; DQ4AI date TBA)",
+  );
   expect(summaries).toHaveLength(populated(testInfo.project.name) ? 5 : 1);
 });
 
@@ -205,6 +403,14 @@ test.describe("states that depend on content", () => {
     expect(await session.text()).toContain("DTSTART:20270407T070000Z");
   });
 
+  test("a session's details end before its calendar link", async ({ page }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs a session with a chair");
+    await page.goto("program/");
+    await expect(page.locator(".session__meta", { hasText: "Chair:" }).first()).toContainText(
+      /Chair: [^.]+\. Add to calendar/,
+    );
+  });
+
   test("the main button on the home page only promises what exists", async ({ page }, testInfo) => {
     await page.goto("");
     const primary = page.locator(".hero__actions .button--primary");
@@ -217,6 +423,66 @@ test.describe("states that depend on content", () => {
     await expect(page.locator(".hero__actions")).toContainText("Submission details");
   });
 
+  test("an extended deadline says so even when it is not the next one", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs an extended deadline");
+    await page.goto("");
+    const row = page.locator(".record > div", { hasText: "Author notification" });
+    await expect(row.locator(".status--extended")).toHaveText("Extended");
+    const plain = page.locator(".record > div", { hasText: "Camera-ready" });
+    await expect(plain.locator(".status-group")).toHaveCount(0);
+  });
+
+  test("a keynote speaker who is not yet known is an empty cell, not a link", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs an unknown speaker");
+    await page.goto("");
+    const row = page.locator(".record > div", { hasText: "Keynotes" });
+    await expect(row).toContainText("To be announced");
+    await expect(row.getByRole("link")).toHaveCount(1);
+    await expect(row.getByRole("link", { name: "Jane Doe" })).toHaveCount(1);
+  });
+
+  test("the record's status lines up with the date above it when it wraps", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("");
+    const cell = page.locator(".record dd", { has: page.locator(".flag") });
+    const boxes = await cell.evaluate((dd) => {
+      const left = (selector: string) => dd.querySelector(selector)?.getBoundingClientRect();
+      return {
+        cell: dd.getBoundingClientRect().left,
+        flag: left(".flag")?.top ?? 0,
+        group: left(".status-group")?.left ?? 0,
+        groupTop: left(".status-group")?.top ?? 0,
+      };
+    });
+    expect(boxes.groupTop, "status wraps at this width").toBeGreaterThan(boxes.flag);
+    expect(boxes.group).toBeCloseTo(boxes.cell, 0);
+  });
+
+  test("on a phone the dates table is two columns and keeps its status", async ({
+    page,
+  }, testInfo) => {
+    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("dates/");
+    await expect(page.locator("thead").getByText("Status")).toBeHidden();
+    const row = page.locator("tbody tr", { hasText: "Paper submission" });
+    await expect(row.getByRole("cell")).toHaveCount(1);
+    await expect(row.locator(".status--extended:visible")).toHaveText("Extended");
+    const flag = page.locator("main .flag");
+    const fragments = await flag.evaluate((element) => element.getClientRects().length);
+    expect(fragments, "the flagged date is one solid cell").toBe(1);
+    const height = (await flag.boundingBox())?.height ?? Infinity;
+    const lineHeight = await flag.evaluate((e) => parseFloat(getComputedStyle(e).lineHeight));
+    expect(Math.round(height / lineHeight)).toBeLessThanOrEqual(2);
+  });
+
   test("the dates table does not repeat itself", async ({ page }, testInfo) => {
     await page.goto("dates/");
     const statusHeader = page.locator("thead").getByText("Status");
@@ -227,6 +493,18 @@ test.describe("states that depend on content", () => {
     await expect(statusHeader).toHaveCount(0);
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.getByText("To be announced")).toHaveCount(1);
+  });
+
+  test("only the next deadline is flagged, and tools need dates to act on", async ({
+    page,
+  }, testInfo) => {
+    for (const path of ["", "dates/"]) {
+      await page.goto(path);
+      await expect(page.locator("main .flag")).toHaveCount(
+        populated(testInfo.project.name) ? 1 : 0,
+      );
+    }
+    await expect(page.locator(".toolbar")).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
   });
 
   test("a section link is not hidden by the deadline bar on a phone", async ({
@@ -266,6 +544,7 @@ test.describe("states that depend on content", () => {
     await page.goto("attend/");
     const pending = page.locator(".pending");
     await expect(pending.locator("#venue")).toBeVisible();
+    await expect(pending.locator("#venue")).toContainText("To be announced");
     await expect(page.getByRole("heading", { name: "Venue" })).toHaveCount(0);
   });
 
@@ -278,10 +557,10 @@ test.describe("states that depend on content", () => {
   test("an extended deadline strikes through the old date", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an extended deadline");
     await page.goto("dates/");
-    await expect(page.locator("del")).toHaveText("11 December 2026, 23:59 AoE");
-    await expect(page.locator("tbody").getByText("18 December 2026, 23:59 AoE")).toBeVisible();
-    await expect(page.locator(".status--extended").first()).toBeVisible();
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
+    await expect(row.locator("del")).toHaveText("11 December 2026, 23:59 AoE");
+    await expect(row.getByText("18 December 2026, 23:59 AoE")).toBeVisible();
+    await expect(row.locator(".status--extended:visible")).toBeVisible();
     await expect(row).toContainText("Was");
     await expect(row).toContainText("Now");
   });
@@ -295,7 +574,7 @@ test.describe("states that depend on content", () => {
     const page = await context.newPage();
     await page.goto(`${baseURL}dates/`);
     await page.locator(".tz-toggle").click();
-    await expect(page.locator("del")).toContainText("GMT+9");
+    await expect(page.locator("del").first()).toContainText("GMT+9");
     await context.close();
   });
 
@@ -327,4 +606,25 @@ test("the CFP prints without site chrome", async ({ page }) => {
   const pages = pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g)?.length ?? 0;
   expect(pages).toBeGreaterThan(0);
   expect(pages).toBeLessThanOrEqual(2);
+});
+
+test("a flagged date prints on the same column as the others", async ({ page }, testInfo) => {
+  test.skip(!populated(testInfo.project.name), "needs a flagged date");
+  await page.goto("call-for-papers/");
+  await page.emulateMedia({ media: "print" });
+  const lefts = await page
+    .locator(".facts dd > time")
+    .evaluateAll((times) => times.map((time) => time.getBoundingClientRect().left));
+  expect(lefts.length).toBeGreaterThan(1);
+  expect(new Set(lefts).size).toBe(1);
+});
+
+test("the home page prints at document sizes, without its buttons", async ({ page }) => {
+  await page.goto("");
+  await page.emulateMedia({ media: "print" });
+  await expect(page.locator(".hero__actions")).toBeHidden();
+  const title = await page
+    .locator(".hero h1")
+    .evaluate((h1) => parseFloat(getComputedStyle(h1).fontSize));
+  expect(title).toBeLessThanOrEqual(27);
 });

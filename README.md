@@ -42,4 +42,4 @@ pnpm i && pnpm dev
 
 ## License
 
-Code under MIT, content under CC BY 4.0. See [LICENSE](LICENSE).
+Code under MIT, content under CC BY 4.0, with one photo under CC BY-SA 4.0. See [LICENSE](LICENSE).

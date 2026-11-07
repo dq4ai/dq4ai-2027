@@ -7,8 +7,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getSite, getSubmission } from "../lib/content";
 import { TBA } from "../lib/dates";
 import { url } from "../lib/paths";
+import { pageLimitsUnknown } from "../lib/view";
 
 const [site, submission, cfp] = await Promise.all([getSite(), getSubmission(), getCfp()]);
+const limitsUnknown = pageLimitsUnknown(cfp);
 ---
 
 <BaseLayout slug="submission">
@@ -55,14 +57,23 @@ const [site, submission, cfp] = await Promise.all([getSite(), getSubmission(), g
           )}
         </dd>
       </div>
-      {cfp.paperTypes.map((type) => (
+      {limitsUnknown ? (
         <div>
-          <dt>Page limit: {type.title}</dt>
+          <dt>Page limits</dt>
           <dd>
-            <Value of={type.pageLimit} />
+            <Value of={TBA} />
           </dd>
         </div>
-      ))}
+      ) : (
+        cfp.paperTypes.map((type) => (
+          <div>
+            <dt>Page limit: {type.title}</dt>
+            <dd>
+              <Value of={type.pageLimit} />
+            </dd>
+          </div>
+        ))
+      )}
       <div>
         <dt>Template</dt>
         <dd>

@@ -6,7 +6,8 @@
    `playwright.config.ts`, `lighthouserc.json`, `tests/e2e/build-output.spec.ts` and
    `.github/workflows/ci.yml`. For a custom domain, set `customDomain` in `site.yaml` and change the
    base path in those files to `/`.
-3. **Update `src/content/site.yaml`:** `edition`, `year`, `host`, `workshopDate`, `deployment`.
+3. **Update `src/content/site.yaml`:** `edition`, `year`, `host`, `workshopDate`, `deployment`, and
+   replace or remove `hostPhoto`, which shows this edition's city.
    Unknown values become `TBA`.
 4. **Update `src/content/editions.yaml`:** remove `current: true` from the old entry and add the new
    one with `current: true`.

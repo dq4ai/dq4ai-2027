@@ -18,7 +18,7 @@ main {
   flex: 1;
   inline-size: min(100% - 2 * var(--space-4), var(--page-width));
   margin-inline: auto;
-  padding-block: var(--space-6) var(--space-8);
+  padding-block: 0 var(--space-7);
 }
 
 h1,
@@ -32,11 +32,12 @@ h3 {
 
 h1 {
   font-size: var(--text-h1);
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: var(--text-h2);
+  letter-spacing: -0.01em;
   margin-block: var(--space-6) var(--space-3);
 }
 

@@ -25,19 +25,21 @@
 :root {
   color-scheme: light dark;
 
-  /* Cool neutrals. Accent: deep data blue. Signal: teal, for the idea of checked quality. */
-  --color-surface: light-dark(#f8fafc, #11161e);
-  --color-surface-raised: light-dark(#edf1f6, #1a212c);
-  --color-text: light-dark(#17202c, #e6ebf2);
-  --color-text-muted: light-dark(#4e5a6a, #a8b3c2);
-  --color-rule: light-dark(#d3dbe5, #333d4b);
-  --color-rule-strong: light-dark(#17202c, #e6ebf2);
-  --color-accent: light-dark(#17498a, #93c0f7);
-  --color-accent-hover: light-dark(#0f2c54, #bcd8fb);
-  --color-on-accent: light-dark(#fff, #11161e);
-  --color-signal: light-dark(#0f766e, #5eead4);
-  --color-band: #0f2c54;
-  --color-status-open: light-dark(#1f6b45, #7fd1a4);
+  /* The Data Record: cool white and ink, like a clean table. Amber is the one flagged cell,
+     used only for the 4 in the wordmark and the next deadline. */
+  --color-surface: light-dark(#fcfdfd, #11151a);
+  --color-surface-raised: light-dark(#f2f5f7, #1a2027);
+  --color-text: light-dark(#141c26, #e8ecf1);
+  --color-text-muted: light-dark(#55606e, #a5b0bd);
+  --color-rule: light-dark(#dbe0e6, #323a44);
+  --color-rule-strong: light-dark(#141c26, #6b7683);
+  --color-accent: light-dark(#1c4382, #a3c7f5);
+  --color-accent-hover: light-dark(#102a55, #c8def9);
+  --color-on-accent: light-dark(#fff, #11151a);
+  --color-primary: light-dark(#1c4382, #e8ecf1);
+  --color-primary-hover: light-dark(#102a55, #fff);
+  --color-flag: #f6c945;
+  --color-on-flag: #141c26;
   --color-status-today: light-dark(#7a4f00, #e8be6a);
   --color-status-passed: var(--color-text-muted);
   --color-focus: light-dark(#0b57a4, #8cc4ff);
@@ -46,12 +48,12 @@
   --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
 
   --text-sm: 0.875rem;
-  --text-base: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
-  --text-lg: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
-  --text-h3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
-  --text-h2: clamp(1.625rem, 1.4rem + 1vw, 2.25rem);
-  --text-h1: clamp(2.25rem, 1.75rem + 2.5vw, 3.75rem);
-  --text-hero: clamp(2.75rem, 1.75rem + 5vw, 5.5rem);
+  --text-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+  --text-lg: clamp(1.125rem, 1.08rem + 0.25vw, 1.25rem);
+  --text-h3: clamp(1.125rem, 1.08rem + 0.25vw, 1.25rem);
+  --text-h2: clamp(1.375rem, 1.3rem + 0.35vw, 1.625rem);
+  --text-h1: clamp(2.25rem, 1.9rem + 1.6vw, 3.25rem);
+  --text-hero: clamp(2.75rem, 1.6rem + 4.6vw, 5rem);
 
   /* 8-point spacing scale. */
   --space-1: 0.25rem;
@@ -61,10 +63,14 @@
   --space-5: 2rem;
   --space-6: 3rem;
   --space-7: 4rem;
-  --space-8: 6rem;
 
-  --measure: 70ch;
-  --page-width: 78rem;
+  --measure: 58ch;
+  --page-width: 66rem;
+  /* The left column of every page: section names, session times and news dates sit in it. */
+  --rail: 12rem;
+  --rail-gap: var(--space-5);
+  /* The label column of rows, so values share one edge across a page. */
+  --label: 15rem;
   --radius: 2px;
 }
 
