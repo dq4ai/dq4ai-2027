@@ -60,6 +60,9 @@ export const siteSchema = z.strictObject({
   submissionUrl: urlOrTba,
   proceedings: z.strictObject({ name: text, url: httpUrl }),
   paperTemplate: text,
+  paperTemplateUrl: urlOrTba.optional(),
+  /** Optional: when the organizers expect to announce what is still unknown. */
+  statusNote: text.optional(),
   reviewModel: text,
   hostPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
@@ -188,7 +191,20 @@ export const cfpSchema = z.strictObject({
 });
 
 export const submissionSchema = z.strictObject({
-  steps: z.array(z.strictObject({ title: text, detail: text })).min(1),
+  steps: z
+    .array(
+      z.strictObject({
+        title: text,
+        detail: text,
+        link: z
+          .strictObject({
+            label: text,
+            path: z.string().regex(/^\/.*/, "must be a path inside the site, starting with /"),
+          })
+          .optional(),
+      }),
+    )
+    .min(1),
   formatting: text,
   anonymization: text,
   faq: z.array(z.strictObject({ question: text, answer: text })),

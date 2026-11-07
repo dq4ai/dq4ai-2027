@@ -4,6 +4,14 @@
   border-block-end: 1px solid var(--color-rule-strong);
 }
 
+/* What this is, for someone who arrives here rather than at the home page. */
+.page-context {
+  margin-block-end: var(--space-2);
+  max-inline-size: none;
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
 .page-header + p {
   padding-block: var(--space-3);
 }
@@ -12,6 +20,15 @@
   margin-block-start: var(--space-3);
   font-size: var(--text-lg);
   line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.status-note {
+  margin-block-start: var(--space-3);
+}
+
+[data-closes][hidden] {
+  display: none;
 }
 
 main > section:not(.session) {
@@ -31,7 +48,7 @@ main > section:not(.session) > h2 {
 @media (width >= 60rem) {
   main > section:not(.session) {
     display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
+    grid-template-columns: min(var(--rail), 25%) minmax(0, 1fr);
     column-gap: var(--rail-gap);
   }
 
@@ -66,6 +83,7 @@ main > section:not(.session) > h2 {
 
 .hero__body {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-5);
   align-items: start;
   margin-block-start: var(--space-5);
@@ -78,7 +96,10 @@ main > section:not(.session) > h2 {
 @media (width >= 60rem) {
   .hero__body {
     /* The record starts where values start in the rows below it. */
-    grid-template-columns: calc(var(--rail) + var(--rail-gap) + var(--label)) minmax(0, 1fr);
+    grid-template-columns: min(calc(var(--rail) + var(--rail-gap) + var(--label)), 55%) minmax(
+        0,
+        1fr
+      );
     gap: var(--space-4);
     margin-block-start: var(--space-6);
   }
@@ -132,6 +153,16 @@ main > section:not(.session) > h2 {
   display: block;
 }
 
+/* Set apart by lines on screen. Read aloud, only this keeps them from running together. */
+.exchange span:first-child::after {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  content: ".";
+}
+
 .exchange + p {
   margin-block-start: 0;
 }
@@ -156,11 +187,11 @@ main > section:not(.session) > h2 {
 
 @media (width >= 40rem) {
   .facts > div {
-    grid-template-columns: var(--label) minmax(0, 1fr);
+    grid-template-columns: min(var(--label), 35%) minmax(0, 1fr);
   }
 
   .record > div {
-    grid-template-columns: 10rem minmax(0, 1fr);
+    grid-template-columns: min(11rem, 40%) minmax(0, 1fr);
   }
 }
 
@@ -172,6 +203,27 @@ main > section:not(.session) > h2 {
   .hero__actions .button {
     flex: 1 1 100%;
     justify-content: center;
+  }
+
+  /* A value not yet known is short, so it can stay beside its label. */
+  .facts:not(.record) > div:has(> dd > .tba:only-child) {
+    grid-template-columns: min(10rem, 45%) minmax(0, 1fr);
+  }
+
+  .toolbar {
+    gap: var(--space-2);
+  }
+
+  .toolbar > * {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+/* Only reached with a very large browser font: a label column would leave no room for its value. */
+@media (width < 18rem) {
+  .record > div {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -193,6 +245,11 @@ main > section:not(.session) > h2 {
   align-items: baseline;
 }
 
+.record .deadline-cell {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 /* A value nobody has supplied yet, shown as an empty cell. */
 .tba {
   display: inline-block;
@@ -200,8 +257,11 @@ main > section:not(.session) > h2 {
   border: 1px dashed var(--color-text-muted);
   border-radius: var(--radius);
   color: var(--color-text-muted);
+  font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
   line-height: 1.5;
 }
 
@@ -276,7 +336,7 @@ main > section:not(.session) > h2 {
 }
 
 /* A section's own link sits in the margin before its heading, shown when pointed at or focused.
-   Phones have no margin to spare and no pointer to reveal it, so they do without. */
+   Phones have no margin to spare, and touch screens no pointer to reveal it, so they do without. */
 .section-anchor {
   position: absolute;
   display: none;
@@ -295,7 +355,7 @@ main > section:not(.session) > h2 {
   opacity: 1;
 }
 
-@media (width >= 48rem) {
+@media (width >= 48rem) and (hover: hover) {
   .section-anchor {
     display: block;
   }
@@ -351,6 +411,18 @@ main > section:not(.session) > h2 {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
+}
+
+/* A long page on a narrow screen: the contents are many screens back. */
+.to-contents {
+  margin-block-start: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+@media (width >= 60rem) {
+  .to-contents {
+    display: none;
+  }
 }
 
 .more-link {
@@ -427,8 +499,31 @@ main > section:not(.session) > h2 {
   font-weight: 400;
 }
 
+/* The padding keeps a focus ring from being cut off, the margin keeps the table on its column. */
 .table-wrap {
+  margin-inline: -0.375rem;
+  padding-inline: 0.375rem;
   overflow-x: auto;
+}
+
+/* Shadows at the edges that still hide content. They scroll away with the table's own cover. */
+@media (width < 40rem) {
+  .table-wrap {
+    background:
+      linear-gradient(to right, var(--color-surface) 30%, transparent) left / 2rem 100% no-repeat
+        local,
+      linear-gradient(to left, var(--color-surface) 30%, transparent) right / 2rem 100% no-repeat
+        local,
+      linear-gradient(to right, var(--color-rule-strong), transparent) left / 0.5rem 100% no-repeat
+        scroll,
+      linear-gradient(to left, var(--color-rule-strong), transparent) right / 0.5rem 100% no-repeat
+        scroll;
+  }
+
+  .table .tba {
+    padding-inline: 0;
+    border: 0;
+  }
 }
 
 .table {
@@ -443,6 +538,25 @@ main > section:not(.session) > h2 {
   font-weight: 400;
   text-align: start;
   vertical-align: top;
+}
+
+.table :is(th, td):last-child {
+  padding-inline-end: 0;
+}
+
+/* Dates share the edge values have on other pages, whatever the cells hold. */
+@media (width >= 40rem) {
+  .table {
+    table-layout: fixed;
+  }
+
+  .table thead th:first-child {
+    inline-size: calc(var(--label) + var(--space-4));
+  }
+
+  .table thead th.status-column {
+    inline-size: 11rem;
+  }
 }
 
 .table thead th {
@@ -470,7 +584,8 @@ main > section:not(.session) > h2 {
   padding-inline: var(--space-3);
 }
 
-.tz-toggle[hidden] {
+/* Hidden by the class rather than by its script, so its space is there from the first paint. */
+:root:not(.js) .tz-toggle {
   display: none;
 }
 
@@ -527,6 +642,7 @@ details {
 }
 
 summary {
+  min-block-size: 1.5rem;
   color: var(--color-accent);
   font-size: var(--text-sm);
   cursor: pointer;
@@ -700,12 +816,9 @@ main > section > .page-limits > div:first-child {
   padding-block-start: var(--space-2);
 }
 
-/* An extended deadline reads "Now" before its date, so its fill cannot hang left. On a phone the
-   date takes its own line, so it can. */
-@media (width >= 40rem) {
-  .table td:has(.date-change) .flag {
-    margin-inline-start: var(--space-1);
-  }
+/* These lists end in their own padding, which would add to the section's. */
+main > section > :is(.people, .steps) {
+  margin-block-end: calc(-1 * var(--space-3));
 }
 
 main > section > .toolbar:first-of-type {

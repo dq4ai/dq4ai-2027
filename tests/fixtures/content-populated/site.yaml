@@ -24,6 +24,8 @@ proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/
 paperTemplate: Example template
+paperTemplateUrl: https://example.org/template.zip
+statusNote: Example status note from the organizers.
 reviewModel: double-blind
 hostPhoto:
   file: example-portrait.png

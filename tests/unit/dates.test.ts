@@ -5,7 +5,9 @@ import {
   formatAoE,
   formatAoEDay,
   formatDayInZone,
+  formatCountdown,
   formatDayRange,
+  formatLocalSessionTime,
   formatTimeInZone,
   isIsoWithZone,
   isOnDayInZone,
@@ -136,5 +138,26 @@ describe("iCalendar date forms", () => {
   it("makes an all-day end date exclusive when asked for the next day", () => {
     expect(toIcsDate("2027-04-09", 1)).toBe("20270410");
     expect(toIcsDate("2027-03-31", 1)).toBe("20270401");
+  });
+});
+
+describe("formatCountdown", () => {
+  it("does not read zero hours and zero minutes in the last minute", () => {
+    expect(formatCountdown({ days: 0, hours: 0, minutes: 0 })).toBe("Less than a minute left");
+  });
+  it("counts minutes on the last day", () => {
+    expect(formatCountdown({ days: 0, hours: 1, minutes: 5 })).toBe("1 hour 5 minutes left");
+  });
+});
+
+describe("formatLocalSessionTime", () => {
+  const opening = parseIso("2027-04-07T09:00:00+02:00");
+  it("gives only the time when the local day is the venue's", () => {
+    expect(formatLocalSessionTime(opening, "Asia/Tokyo", "Europe/Paris")).toBe("16:00");
+  });
+  it("names the local day when it differs from the venue's", () => {
+    expect(formatLocalSessionTime(opening, "Pacific/Honolulu", "Europe/Paris")).toBe(
+      "21:00 (6 April)",
+    );
   });
 });

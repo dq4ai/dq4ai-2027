@@ -1,42 +1,71 @@
 ---
 interface Props {
-  label?: string;
+  /** What the button offers once the visitor's own zone is showing. */
+  activeLabel: string;
 }
-const { label = "Show in my time zone" } = Astro.props;
+const { activeLabel } = Astro.props;
 ---
 
-<button class="icon-button tz-toggle" type="button" aria-pressed="false" hidden>
-  {label}
+<button
+  class="icon-button tz-toggle"
+  type="button"
+  aria-pressed="false"
+  data-active-label={activeLabel}
+>
+  Show in my time zone
 </button>
 
 <script>
-  import { formatInLocalZone, formatTimeInZone } from "../lib/dates";
+  import { formatInLocalZone, formatLocalSessionTime, formatTimeInZone } from "../lib/dates";
 
+  const STORAGE_KEY = "show-local-times";
   const zone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const render = (element: HTMLElement) => {
     const date = new Date(element.dataset.convert ?? "");
-    return element.dataset.convertFormat === "time"
-      ? formatTimeInZone(date, zone)
-      : formatInLocalZone(date, zone);
+    const format = element.dataset.convertFormat;
+    if (format === "time") return formatTimeInZone(date, zone);
+    if (format === "session-start") {
+      return formatLocalSessionTime(date, zone, element.dataset.venueZone ?? zone);
+    }
+    return formatInLocalZone(date, zone);
   };
 
   const elements = [...document.querySelectorAll<HTMLElement>("[data-convert]")];
   const originals = new Map(elements.map((element) => [element, element.textContent ?? ""]));
   const zoneNote = document.querySelectorAll<HTMLElement>("[data-zone-note]");
   const notes = new Map([...zoneNote].map((note) => [note, note.textContent ?? ""]));
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>(".tz-toggle")];
+  const buttonLabels = new Map(buttons.map((button) => [button, button.textContent ?? ""]));
 
-  for (const button of document.querySelectorAll<HTMLButtonElement>(".tz-toggle")) {
-    if (elements.length === 0) continue;
-    button.hidden = false;
+  const show = (showLocal: boolean) => {
+    for (const [button, label] of buttonLabels) {
+      button.setAttribute("aria-pressed", String(showLocal));
+      button.textContent = showLocal ? (button.dataset.activeLabel ?? label) : label;
+    }
+    for (const element of elements) {
+      element.textContent = showLocal ? render(element) : (originals.get(element) ?? "");
+    }
+    for (const [note, text] of notes) {
+      note.textContent = showLocal ? `Times shown in your time zone (${zone}).` : text;
+    }
+  };
+
+  for (const button of buttons) {
     button.addEventListener("click", () => {
       const showLocal = button.getAttribute("aria-pressed") !== "true";
-      button.setAttribute("aria-pressed", String(showLocal));
-      for (const element of elements) {
-        element.textContent = showLocal ? render(element) : (originals.get(element) ?? "");
-      }
-      for (const [note, text] of notes) {
-        note.textContent = showLocal ? `Times shown in your time zone (${zone}).` : text;
+      show(showLocal);
+      try {
+        if (showLocal) localStorage.setItem(STORAGE_KEY, "true");
+        else localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // Storage can be unavailable in private modes; the choice still applies to this page.
       }
     });
+  }
+
+  try {
+    if (buttons.length > 0 && localStorage.getItem(STORAGE_KEY) === "true") show(true);
+  } catch {
+    // Storage can be unavailable in private modes; keep the page's own times.
   }
 </script>

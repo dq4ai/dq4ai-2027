@@ -11,9 +11,9 @@ const editions = await getEditions();
 ---
 
 <BaseLayout slug="previous-editions">
-  <PageHeader title="Editions of the workshop" />
+  <PageHeader title="Previous editions" />
   <section>
-    <Heading id="editions">Editions</Heading>
+    <Heading id="editions">All editions</Heading>
     <section class="table-wrap" tabindex="0" aria-label="Editions of the workshop">
       <table class="table">
         <thead>
@@ -28,10 +28,13 @@ const editions = await getEditions();
           {editions.map((edition) => (
             <tr>
               <th scope="row">
-                {edition.url === TBA ? (
+                {edition.url === TBA || edition.current ? (
                   edition.edition
                 ) : (
-                  <ExternalLink href={edition.url}>{edition.edition}</ExternalLink>
+                  <ExternalLink href={edition.url}>
+                    {edition.edition}
+                    <span class="visually-hidden"> edition</span>
+                  </ExternalLink>
                 )}
                 {edition.current && <span class="note"> (this edition)</span>}
               </th>

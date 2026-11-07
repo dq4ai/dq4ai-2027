@@ -15,7 +15,9 @@ consistently, and appear in the placeholder report. Checks on a date apply once 
 
 **Build-time status plus a daily rebuild.** Statuses are correct without JavaScript. The rebuild
 moves "upcoming" to "passed". GitHub pauses scheduled workflows after 60 days without repository
-activity; any commit, or re-enabling the workflow under Actions, resumes them.
+activity; any commit, or re-enabling the workflow under Actions, resumes them. The rebuild runs just after 12:00 UTC, when a day ends in AoE. Between builds, a small script
+corrects statuses, the flagged date, the strip and the submit button, so a page built earlier never
+contradicts itself.
 
 **One date module.** All date logic is in `src/lib/dates.ts`. Deadlines are ISO 8601 with an
 explicit zone; display uses `Intl.DateTimeFormat`.
@@ -30,7 +32,13 @@ this.
 
 **Hand-written CSP.** Astro's CSP option does not cover external scripts and styles. Everything is
 external except the theme bootstrap, which must run before first paint; its hash is computed in
-`src/lib/theme.ts`. The policy is omitted in dev because Vite injects inline styles.
+`src/lib/theme.ts`. The policy is omitted in dev because Vite injects inline styles. The bootstrap
+also answers clicks on the menu and theme buttons: it hides the navigation behind the menu button at
+once, so that button has to work before, or without, any bundled script.
+
+**`font-display: optional`.** A font arriving after first paint moved the page and pushed deep links
+past their heading. A slow first visit may now show the fallback font on that page, and later pages
+use the cached font.
 
 **Own test server.** `scripts/serve-static.mjs` mirrors GitHub Pages (base path, real 404s).
 `astro preview` can detach into the background, which test runners cannot manage.

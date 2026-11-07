@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+Fixed after a review of how visitors use the site. Organization and Attend now say how to contact
+the organizers, or that a contact is coming. A closed deadline stops being "next" as soon as it
+closes, on every page, the submit button goes with it, and the daily rebuild now runs just after an
+AoE day ends. The phone menu button stays where it is, says "Close" when open, closes when tapping
+elsewhere, offers Home, and still works if scripts fail to load. The paper template can be a link.
+Inner pages say what the event is. Times in another time zone name the day when it differs, and the
+choice carries across pages. Rows and tables share one edge, printed programs keep their abstracts,
+calendar entries name the workshop, and pages hold up with a very large browser font. Late fonts no
+longer move the page. Terms are the same across pages.
+
 Redesigned as a data record. Every page now shares one layout, with section names in a left column
 and facts set as rows of label and value. Values not yet known appear as quiet empty cells, the next
 deadline is the one flagged cell, and the home page opens with what is known. Removed the color band

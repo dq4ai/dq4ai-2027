@@ -153,7 +153,7 @@ test("the navigation stays visible wherever its links fit", async ({ page }) => 
   await page.setViewportSize({ width: 1040, height: 800 });
   await page.goto("");
   await expect(page.locator(".nav-toggle")).toBeHidden();
-  const links = page.locator("#site-nav a");
+  const links = page.locator("#site-nav a:visible");
   const boxes = await links.evaluateAll((all) =>
     all.map((link) => {
       const { top, right } = link.getBoundingClientRect();
@@ -365,7 +365,7 @@ test("the deadlines calendar downloads and parses", async ({ request, baseURL },
       ? "EDBT/ICDT 2027 (host conference)"
       : "EDBT/ICDT 2027 (host conference; DQ4AI date TBA)",
   );
-  expect(summaries).toHaveLength(populated(testInfo.project.name) ? 5 : 1);
+  expect(summaries).toHaveLength(populated(testInfo.project.name) ? 6 : 1);
 });
 
 test("organizers are listed once and the committee is sorted by surname", async ({
@@ -390,7 +390,7 @@ test.describe("states that depend on content", () => {
   test("empty and populated program", async ({ page, request, baseURL }, testInfo) => {
     await page.goto("program/");
     if (!populated(testInfo.project.name)) {
-      await expect(page.getByText("Program to be announced.")).toBeVisible();
+      await expect(page.locator("#schedule ~ dl .tba")).toHaveText("To be announced");
       await expect(page.locator(".tz-toggle")).toBeHidden();
       return;
     }

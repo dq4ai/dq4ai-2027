@@ -2,14 +2,20 @@
 import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
 import PageHeader from "../components/PageHeader.astro";
+import PaperTemplate from "../components/PaperTemplate.astro";
 import Value from "../components/Value.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCfp, getSite, getSubmission } from "../lib/content";
+import { getCfp, getDeadlines, getSite, getSubmission } from "../lib/content";
 import { TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { pageLimitsUnknown } from "../lib/view";
+import { pageLimitsUnknown, submissionCloses, submissionOpen } from "../lib/view";
 
-const [site, submission, cfp] = await Promise.all([getSite(), getSubmission(), getCfp()]);
+const [site, submission, cfp, deadlines] = await Promise.all([
+  getSite(),
+  getSubmission(),
+  getCfp(),
+  getDeadlines(),
+]);
 const limitsUnknown = pageLimitsUnknown(cfp);
 ---
 
@@ -18,16 +24,33 @@ const limitsUnknown = pageLimitsUnknown(cfp);
     title="Submission"
     lede="What to check before you submit a paper, and where to send it."
   />
+  {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
   {site.submissionUrl === TBA ? (
     <p>
       <strong>The submission link will be announced here.</strong> See the{" "}
-      <a href={url("/dates/")}>important dates</a>.
+      <a href={url("/dates/")}>important dates</a>
+      {site.host.workshopsUrl && (
+        <>
+          {" "}
+          and the{" "}
+          <ExternalLink href={site.host.workshopsUrl}>{site.host.name} workshops page</ExternalLink>
+        </>
+      )}
+      .
+    </p>
+  ) : submissionOpen(site, deadlines) ? (
+    <p>
+      <ExternalLink
+        class="button button--primary"
+        href={site.submissionUrl}
+        data-closes={submissionCloses(deadlines)}
+      >
+        Submit a paper
+      </ExternalLink>
     </p>
   ) : (
     <p>
-      <ExternalLink class="button button--primary" href={site.submissionUrl}>
-        Submit a paper
-      </ExternalLink>
+      <strong>Submission has closed.</strong> See the <a href={url("/dates/")}>important dates</a>.
     </p>
   )}
 
@@ -36,7 +59,8 @@ const limitsUnknown = pageLimitsUnknown(cfp);
     <ol class="steps">
       {submission.steps.map((step) => (
         <li>
-          <strong>{step.title}</strong> {step.detail}
+          <strong>{step.title}</strong> {step.detail}{" "}
+          {step.link && <a href={url(step.link.path)}>{step.link.label}</a>}
         </li>
       ))}
     </ol>
@@ -51,7 +75,10 @@ const limitsUnknown = pageLimitsUnknown(cfp);
           {site.submissionUrl === TBA ? (
             <Value of={site.submissionSystem} />
           ) : (
-            <ExternalLink href={site.submissionUrl}>
+            <ExternalLink
+              href={site.submissionUrl}
+              class={site.submissionSystem === TBA ? "link-is-address" : undefined}
+            >
               {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
             </ExternalLink>
           )}
@@ -77,7 +104,7 @@ const limitsUnknown = pageLimitsUnknown(cfp);
       <div>
         <dt>Template</dt>
         <dd>
-          <Value of={site.paperTemplate} />
+          <PaperTemplate />
         </dd>
       </div>
       <div>

@@ -22,6 +22,9 @@
   .toolbar,
   .hero__actions,
   .section-anchor,
+  .record__note a,
+  .more-link,
+  a[download],
   .no-print {
     display: none !important;
   }
@@ -62,6 +65,21 @@
     padding: 0;
   }
 
+  /* Collapsed text is not on paper to open. */
+  details::details-content {
+    display: block;
+    block-size: auto;
+    content-visibility: visible;
+  }
+
+  summary {
+    list-style: none;
+  }
+
+  .session__time {
+    break-after: avoid;
+  }
+
   h2 {
     margin-block: 10pt 3pt;
     break-after: avoid;
@@ -100,7 +118,7 @@
     text-decoration: none;
   }
 
-  a[href^="http"]::after {
+  a[href^="http"]:not(.link-is-address)::after {
     content: " (" attr(href) ")";
     font-size: 8pt;
   }

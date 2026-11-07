@@ -40,6 +40,10 @@
   text-decoration: none;
 }
 
+.site-header .brand {
+  padding-block: var(--space-2);
+}
+
 .brand:hover {
   color: var(--color-text);
 }
@@ -73,13 +77,20 @@
   transition: border-color 120ms ease;
 }
 
-.icon-button:hover {
-  border-color: var(--color-rule-strong);
+@media (hover: hover) {
+  .icon-button:hover {
+    border-color: var(--color-rule-strong);
+  }
 }
 
 .nav-toggle,
 .theme-toggle {
   display: none;
+}
+
+/* Wide enough for both of its labels, so its text changing does not move it. */
+.nav-toggle {
+  min-inline-size: 4rem;
 }
 
 .js .theme-toggle {
@@ -122,7 +133,9 @@
 }
 
 .site-nav a {
-  display: block;
+  display: flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   padding-block: var(--space-2);
   color: var(--color-text);
   text-decoration: none;
@@ -156,6 +169,11 @@
   .site-header__inner:has(.site-nav[data-open]) .theme-toggle {
     order: 4;
   }
+
+  /* The theme button moves below the links; this holds the menu button where the finger left it. */
+  .site-header__inner:has(.site-nav[data-open]) .nav-toggle {
+    margin-inline-end: calc(2.75rem + var(--space-4));
+  }
 }
 
 @media (width >= 65rem) {
@@ -166,12 +184,19 @@
   .site-nav {
     flex: 1;
     inline-size: auto;
+    min-inline-size: 0;
     order: 0;
+  }
+
+  /* The wordmark is the way home here; the menu's link is for when the page has scrolled past it. */
+  .site-nav__home {
+    display: none;
   }
 
   .site-nav ul {
     flex-direction: row;
-    gap: var(--space-4);
+    flex-wrap: wrap;
+    gap: 0 var(--space-4);
     justify-content: flex-end;
   }
 
@@ -180,7 +205,8 @@
   }
 }
 
-@media (width >= 48rem) {
+/* A short screen cannot give up a row of its height to it. */
+@media (width >= 48rem) and (height >= 30rem) {
   .deadline-strip {
     position: sticky;
     inset-block-start: 0;
@@ -199,11 +225,21 @@
   flex-wrap: wrap;
   gap: 0 var(--space-3);
   inline-size: min(100% - 2 * var(--space-4), var(--page-width));
-  min-block-size: 2.5rem;
+  align-content: center;
+  min-block-size: 2.75rem;
   margin-inline: auto;
   padding-block: var(--space-2);
   color: var(--color-text);
   text-decoration: none;
+}
+
+.deadline-strip[hidden] {
+  display: none;
+}
+
+/* Only a script can keep a countdown true between builds. */
+:root:not(.js) .deadline-strip__countdown {
+  display: none;
 }
 
 .deadline-strip strong {
@@ -254,6 +290,13 @@
   .site-footer__links {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Only reached with a very large browser font: two columns would leave no room for a word. */
+@media (width < 18rem) {
+  .site-footer__links {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
