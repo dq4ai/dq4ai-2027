@@ -67,6 +67,15 @@ export function stripPrefix(kind: DateEntry["kind"]): string {
   return kind === "notification" ? "Next date:" : "Next deadline:";
 }
 
+/** A topic's address on the Call for Papers page, so a tile can lead straight to it. */
+export function topicAnchor(title: string): string {
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return `topic-${slug}`;
+}
+
 export function surnameOf(person: Person): string {
   return person.surname ?? person.name.trim().split(/\s+/).at(-1) ?? person.name;
 }

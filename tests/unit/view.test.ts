@@ -1,8 +1,14 @@
 import { describe, expect, it } from "vitest";
 import { parseIso } from "../../src/lib/dates";
-import { siteSchema, submissionSchema } from "../../src/lib/schemas";
+import { cfpSchema, siteSchema, submissionSchema, TOPIC_ICONS } from "../../src/lib/schemas";
 import type { Site } from "../../src/lib/schemas";
-import { pageContext, stripPrefix, submissionOpen, type DeadlineView } from "../../src/lib/view";
+import {
+  pageContext,
+  stripPrefix,
+  submissionOpen,
+  topicAnchor,
+  type DeadlineView,
+} from "../../src/lib/view";
 
 const site = {
   acronym: "DQ4AI",
@@ -125,5 +131,28 @@ describe("content options", () => {
   it("a checklist step's link must be a path inside the site", () => {
     const step = { title: "t", detail: "d", link: { label: "l", path: "https://example.org" } };
     expect(submissionSchema.safeParse({ ...minimalSubmission, steps: [step] }).success).toBe(false);
+  });
+});
+
+describe("topicAnchor", () => {
+  it("gives each topic a stable address", () => {
+    expect(topicAnchor("Knowledge graphs")).toBe("topic-knowledge-graphs");
+    expect(topicAnchor("Quality in LLMs, NLP, and generative AI")).toBe(
+      "topic-quality-in-llms-nlp-and-generative-ai",
+    );
+  });
+});
+
+describe("topic icons in content", () => {
+  const topicsOnly = cfpSchema.shape.topics;
+  it("offers eight named icons", () => {
+    expect(TOPIC_ICONS).toHaveLength(8);
+  });
+  it("an icon is optional, so a new topic still displays", () => {
+    expect(topicsOnly.safeParse([{ title: "t", description: "d" }]).success).toBe(true);
+  });
+  it("a mistyped icon name fails the build", () => {
+    const parsed = topicsOnly.safeParse([{ title: "t", description: "d", icon: "knowlege-graph" }]);
+    expect(parsed.success).toBe(false);
   });
 });

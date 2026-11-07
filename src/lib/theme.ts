@@ -10,6 +10,8 @@ import { createHash } from "node:crypto";
  */
 export const THEME_INIT_SCRIPT = [
   `var d=document,r=d.documentElement;r.classList.add("js");`,
+  // iOS Safari only applies :active on a page that listens for touches.
+  `d.addEventListener("touchstart",function(){},{passive:true});`,
   `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")r.dataset.theme=t}catch(e){}`,
   `d.addEventListener("click",function(e){`,
   `var c=e.target.closest(".nav-toggle,.theme-toggle");if(!c)return;`,

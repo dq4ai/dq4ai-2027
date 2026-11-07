@@ -22,7 +22,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2) var(--space-4);
+  gap: var(--space-2) var(--header-gap, var(--space-4));
   inline-size: min(100% - 2 * var(--space-4), var(--page-width));
   margin-inline: auto;
   padding-block: var(--space-3);
@@ -30,7 +30,9 @@
 
 .brand {
   display: inline-flex;
-  align-items: baseline;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.4em;
   margin-inline-end: auto;
   color: var(--color-text);
   font-size: var(--text-lg);
@@ -40,23 +42,42 @@
   text-decoration: none;
 }
 
+.brand__mark {
+  inline-size: 2.25em;
+  block-size: 2.25em;
+}
+
+.site-footer .brand__mark {
+  inline-size: 2em;
+  block-size: 2em;
+}
+
 .site-header .brand {
-  padding-block: var(--space-2);
+  padding-block: var(--space-1);
 }
 
-.brand:hover {
-  color: var(--color-text);
+/* Logo, name, menu and theme have to share the narrowest phones. */
+@media (width < 25rem) {
+  .site-header__inner {
+    --header-gap: var(--space-2);
+  }
 }
 
-.brand__flag {
-  margin-inline: 0.04em;
-  padding-inline: 0.18em;
-  background: var(--color-flag);
-  color: var(--color-on-flag);
+@media (hover: hover) {
+  .brand:hover {
+    color: var(--color-accent-hover);
+  }
+}
+
+.brand:active {
+  color: var(--color-accent-hover);
+}
+
+.brand__digit {
+  color: var(--color-brand-b);
 }
 
 .brand__year {
-  margin-inline-start: 0.4em;
   color: var(--color-text-muted);
   font-weight: 400;
 }
@@ -74,12 +95,31 @@
   background: transparent;
   font-size: var(--text-sm);
   cursor: pointer;
-  transition: border-color 120ms ease;
 }
 
 @media (hover: hover) {
   .icon-button:hover {
     border-color: var(--color-rule-strong);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .icon-button:hover {
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+}
+
+.icon-button:active {
+  border-color: var(--color-rule-strong);
+  background: var(--color-surface-raised);
+}
+
+/* Gives way under the finger. Release is immediate, so a quick second press never waits. */
+@media (prefers-reduced-motion: no-preference) {
+  .icon-button:active,
+  .button:active {
+    transform: scale(0.97);
+    transition: transform var(--dur-instant) var(--ease-out);
   }
 }
 
@@ -141,11 +181,22 @@
   text-decoration: none;
 }
 
-.site-nav a:hover,
 .site-nav a[aria-current="page"] {
   text-decoration: underline;
   text-decoration-thickness: 2px;
   text-underline-offset: 0.35em;
+}
+
+@media (hover: hover) {
+  .site-nav a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+}
+
+.site-nav a:active {
+  color: var(--color-accent-hover);
 }
 
 .site-nav a[aria-current="page"] {
@@ -172,7 +223,7 @@
 
   /* The theme button moves below the links; this holds the menu button where the finger left it. */
   .site-header__inner:has(.site-nav[data-open]) .nav-toggle {
-    margin-inline-end: calc(2.75rem + var(--space-4));
+    margin-inline-end: calc(2.75rem + var(--header-gap, var(--space-4)));
   }
 }
 
@@ -198,6 +249,13 @@
     flex-wrap: wrap;
     gap: 0 var(--space-4);
     justify-content: flex-end;
+  }
+
+  /* Tight until the page reaches its full width: the logo needs the room. */
+  @media (width < 72rem) {
+    .site-nav ul {
+      gap: 0 var(--space-3);
+    }
   }
 
   .site-nav a {
@@ -231,6 +289,18 @@
   padding-block: var(--space-2);
   color: var(--color-text);
   text-decoration: none;
+}
+
+@media (hover: hover) {
+  .deadline-strip a:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+.deadline-strip a:active {
+  color: var(--color-accent-hover);
 }
 
 .deadline-strip[hidden] {
@@ -310,4 +380,26 @@
 
 .site-footer a:not(.brand) {
   display: inline-block;
+}
+
+@media (pointer: coarse) {
+  .site-footer__links a {
+    min-block-size: 2.75rem;
+    padding-block: calc((2.75rem - 1lh) / 2);
+  }
+}
+
+/* Opening the menu moves most of the screen. The fade tells new links from displaced content. */
+@media (width < 65rem) and (prefers-reduced-motion: no-preference) {
+  .js .site-nav[data-open],
+  .site-header__inner:has(.site-nav[data-open]) .theme-toggle {
+    animation: reveal var(--dur-fast) var(--ease-out);
+  }
+}
+
+/* From-only, so an interrupted or unsupported animation can never leave anything hidden. */
+@keyframes reveal {
+  from {
+    opacity: 0;
+  }
 }

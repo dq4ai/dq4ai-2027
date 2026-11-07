@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+New identity built around a logo and topic icons. The logo, a two-way loop around checked data, is in
+the header and footer, and in the favicon and social images. The site's colors now come from it:
+navy and teal, with amber kept for the next deadline. The home page opens with the logo and the eight
+topics as icon tiles, each leading to its full description in the call for papers.
+
+Motion and feedback: the home logo settles once on load, the phone menu fades open, and controls
+respond to hover and press. A theme switch now changes everything at once, section links jump instead
+of scrolling for over a second, and all of it respects the reduced motion setting.
+
 Fixed after a review of how visitors use the site. Organization and Attend now say how to contact
 the organizers, or that a contact is coming. A closed deadline stops being "next" as soon as it
 closes, on every page, the submit button goes with it, and the daily rebuild now runs just after an

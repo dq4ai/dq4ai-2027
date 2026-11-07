@@ -54,6 +54,30 @@
     margin-inline-start: 0 !important;
   }
 
+  .page-header {
+    border-image: none;
+  }
+
+  .hero__mark,
+  .not-found__mark {
+    inline-size: 32pt;
+    block-size: 32pt;
+  }
+
+  .topic-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .topic-grid a {
+    padding: 4pt;
+    background: none;
+  }
+
+  .topic-icon {
+    inline-size: 20pt;
+    block-size: 20pt;
+  }
+
   .tba {
     border: 0;
     padding: 0;

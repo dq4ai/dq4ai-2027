@@ -468,7 +468,7 @@ test.describe("time zones", () => {
     await toggle.click();
     await expect(toggle).toHaveText("Show in AoE");
     await page.goto("program/");
-    await expect(page.locator(".tz-toggle")).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".tz-toggle")).toHaveText("Show venue time");
     await expect(page.locator("[data-zone-note]")).toContainText("Asia/Tokyo");
     await context.close();
   });

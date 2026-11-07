@@ -39,6 +39,17 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Venue, visa and travel information      | `attend.yaml`                       |
 | Code of conduct, conflicts, ethics      | `policies.yaml`                     |
 
+## Choose a topic's icon
+
+Each topic in `cfp.yaml` can name its icon. Leave `icon` out and the topic still appears without one.
+A mistyped name stops the build and lists the choices: `data-quality`, `ai-for-quality`,
+`knowledge-graph`, `language-models`, `governance`, `multimodal`, `benchmarks`, `applications`.
+
+```yaml
+- title: Knowledge graphs
+  icon: knowledge-graph
+```
+
 ## Say when details will be known
 
 If you know roughly when the missing details will be announced, add one sentence to `site.yaml`. It

@@ -2,6 +2,8 @@
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
+import Mark from "../components/Mark.astro";
+import TopicIcon from "../components/TopicIcon.astro";
 import Value from "../components/Value.astro";
 import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -17,7 +19,7 @@ import {
 import { formatIsoDay, TBA } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { isKnown, siteSummary, submissionCloses, submissionOpen } from "../lib/view";
+import { isKnown, siteSummary, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
 
 const [site, cfp, committees, deadlines, keynotes, news, sponsors] = await Promise.all([
   getSite(),
@@ -42,7 +44,10 @@ const jsonLd = serializeJsonLd(
 <BaseLayout slug="home">
   <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
   <div class="hero">
-    <h1>{site.title}</h1>
+    <div class="hero__title">
+      <Mark class="hero__mark" />
+      <h1>{site.title}</h1>
+    </div>
     <div class="hero__body">
       <div>
         <p class="lede">{siteSummary(site)}</p>
@@ -77,28 +82,38 @@ const jsonLd = serializeJsonLd(
     </div>
   </div>
 
-  <section class="purpose">
-    <Heading id="about">Why data quality for AI</Heading>
-    <p class="exchange">
-      <span>{dataForAi}</span> <span>{aiForData}</span>
-    </p>
-    <p>{why}</p>
-    <p>{relationship}</p>
-    <p>{cfp.goal}</p>
-  </section>
-
-  <section>
+  <section class="topic-band">
     <Heading id="topics">Topics of interest</Heading>
-    <ul class="topics">
+    <ul class="topic-grid">
       {cfp.topics.map((topic) => (
         <li>
-          <strong>{topic.title}</strong> <span>{topic.description}</span>
+          <a href={url(`/call-for-papers/#${topicAnchor(topic.title)}`)}>
+            {topic.icon && <TopicIcon name={topic.icon} />}
+            <span>{topic.title}</span>
+          </a>
         </li>
       ))}
     </ul>
     <p class="more-link">
       <a href={url("/call-for-papers/")}>Read the full call for papers</a>
     </p>
+  </section>
+
+  <section class="purpose">
+    <Heading id="about">Why data quality for AI</Heading>
+    <p class="exchange">
+      <span>
+        <TopicIcon name="data-quality" />
+        {dataForAi}
+      </span>{" "}
+      <span>
+        <TopicIcon name="ai-for-quality" />
+        {aiForData}
+      </span>
+    </p>
+    <p>{why}</p>
+    <p>{relationship}</p>
+    <p>{cfp.goal}</p>
   </section>
 
   {keynotes.length > 0 && (

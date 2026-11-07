@@ -1,5 +1,6 @@
 html {
   scroll-padding-block-start: 6rem;
+  scroll-padding-block-end: var(--space-3);
 }
 
 body {
@@ -42,6 +43,10 @@ h2 {
   margin-block: var(--space-6) var(--space-3);
 }
 
+.section-heading {
+  color: var(--color-brand-a);
+}
+
 h3 {
   font-size: var(--text-h3);
   margin-block: var(--space-5) var(--space-2);
@@ -64,18 +69,35 @@ a {
   color: var(--color-accent);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.18em;
-  transition: color 120ms ease;
 }
 
-a:hover {
+@media (hover: hover) {
+  a:hover {
+    color: var(--color-accent-hover);
+    text-decoration-thickness: 2px;
+  }
+}
+
+a:active {
   color: var(--color-accent-hover);
-  text-decoration-thickness: 2px;
+}
+
+/* Ease towards a hover, and nowhere else: a theme switch has to change everything at once. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  a:hover {
+    transition: color var(--dur-fast) var(--ease-out);
+  }
 }
 
 :focus-visible {
   outline: 3px solid var(--color-focus);
   outline-offset: 2px;
   border-radius: var(--radius);
+}
+
+/* Holds focus for the skip link; the whole page in a ring tells nobody anything. */
+main:focus-visible {
+  outline: none;
 }
 
 time,
@@ -87,13 +109,8 @@ time,
   *,
   *::before,
   *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
   }
 }

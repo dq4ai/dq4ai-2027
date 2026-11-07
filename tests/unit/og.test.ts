@@ -1,11 +1,11 @@
-/** The social image itself: only a digit in the acronym is flagged, never one in the year. */
+/** The social image itself: only a digit in the acronym is teal, never one in the year. */
 import sharp from "sharp";
 import { describe, expect, it } from "vitest";
 import { renderOgImage } from "../../src/lib/og";
 
-const FLAG = [0xf6, 0xc9, 0x45] as const;
+const TEAL = [0x0f, 0x7f, 0x72] as const;
 
-const flaggedPixels = async (acronym: string) => {
+const tealPixels = async (acronym: string) => {
   const image = await renderOgImage({
     pageTitle: "Program",
     workshopName: "A workshop",
@@ -16,7 +16,7 @@ const flaggedPixels = async (acronym: string) => {
   const { data } = await sharp(image).removeAlpha().raw().toBuffer({ resolveWithObject: true });
   let count = 0;
   for (let i = 0; i < data.length; i += 3) {
-    const distance = FLAG.reduce((sum, value, channel) => {
+    const distance = TEAL.reduce((sum, value, channel) => {
       return sum + Math.abs((data[i + channel] ?? 0) - value);
     }, 0);
     if (distance < 30) count += 1;
@@ -25,11 +25,12 @@ const flaggedPixels = async (acronym: string) => {
 };
 
 describe("social image wordmark", () => {
-  it("flags the digit in an acronym", async () => {
-    expect(await flaggedPixels("DQ4AI")).toBeGreaterThan(100);
+  // The logo is teal in both, so the digit is what is left when the two are compared.
+  it("colors the digit in an acronym", async () => {
+    expect((await tealPixels("DQ4AI")) - (await tealPixels("DQAI"))).toBeGreaterThan(100);
   });
 
-  it("flags nothing when the acronym has no digit", async () => {
-    expect(await flaggedPixels("DQAI")).toBe(0);
+  it("draws the logo even when the acronym has no digit", async () => {
+    expect(await tealPixels("DQAI")).toBeGreaterThan(100);
   });
 });
