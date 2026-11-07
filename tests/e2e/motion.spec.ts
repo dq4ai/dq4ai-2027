@@ -1,0 +1,237 @@
+/** Motion explains, gives feedback or directs attention. See "Motion" in docs/ARCHITECTURE.md. */
+import { expect, test, type Page } from "@playwright/test";
+import { readdirSync, readFileSync } from "node:fs";
+
+const running = (page: Page, selector: string) =>
+  page
+    .locator(selector)
+    .first()
+    .evaluate((e) => e.getAnimations({ subtree: true }).map((a) => a.playState));
+
+test.describe("tokens", () => {
+  test("durations and easings come only from tokens", () => {
+    const folder = "src/styles/components";
+    const sheets = [
+      "src/styles/base.css",
+      ...readdirSync(folder).map((name) => `${folder}/${name}`),
+    ];
+    for (const sheet of sheets) {
+      const css = readFileSync(sheet, "utf8").replace(
+        /(animation|transition)-duration: 0\.01ms/g,
+        "",
+      );
+      expect(css, sheet).not.toMatch(/\b\d+m?s\b/);
+      expect(css, sheet).not.toMatch(/cubic-bezier|(?<!--)\bease\b/);
+    }
+  });
+});
+
+test.describe("what moves", () => {
+  test("the home logo's loop settles once around the checked data", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("");
+    const names = await page
+      .locator(".hero .mark__loop")
+      .evaluate((e) => getComputedStyle(e).animationName);
+    expect(names).toBe("settle");
+    const header = await page
+      .locator(".site-header .mark__loop")
+      .evaluate((e) => getComputedStyle(e).animationName);
+    expect(header).toBe("none");
+  });
+
+  test("the opening menu fades in, and closes at once", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("");
+    await page.locator(".nav-toggle").click();
+    const open = await page.locator("#site-nav").evaluate((e) => getComputedStyle(e).animationName);
+    expect(open).toBe("reveal");
+    await page.locator(".nav-toggle").click();
+    await expect(page.locator("#site-nav")).toBeHidden();
+  });
+
+  test("a hovered button eases, and only then", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("call-for-papers/");
+    const link = page.locator(".toc a").first();
+    const duration = () => link.evaluate((e) => getComputedStyle(e).transitionDuration);
+    expect(await duration()).toBe("0s");
+    await link.hover();
+    expect(await duration()).toBe("0.15s");
+  });
+
+  test("a pressed button gives way under the pointer", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("");
+    const button = page.locator(".hero__actions .button").first();
+    await button.hover();
+    await page.mouse.down();
+    await expect
+      .poll(() => button.evaluate((e) => getComputedStyle(e).transform))
+      .toContain("matrix(0.97");
+    await page.mouse.up();
+  });
+});
+
+test.describe("what stays still", () => {
+  test("a theme switch changes everything in the same moment", async ({ page }) => {
+    await page.emulateMedia({ colorScheme: "light", reducedMotion: "no-preference" });
+    await page.goto("");
+    // The logo's own moment on load is not part of the switch.
+    await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)));
+    await page.locator(".theme-toggle").click();
+    const moving = await page.evaluate(
+      () =>
+        document
+          .getAnimations()
+          .map((a) => (a.effect as KeyframeEffect).target)
+          .filter((target) => !target?.closest(".theme-toggle")).length,
+    );
+    expect(moving).toBe(0);
+  });
+
+  test("section links jump, without a long scroll", async ({ page }) => {
+    await page.goto("");
+    expect(
+      await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior),
+    ).toBe("auto");
+  });
+
+  test("reduced motion stops every movement, and keeps every state", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.setViewportSize({ width: 390, height: 844 });
+    await page.goto("");
+    expect(await running(page, ".hero")).toEqual([]);
+    const toggle = page.locator(".nav-toggle");
+    await toggle.click();
+    expect(await running(page, "#site-nav")).toEqual([]);
+    await expect(toggle).toHaveText("Close");
+    await expect(page.locator("#site-nav a").first()).toBeVisible();
+    const button = page.locator(".hero__actions .button").first();
+    await button.hover();
+    await page.mouse.down();
+    expect(await button.evaluate((e) => getComputedStyle(e).transform)).toBe("none");
+    await page.mouse.up();
+  });
+});
+
+test.describe("every control shows its state", () => {
+  const colorOf = (page: Page, selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((e) => getComputedStyle(e).color);
+
+  test("the logo responds to a pointer", async ({ page }) => {
+    await page.goto("");
+    const before = await colorOf(page, ".site-header .brand");
+    await page.locator(".site-header .brand").hover();
+    await expect.poll(() => colorOf(page, ".site-header .brand")).not.toBe(before);
+  });
+
+  test("a topic tile responds to a press", async ({ page }) => {
+    await page.goto("");
+    const tile = page.locator(".topic-grid a").first();
+    const background = () => tile.evaluate((e) => getComputedStyle(e).backgroundColor);
+    const before = await background();
+    await tile.hover();
+    await page.mouse.down();
+    await expect.poll(background).not.toBe(before);
+    await page.mouse.up();
+  });
+
+  test("the deadline bar responds to a pointer", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "populated-content", "needs a dated deadline");
+    await page.goto("");
+    const link = page.locator(".deadline-strip a");
+    const before = await link.evaluate((e) => getComputedStyle(e).textDecorationLine);
+    await link.hover();
+    expect(await link.evaluate((e) => getComputedStyle(e).textDecorationLine)).not.toBe(before);
+  });
+
+  test("an abstract's control responds to a pointer", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name !== "populated-content", "needs an abstract");
+    await page.goto("program/");
+    const summary = page.locator("summary").first();
+    const before = await summary.evaluate((e) => getComputedStyle(e).textDecorationLine);
+    await summary.hover();
+    expect(await summary.evaluate((e) => getComputedStyle(e).textDecorationLine)).not.toBe(before);
+  });
+
+  test("touch does not leave a link looking hovered", async ({ browser, baseURL }) => {
+    const context = await browser.newContext({
+      baseURL,
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 390, height: 844 },
+    });
+    const page = await context.newPage();
+    await page.goto("");
+    const link = page.locator(".more-link a");
+    await link.evaluate((a) => {
+      a.addEventListener("click", (event) => {
+        event.preventDefault();
+      });
+    });
+    const before = await link.evaluate((e) => getComputedStyle(e).color);
+    await link.tap();
+    await page.waitForTimeout(250);
+    expect(await link.evaluate((e) => getComputedStyle(e).color)).toBe(before);
+    await context.close();
+  });
+
+  test("small lists of links are comfortable to tap", async ({ browser, baseURL }) => {
+    const context = await browser.newContext({
+      baseURL,
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 390, height: 844 },
+    });
+    const page = await context.newPage();
+    await page.goto("call-for-papers/");
+    for (const selector of [".toc a", ".site-footer__links a"]) {
+      const box = await page.locator(selector).first().boundingBox();
+      expect(box?.height ?? 0, selector).toBeGreaterThanOrEqual(44);
+    }
+    await context.close();
+  });
+
+  test("a section's own link is a full pointer target", async ({ page }) => {
+    await page.setViewportSize({ width: 1100, height: 800 });
+    await page.goto("call-for-papers/");
+    const box = await page.locator(".section-anchor").first().boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThanOrEqual(24);
+    expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
+  });
+
+  test("a focus ring is not cut off at the bottom of the screen", async ({ page }) => {
+    await page.goto("");
+    const padding = await page.evaluate(
+      () => getComputedStyle(document.documentElement).scrollPaddingBlockEnd,
+    );
+    expect(parseFloat(padding)).toBeGreaterThan(0);
+  });
+
+  test("the skip link's target has no ring around the whole page", async ({ page }) => {
+    await page.goto("");
+    await page.keyboard.press("Tab");
+    await page.keyboard.press("Enter");
+    await expect(page.locator("main")).toBeFocused();
+    await expect(page.locator("main")).toHaveCSS("outline-style", "none");
+  });
+
+  test("the time-zone button keeps its size, and says what it will do", async ({
+    page,
+  }, testInfo) => {
+    test.skip(testInfo.project.name !== "populated-content", "needs dated deadlines");
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("dates/");
+    const toggle = page.locator(".tz-toggle");
+    const before = await toggle.boundingBox();
+    await expect(toggle).not.toHaveAttribute("aria-pressed");
+    await toggle.click();
+    await expect(toggle).toHaveText("Show in AoE");
+    expect((await toggle.boundingBox())?.width).toBe(before?.width);
+  });
+});

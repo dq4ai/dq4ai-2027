@@ -1,17 +1,35 @@
 ---
 import { getSite } from "../lib/content";
+import type { Site } from "../lib/schemas";
 import { pageContext } from "../lib/view";
+import ContentImage from "./ContentImage.astro";
 
 interface Props {
   title: string;
   lede?: string;
+  /**
+   * Set behind the title, under a scrim that keeps the text readable whatever the photo holds.
+   * Lazy on purpose: hidden on a phone, where the CSS leaves it unloaded, it costs nothing there.
+   */
+  photo?: Site["hostPhoto"];
 }
-const { title, lede } = Astro.props;
+const { title, lede, photo } = Astro.props;
 const site = await getSite();
 ---
 
-<header class="page-header">
-  <p class="page-context">{pageContext(site)}</p>
-  <h1>{title}</h1>
-  {lede && <p class="lede">{lede}</p>}
+<header class:list={["page-header", { "page-header--photo": photo }]}>
+  {photo && (
+    <ContentImage
+      class="page-header__photo"
+      file={photo.file}
+      alt={photo.alt}
+      widths={[800, 1056, 1600]}
+      sizes="(min-width: 70rem) 66rem, 100vw"
+    />
+  )}
+  <div class="page-header__text">
+    <p class="page-context">{pageContext(site)}</p>
+    <h1>{title}</h1>
+    {lede && <p class="lede">{lede}</p>}
+  </div>
 </header>

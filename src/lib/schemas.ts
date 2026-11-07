@@ -17,6 +17,19 @@ const isoInstant = z
   .string()
   .refine(isIsoWithZone, "must be ISO 8601 with a time zone, e.g. 2026-12-11T23:59:00-12:00");
 
+/** Topic icons a co-chair can choose by name in cfp.yaml. */
+export const TOPIC_ICONS = [
+  "data-quality",
+  "ai-for-quality",
+  "knowledge-graph",
+  "language-models",
+  "governance",
+  "multimodal",
+  "benchmarks",
+  "applications",
+] as const;
+export type TopicIconName = (typeof TOPIC_ICONS)[number];
+
 const urlOrTba = z.union([tba, httpUrl]);
 const dayOrTba = z.union([tba, isoDay]);
 const instantOrTba = z.union([tba, isoInstant]);
@@ -52,6 +65,7 @@ export const siteSchema = z.strictObject({
     endDate: isoDay,
     city: text,
     country: text,
+    cityUrl: httpUrl.optional(),
   }),
   venueTimezone: z.string().refine(isValidTimeZone, "must be an IANA time zone, e.g. Europe/Paris"),
   workshopDate: dayOrTba,
@@ -65,6 +79,7 @@ export const siteSchema = z.strictObject({
   statusNote: text.optional(),
   reviewModel: text,
   hostPhoto: creditedPhotoSchema.optional(),
+  cfpPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
     githubOwner: text,
     repoName: text,
@@ -175,7 +190,17 @@ export const cfpSchema = z.strictObject({
   communities: z.array(text).min(1),
   exchange: z.tuple([text, text]),
   topicsIntro: text,
-  topics: z.array(z.strictObject({ title: text, description: text })).min(1),
+  topics: z
+    .array(
+      z.strictObject({
+        title: text,
+        description: text,
+        icon: z
+          .enum(TOPIC_ICONS, { error: `must be one of: ${TOPIC_ICONS.join(", ")}` })
+          .optional(),
+      }),
+    )
+    .min(1),
   paperTypes: z
     .array(z.strictObject({ id, title: text, description: text, pageLimit: text }))
     .min(1),

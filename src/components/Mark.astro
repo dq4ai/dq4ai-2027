@@ -1,0 +1,12 @@
+---
+import { markBody } from "../lib/brand";
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+// Colored from the stylesheet, so the logo follows the theme.
+const body = markBody((kind, part) => `class="mark__${kind}-${part}"`);
+---
+
+<svg class:list={["mark", className]} viewBox="0 0 120 120" aria-hidden="true" set:html={body} />

@@ -25,19 +25,27 @@
 :root {
   color-scheme: light dark;
 
-  /* The Data Record: cool white and ink, like a clean table. Amber is the one flagged cell,
-     used only for the 4 in the wordmark and the next deadline. */
-  --color-surface: light-dark(#fcfdfd, #11151a);
-  --color-surface-raised: light-dark(#f2f5f7, #1a2027);
-  --color-text: light-dark(#141c26, #e8ecf1);
-  --color-text-muted: light-dark(#55606e, #a5b0bd);
-  --color-rule: light-dark(#dbe0e6, #323a44);
-  --color-rule-strong: light-dark(#141c26, #6b7683);
-  --color-accent: light-dark(#1c4382, #a3c7f5);
-  --color-accent-hover: light-dark(#102a55, #c8def9);
-  --color-on-accent: light-dark(#fff, #11151a);
-  --color-primary: light-dark(#1c4382, #e8ecf1);
-  --color-primary-hover: light-dark(#102a55, #fff);
+  /* Everything starts from the logo: navy and teal on a cool white or a deep navy. Amber is the one
+     flagged cell, used only for the next deadline. */
+  --color-brand-a: light-dark(#1e3a8a, #8fb0ff);
+  --color-brand-b: light-dark(#0f7f72, #3fd0bd);
+  --color-surface: light-dark(#fcfdfe, #0d1626);
+  --color-surface-raised: light-dark(#f2f5fb, #16233a);
+  --color-text: light-dark(#101a2c, #eef2fa);
+  --color-text-muted: light-dark(#4f5b6d, #aeb9ca);
+  --color-rule: light-dark(#d5dbe6, #2c3a55);
+  --color-rule-strong: light-dark(#101a2c, #6f80a0);
+  --color-accent: var(--color-brand-a);
+  --color-accent-hover: light-dark(#142a66, #b9cdff);
+  --color-on-accent: light-dark(#fff, #0d1626);
+  --color-primary: var(--color-brand-a);
+  --color-primary-hover: light-dark(#142a66, #b9cdff);
+  /* Over a photo, whatever it holds: white on a navy scrim, both themes. */
+  --color-on-photo: #fff;
+  --color-photo-base: #0d1626;
+  --color-scrim: rgb(13 22 38 / 0.82);
+  --color-scrim-text: rgb(13 22 38 / 0.9);
+  --color-scrim-clear: rgb(13 22 38 / 0.35);
   --color-flag: #f6c945;
   --color-on-flag: #141c26;
   --color-status-today: light-dark(#7a4f00, #e8be6a);
@@ -71,7 +79,14 @@
   --rail-gap: var(--space-5);
   /* The label column of rows, so values share one edge across a page. */
   --label: 15rem;
-  --radius: 2px;
+  /* Motion: precise, calm, quick. Why each thing moves is in docs/ARCHITECTURE.md. */
+  --dur-instant: 80ms;
+  --dur-fast: 150ms;
+  --dur-slower: 480ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --radius: 6px;
+  --radius-large: 10px;
 }
 
 :root[data-theme="light"] {

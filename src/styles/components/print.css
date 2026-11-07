@@ -7,6 +7,7 @@
     --color-accent: #000;
     --color-rule: #999;
     --color-rule-strong: #000;
+    --color-on-photo: #000;
     --text-base: 10pt;
     --text-lg: 11pt;
     --text-h3: 11pt;
@@ -52,6 +53,48 @@
 
   main > * {
     margin-inline-start: 0 !important;
+  }
+
+  .page-header {
+    border-image: none;
+  }
+
+  .page-header__photo {
+    display: none !important;
+  }
+
+  .page-header--photo {
+    margin: 0;
+    padding: 4pt 0;
+    background: none;
+  }
+
+  .page-header--photo::before {
+    content: none;
+  }
+
+  .page-header--photo .page-header__text {
+    max-inline-size: none;
+  }
+
+  .hero__mark,
+  .not-found__mark {
+    inline-size: 32pt;
+    block-size: 32pt;
+  }
+
+  .topic-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .topic-grid a {
+    padding: 4pt;
+    background: none;
+  }
+
+  .topic-icon {
+    inline-size: 20pt;
+    block-size: 20pt;
   }
 
   .tba {

@@ -6,12 +6,7 @@ interface Props {
 const { activeLabel } = Astro.props;
 ---
 
-<button
-  class="icon-button tz-toggle"
-  type="button"
-  aria-pressed="false"
-  data-active-label={activeLabel}
->
+<button class="icon-button tz-toggle" type="button" data-active-label={activeLabel}>
   Show in my time zone
 </button>
 
@@ -39,7 +34,7 @@ const { activeLabel } = Astro.props;
 
   const show = (showLocal: boolean) => {
     for (const [button, label] of buttonLabels) {
-      button.setAttribute("aria-pressed", String(showLocal));
+      button.toggleAttribute("data-local", showLocal);
       button.textContent = showLocal ? (button.dataset.activeLabel ?? label) : label;
     }
     for (const element of elements) {
@@ -52,7 +47,7 @@ const { activeLabel } = Astro.props;
 
   for (const button of buttons) {
     button.addEventListener("click", () => {
-      const showLocal = button.getAttribute("aria-pressed") !== "true";
+      const showLocal = !button.hasAttribute("data-local");
       show(showLocal);
       try {
         if (showLocal) localStorage.setItem(STORAGE_KEY, "true");

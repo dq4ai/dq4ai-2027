@@ -1,7 +1,184 @@
 /* Every page shares one axis: a rail on the left for names and times, the content beside it. */
+/* The rule under a page's title carries the logo's two directions. */
 .page-header {
   padding-block: var(--space-6) var(--space-5);
-  border-block-end: 1px solid var(--color-rule-strong);
+  border-block-end: 2px solid var(--color-brand-a);
+  border-image: linear-gradient(90deg, var(--color-brand-a) 0 50%, var(--color-brand-b) 50% 100%) 1;
+}
+
+/* A title over a photo. The scrim is there from the first paint, so the text never waits for the
+   image, and it holds AA over the lightest pixel a photo could have. */
+.page-header--photo {
+  position: relative;
+  isolation: isolate;
+  margin-block-start: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  overflow: clip;
+  border: 0;
+  border-image: none;
+  border-radius: var(--radius-large);
+  background: var(--color-photo-base);
+}
+
+.page-header--photo::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: linear-gradient(90deg, var(--color-scrim) 0%, var(--color-scrim) 100%);
+  content: "";
+}
+
+.page-header__photo {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 75% center;
+}
+
+/* On a phone the photo would be the slowest thing on the page, for a strip of it under the scrim. */
+@media (width < 40rem) {
+  .page-header__photo {
+    display: none;
+  }
+}
+
+.page-header--photo :is(h1, .lede, .page-context) {
+  color: var(--color-on-photo);
+}
+
+/* From here the text keeps to the left, so the photo can show on the right. */
+@media (width >= 60rem) {
+  .page-header--photo {
+    padding-inline: var(--space-5);
+  }
+
+  .page-header--photo::before {
+    background: linear-gradient(
+      90deg,
+      var(--color-scrim-text) 0%,
+      var(--color-scrim-text) 60%,
+      var(--color-scrim-clear) 100%
+    );
+  }
+
+  .page-header--photo .page-header__text {
+    max-inline-size: 54%;
+  }
+}
+
+/* The logo, in its own colors wherever it is drawn. */
+.mark {
+  flex: none;
+}
+
+.mark__fill-a {
+  fill: var(--color-brand-a);
+}
+
+.mark__stroke-a {
+  stroke: var(--color-brand-a);
+}
+
+.mark__fill-b {
+  fill: var(--color-brand-b);
+}
+
+.mark__stroke-b {
+  stroke: var(--color-brand-b);
+}
+
+.mark__stroke-surface {
+  stroke: var(--color-surface);
+}
+
+.topic-icon {
+  flex: none;
+  inline-size: 3rem;
+  block-size: 3rem;
+  fill: none;
+  stroke: var(--color-brand-a);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+.topic-icon__ok {
+  stroke: var(--color-brand-b);
+}
+
+/* The eight topics: what the workshop is about, at a glance. */
+.topic-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  max-inline-size: none;
+  padding: 0;
+  list-style: none;
+}
+
+@media (width >= 48rem) {
+  .topic-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+  }
+}
+
+/* Only reached with a very large browser font: two columns would leave no room for a word. */
+@media (width < 18rem) {
+  .topic-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.topic-grid a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  block-size: 100%;
+  padding: var(--space-3) var(--space-2);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-large);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .topic-grid a:hover {
+    border-color: var(--color-brand-a);
+    color: var(--color-text);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .topic-grid a:hover {
+    transition: border-color var(--dur-fast) var(--ease-out);
+  }
+}
+
+.topic-grid a:active {
+  border-color: var(--color-brand-a);
+  background: var(--color-rule);
+  color: var(--color-text);
+}
+
+.topic-title {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.topic-title .topic-icon {
+  inline-size: 1.75rem;
+  block-size: 1.75rem;
 }
 
 /* What this is, for someone who arrives here rather than at the home page. */
@@ -71,7 +248,48 @@ main > section:not(.session) > h2 {
 
 /* The opening of the home page: the title, then what is known. */
 .hero {
-  padding-block: var(--space-6) var(--space-6);
+  padding-block: var(--space-5) var(--space-6);
+}
+
+.hero__title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.hero__mark {
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+}
+
+/* The one moment nobody asked for: the two directions settle once around the checked data, which
+   stays still. From-only, so it cannot leave the logo hidden. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__mark .mark__loop {
+    transform-box: view-box;
+    transform-origin: center;
+    animation: settle var(--dur-slower) var(--ease-out);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: rotate(-60deg);
+  }
+}
+
+@media (width >= 40rem) {
+  .hero__title {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-5);
+  }
+
+  .hero__mark {
+    inline-size: clamp(6rem, 11vw, 10rem);
+    block-size: clamp(6rem, 11vw, 10rem);
+  }
 }
 
 .hero h1 {
@@ -121,9 +339,19 @@ main > section:not(.session) > h2 {
   border-radius: var(--radius);
   font-weight: 600;
   text-decoration: none;
-  transition:
-    background-color 120ms ease,
-    color 120ms ease;
+}
+
+.button:active {
+  background: var(--color-surface-raised);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .button:hover {
+    transition:
+      background-color var(--dur-fast) var(--ease-out),
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
 }
 
 .button--primary {
@@ -132,7 +360,15 @@ main > section:not(.session) > h2 {
   color: var(--color-on-accent);
 }
 
-.button--primary:hover {
+@media (hover: hover) {
+  .button--primary:hover {
+    background: var(--color-primary-hover);
+    border-color: var(--color-primary-hover);
+    color: var(--color-on-accent);
+  }
+}
+
+.button--primary:active {
   background: var(--color-primary-hover);
   border-color: var(--color-primary-hover);
   color: var(--color-on-accent);
@@ -150,7 +386,21 @@ main > section:not(.session) > h2 {
 }
 
 .exchange span {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-brand-a);
+}
+
+.exchange span + span,
+.exchange span + span .topic-icon {
+  color: var(--color-brand-b);
+  stroke: var(--color-brand-b);
+}
+
+.exchange .topic-icon {
+  inline-size: 1.75em;
+  block-size: 1.75em;
 }
 
 /* Set apart by lines on screen. Read aloud, only this keeps them from running together. */
@@ -340,7 +590,9 @@ main > section:not(.session) > h2 {
 .section-anchor {
   position: absolute;
   display: none;
-  margin-inline-start: -0.8em;
+  min-inline-size: 1.5rem;
+  margin-inline-start: -1.5rem;
+  text-align: center;
   color: var(--color-text-muted);
   font-family: var(--font-serif);
   font-size: var(--text-h2);
@@ -380,6 +632,13 @@ main > section:not(.session) > h2 {
 .toc a {
   display: inline-block;
   min-block-size: 1.5rem;
+}
+
+@media (pointer: coarse) {
+  .toc a {
+    min-block-size: 2.75rem;
+    padding-block: calc((2.75rem - 1lh) / 2);
+  }
 }
 
 .topics {
@@ -579,7 +838,9 @@ main > section:not(.session) > h2 {
   margin-block: var(--space-4) var(--space-3);
 }
 
+/* As wide as its longest label, so a second click still lands on it. */
 .tz-toggle {
+  min-inline-size: min(11rem, 100%);
   min-block-size: 2.75rem;
   padding-inline: var(--space-3);
 }
@@ -589,10 +850,16 @@ main > section:not(.session) > h2 {
   display: none;
 }
 
-.tz-toggle[aria-pressed="true"] {
+.tz-toggle[data-local] {
   border-color: var(--color-rule-strong);
   background: var(--color-surface-raised);
   font-weight: 600;
+}
+
+@media (hover: hover) {
+  .tz-toggle[data-local]:hover {
+    background: var(--color-surface);
+  }
 }
 
 [data-zone-note] {
@@ -646,6 +913,25 @@ summary {
   color: var(--color-accent);
   font-size: var(--text-sm);
   cursor: pointer;
+}
+
+@media (hover: hover) {
+  summary:hover {
+    color: var(--color-accent-hover);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+}
+
+summary:active {
+  color: var(--color-accent-hover);
+}
+
+@media (pointer: coarse) {
+  summary {
+    min-block-size: 2.75rem;
+    padding-block: calc((2.75rem - 1lh) / 2);
+  }
 }
 
 details p {
@@ -739,12 +1025,17 @@ details p {
 
 .city-photo {
   margin: 0;
-  max-inline-size: 32rem;
+}
+
+.city-photo a:has(img) {
+  display: block;
+  border-radius: var(--radius-large);
 }
 
 .city-photo img {
   inline-size: 100%;
   block-size: auto;
+  border-radius: var(--radius-large);
 }
 
 .city-photo figcaption {
@@ -766,6 +1057,13 @@ details p {
 
 .not-found {
   padding-block: var(--space-7);
+}
+
+.not-found__mark {
+  display: block;
+  inline-size: 4rem;
+  block-size: 4rem;
+  margin-block-end: var(--space-3);
 }
 
 .entry__meta a,

@@ -3,6 +3,7 @@ import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import satori from "satori";
 import sharp from "sharp";
+import { markSvg } from "./brand";
 import { wordmarkParts } from "./view";
 
 const fontPath = (name: string) => resolve("src/assets/fonts", name);
@@ -28,25 +29,34 @@ export interface OgInput {
   year: number;
 }
 
-const PAPER = "#FCFDFD";
-const INK = "#141C26";
-const FLAG = "#F6C945";
-const MUTED = "#55606E";
+const PAPER = "#FCFDFE";
+const INK = "#101A2C";
+const NAVY = "#1E3A8A";
+const TEAL = "#0F7F72";
+const MUTED = "#4F5B6D";
+const LOGO = `data:image/svg+xml;base64,${Buffer.from(
+  markSvg({ a: NAVY, b: TEAL, surface: PAPER }),
+).toString("base64")}`;
 
 const element = (style: Record<string, unknown>, children: unknown) => ({
   type: "div",
   props: { style: { display: "flex", ...style }, children },
 });
 
-/** The wordmark: the acronym's digit is the flagged cell, as on the site. */
+/** The logo and wordmark: the acronym's digit is teal, as on the site. */
 const markElement = (acronym: string, year: number) => {
   const parts = wordmarkParts(acronym);
-  const style = { fontSize: 38, color: INK };
-  if (!parts) return element(style, `${acronym} ${year}`);
-  return element({ ...style, whiteSpace: "pre" }, [
-    element({}, parts.before),
-    element({ backgroundColor: FLAG, paddingLeft: 8, paddingRight: 8 }, parts.digit),
-    element({}, `${parts.after} ${year}`),
+  const style = { fontSize: 44, color: INK, whiteSpace: "pre" };
+  const name = parts
+    ? [
+        element({}, parts.before),
+        element({ color: TEAL }, parts.digit),
+        element({}, `${parts.after} ${year}`),
+      ]
+    : `${acronym} ${year}`;
+  return element({ alignItems: "center" }, [
+    { type: "img", props: { src: LOGO, width: 88, height: 88, style: { marginRight: 20 } } },
+    element(style, name),
   ]);
 };
 

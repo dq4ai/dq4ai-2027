@@ -19,6 +19,34 @@ activity; any commit, or re-enabling the workflow under Actions, resumes them. T
 corrects statuses, the flagged date, the strip and the submit button, so a page built earlier never
 contradicts itself.
 
+**The logo first.** The palette comes from logo D: navy for data quality for AI, teal for AI for
+data quality. `src/lib/brand.ts` draws it once, for the page, the favicon's shape and the social
+images. Amber is only ever the next deadline. The home page opens with the logo and the eight topic
+icons, so a researcher sees what the workshop is about before reading anything.
+
+**The header stays on screen.** Any page is one click away. The deadline bar scrolls with the page,
+because stacked they would take too much of a small screen. A very large browser font turns the
+sticky header off, since it would pin half the screen.
+
+**No banner photo on phones.** The Call for Papers panorama would be the page's largest paint on a
+phone and missed the 1200 ms budget at about 1800 ms, so screens under 40rem get the title on navy.
+
+**Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
+and every value comes from a token.
+
+| Moment             | Motion                           | Why                                      |
+| ------------------ | -------------------------------- | ---------------------------------------- |
+| Home logo, on load | The loop settles once, 480 ms    | The hero: the two directions around data |
+| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content   |
+| Hover on a pointer | Color or border eases, 150 ms    | Feedback                                 |
+| Press              | Color, and buttons scale to 0.97 | Feedback                                 |
+
+These stay still on purpose: theme switches, so every color changes at once; section jumps, because
+smooth scrolling took over a second on long pages and ran on page load; the time-zone toggle,
+countdown and status, because a value in motion cannot be trusted; and abstracts, which open where
+the reader clicked. `prefers-reduced-motion` turns all movement off and keeps every state. Hover-out
+is instant rather than reversing, which is what keeps theme switches from lagging.
+
 **One date module.** All date logic is in `src/lib/dates.ts`. Deadlines are ISO 8601 with an
 explicit zone; display uses `Intl.DateTimeFormat`.
 

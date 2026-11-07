@@ -110,7 +110,7 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   const exchange = purpose.locator(".exchange");
   await expect(exchange).toContainText("Data quality for AI");
   await expect(exchange).toContainText("AI for data quality");
-  await expect(page.locator("main .topics")).toContainText("Quality across text, images");
+  await expect(page.locator("main .topic-grid")).toContainText("Multimodal data quality");
 });
 
 test("the first screen states what is known as a record", async ({ page }) => {
@@ -184,9 +184,8 @@ test("the wordmark looks the same in the footer as in the header", async ({ page
   await page.goto("");
   const gap = (area: string) =>
     page.locator(`${area} .brand`).evaluate((brand) => {
-      const [name, year] = [...brand.children];
-      const nameBox = name?.getBoundingClientRect();
-      const yearBox = year?.getBoundingClientRect();
+      const nameBox = brand.querySelector(".brand__name")?.getBoundingClientRect();
+      const yearBox = brand.querySelector(".brand__year")?.getBoundingClientRect();
       const size = parseFloat(getComputedStyle(brand).fontSize);
       return ((yearBox?.left ?? 0) - (nameBox?.right ?? 0)) / size;
     });
@@ -233,7 +232,7 @@ test("the host city photo is credited and does not claim to be the venue", async
   const caption = section.locator("figcaption");
   await expect(caption).toContainText("not the workshop venue");
   const real = !populated(testInfo.project.name);
-  await expect(caption).toContainText(real ? "Caugris" : "Example Photographer");
+  await expect(caption).toContainText(real ? "Velvet" : "Example Photographer");
   await expect(
     caption.getByRole("link", { name: real ? "CC BY-SA 4.0" : "Example License" }),
   ).toHaveAttribute(
@@ -244,10 +243,10 @@ test("the host city photo is credited and does not claim to be the venue", async
     caption.getByRole("link", { name: real ? "Wikimedia Commons" : "Example Archive" }),
   ).toHaveAttribute(
     "href",
-    real ? /commons\.wikimedia\.org\/wiki\/File:Le_beffroi/ : "https://example.org/photo",
+    real ? /commons\.wikimedia\.org\/wiki\/File:Lille_gd_place/ : "https://example.org/photo",
   );
   await expect(caption).toContainText("resized");
-  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(512);
+  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(832);
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(342);
@@ -282,7 +281,7 @@ test("a section heading is plain text with its link beside it", async ({ page })
   await page.setViewportSize({ width: 1100, height: 800 });
   await anchor.focus();
   await expect(anchor).toHaveCSS("opacity", "1");
-  // Measured together: focusing the link starts a smooth scroll.
+  // Measured together: focusing the link can scroll the page.
   const boxes = await anchor.evaluate((link) => {
     const own = link.getBoundingClientRect();
     const heading = document.querySelector("#scope")?.getBoundingClientRect();
