@@ -17,7 +17,7 @@ dates.yaml → notification.date: Author notification (1 December 2026, 23:59 Ao
 Paper submission (11 December 2026, 23:59 AoE)
 ```
 
-Write `TBA` for anything not known yet. The site shows "To be announced", and each build lists what
+Write `TBA` for anything not known yet. The site shows "To be announced" (or "Not recorded" for a past edition), and each build lists what
 is left. Keep the quotes around dates, and keep the indentation as it is.
 
 ## Common edits
@@ -25,6 +25,7 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | To change                               | Edit                                |
 | --------------------------------------- | ----------------------------------- |
 | Deadlines                               | `dates.yaml`                        |
+| Two-line statement on the home page     | `cfp.yaml` (`exchange`)             |
 | Workshop date, contact, submission link | `site.yaml`                         |
 | Template, review model                  | `site.yaml`                         |
 | Page limits, topics, communities        | `cfp.yaml`                          |

@@ -1,0 +1,43 @@
+---
+import { getDeadlines } from "../lib/content";
+import { formatAoE, TBA } from "../lib/dates";
+import { nextDeadline } from "../lib/view";
+import StatusBadge from "./StatusBadge.astro";
+import Value from "./Value.astro";
+
+const deadlines = await getDeadlines();
+const next = nextDeadline(deadlines);
+const anyDated = deadlines.some((deadline) => deadline.due);
+---
+
+{anyDated ? (
+  deadlines.map((deadline) => (
+    <div>
+      <dt>{deadline.label}</dt>
+      <dd class={deadline.due ? "deadline-cell" : undefined}>
+        {deadline.due ? (
+          <>
+            <time
+              class={deadline.id === next?.id ? "flag" : undefined}
+              datetime={deadline.due.toISOString()}
+            >
+              {formatAoE(deadline.due)}
+            </time>
+            {(deadline.id === next?.id || deadline.status !== "upcoming" || deadline.previous) && (
+              <StatusBadge status={deadline.status} extended={deadline.previous !== undefined} />
+            )}
+          </>
+        ) : (
+          <Value of={TBA} />
+        )}
+      </dd>
+    </div>
+  ))
+) : (
+  <div>
+    <dt>Paper deadlines</dt>
+    <dd>
+      <Value of={TBA} />
+    </dd>
+  </div>
+)}

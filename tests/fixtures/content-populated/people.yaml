@@ -6,5 +6,6 @@
     orcid: "https://orcid.org/0000-0000-0000-0000",
     dblp: "https://dblp.org/pid/00/0000.html",
   }
+- { id: speaker-pending, name: TBA, affiliation: TBA }
 - { id: john-roe, name: John Roe, affiliation: Example Institute }
 - { id: ana-van-der-berg, name: Ana van der Berg, surname: van der Berg, affiliation: Example Lab }

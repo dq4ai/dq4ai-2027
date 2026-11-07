@@ -17,11 +17,14 @@ export const GET: APIRoute = async ({ props, params }) => {
     site.workshopDate === TBA
       ? formatDayRange(site.host.startDate, site.host.endDate)
       : formatIsoDay(site.workshopDate);
+  const isHome = params.slug === "home";
   const image = await renderOgImage({
-    pageTitle: params.slug === "home" ? site.title : props.title,
-    workshopName: workshopTitle(site),
+    pageTitle: isHome ? site.title : props.title,
+    // The home image's title is already the workshop's topic, so its subtitle gives the edition.
+    workshopName: isHome ? `${site.edition} International Workshop` : workshopTitle(site),
     detail: `${site.host.name} · ${hostLocation(site)} · ${when}`,
-    mark: `${site.acronym} ${site.year}`,
+    acronym: site.acronym,
+    year: site.year,
   });
   return new Response(new Uint8Array(image), { headers: { "Content-Type": "image/png" } });
 };

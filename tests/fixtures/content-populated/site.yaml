@@ -18,8 +18,8 @@ host:
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-07"
 contactEmail: chairs@example.org
-submissionSystem: ExampleCRP
-submissionUrl: https://example.org/submit
+submissionSystem: TBA
+submissionUrl: https://example.org/submit?conference=dq4ai2027secondeditionworkshoppaperentryformtoken
 proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/

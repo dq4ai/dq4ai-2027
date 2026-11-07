@@ -2,6 +2,7 @@
 import type { Person } from "../lib/schemas";
 import { isKnown } from "../lib/view";
 import ExternalLink from "./ExternalLink.astro";
+import Value from "./Value.astro";
 
 interface Props {
   person: Person;
@@ -12,7 +13,9 @@ const place = isKnown(person.affiliation)
   : undefined;
 ---
 
-<span class="person__name">{person.name}</span>
+<span class="person__name">
+  <Value of={person.name} />
+</span>
 {(person.orcid || person.dblp || person.url) && (
   <span class="person__links">
     {person.url && <ExternalLink href={person.url}>Web</ExternalLink>}{" "}

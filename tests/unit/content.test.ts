@@ -163,8 +163,13 @@ describe("JSON-LD", () => {
   it("omits the start date while it is TBA", () => {
     const data = buildEventJsonLd({ site, url: "https://example.org/", organizers });
     expect(data).not.toHaveProperty("startDate");
-    expect(data.superEvent.startDate).toBe("2027-04-06");
     expect(data.organizer[0]).not.toHaveProperty("affiliation");
+  });
+  it("leaves out the host's dates while the workshop date is TBA, so they cannot be misread", () => {
+    const data = buildEventJsonLd({ site, url: "https://example.org/", organizers });
+    expect(data.superEvent.name).toBe("EDBT/ICDT 2027");
+    expect(data.superEvent).not.toHaveProperty("startDate");
+    expect(data.superEvent).not.toHaveProperty("endDate");
   });
   it("states the date once known", () => {
     const data = buildEventJsonLd({
@@ -172,7 +177,11 @@ describe("JSON-LD", () => {
       url: "https://example.org/",
       organizers,
     });
-    expect(data).toMatchObject({ startDate: "2027-04-07", endDate: "2027-04-07" });
+    expect(data).toMatchObject({
+      startDate: "2027-04-07",
+      endDate: "2027-04-07",
+      superEvent: { startDate: "2027-04-06", endDate: "2027-04-09" },
+    });
   });
   it("cannot be broken out of its script element", () => {
     expect(serializeJsonLd({ a: "</script>" })).not.toContain("</script>");

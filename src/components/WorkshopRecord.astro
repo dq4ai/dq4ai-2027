@@ -1,0 +1,79 @@
+---
+import { getCfp, getDeadlines, getKeynotes, getSite } from "../lib/content";
+import { formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { url } from "../lib/paths";
+import { hostLocation, isKnown } from "../lib/view";
+import DeadlineRows from "./DeadlineRows.astro";
+import ExternalLink from "./ExternalLink.astro";
+import Value from "./Value.astro";
+
+const [site, cfp, deadlines, keynotes] = await Promise.all([
+  getSite(),
+  getCfp(),
+  getDeadlines(),
+  getKeynotes(),
+]);
+---
+
+<section aria-labelledby="key-facts">
+  <h2 id="key-facts" class="visually-hidden">
+    Key facts
+  </h2>
+  <dl class="facts record">
+    <DeadlineRows />
+    <div>
+      <dt>Workshop date</dt>
+      <dd>
+        {site.workshopDate === TBA ? (
+          <Value of={TBA} />
+        ) : (
+          <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
+        )}
+      </dd>
+    </div>
+    <div>
+      <dt>Host conference</dt>
+      <dd>
+        <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
+        {formatDayRange(site.host.startDate, site.host.endDate)}
+      </dd>
+    </div>
+    <div>
+      <dt>City</dt>
+      <dd>{hostLocation(site)}</dd>
+    </div>
+    {keynotes.length > 0 && (
+      <div>
+        <dt>{keynotes.length === 1 ? "Keynote" : "Keynotes"}</dt>
+        <dd>
+          {keynotes.map((keynote, index) => (
+            <>
+              {index > 0 && "; "}
+              {isKnown(keynote.person.name) ? (
+                <a href={url(`/keynotes/#${keynote.id}`)}>{keynote.person.name}</a>
+              ) : (
+                <Value of={TBA} />
+              )}
+              {isKnown(keynote.person.affiliation) && `, ${keynote.person.affiliation}`}
+            </>
+          ))}
+        </dd>
+      </div>
+    )}
+    <div>
+      <dt>Proceedings</dt>
+      <dd>
+        <ExternalLink href={site.proceedings.url}>{site.proceedings.name}</ExternalLink>
+      </dd>
+    </div>
+    <div>
+      <dt>Communities</dt>
+      <dd>{cfp.communities.join(", ")}</dd>
+    </div>
+  </dl>
+  <p class="record__note">
+    {deadlines.some((deadline) => deadline.due) &&
+      "Deadlines are Anywhere on Earth (AoE, UTC−12). "}
+    <a href={url("/dates/")}>All dates</a>
+  </p>
+</section>
