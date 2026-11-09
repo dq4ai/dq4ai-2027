@@ -1,39 +1,28 @@
 ---
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
+import HeroWaves from "../components/HeroWaves.astro";
 import Heading from "../components/Heading.astro";
 import Mark from "../components/Mark.astro";
-import Value from "../components/Value.astro";
 import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import {
-  getCfp,
-  getCommittees,
-  getDeadlines,
-  getKeynotes,
-  getNews,
-  getSite,
-  getSponsors,
-} from "../lib/content";
-import { formatIsoDay, TBA } from "../lib/dates";
+import { getCfp, getCommittees, getDeadlines, getNews, getSite, getSponsors } from "../lib/content";
+import { formatDayRange, formatIsoDay } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { isKnown, siteSummary, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
+import { hostLocation, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
 
-const [site, cfp, committees, deadlines, keynotes, news, sponsors] = await Promise.all([
+const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
   getSite(),
   getCfp(),
   getCommittees(),
   getDeadlines(),
-  getKeynotes(),
   getNews(),
   getSponsors(),
 ]);
-// The first scope paragraph says why quality matters; the last states the two-way relationship
-// and opens by referring back to the first, so they stay together.
-const why = cfp.scope.at(0);
-const relationship = cfp.scope.at(-1);
 const [dataForAi, aiForData] = cfp.exchange;
+// The home page invites; the full scope, policies and dates wait one click away.
+const latest = news.at(0);
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
@@ -43,25 +32,28 @@ const jsonLd = serializeJsonLd(
 <BaseLayout slug="home">
   <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
   <div class="hero">
-    <div class="hero__title">
-      <Mark class="hero__mark" />
-      <h1>{site.title}</h1>
+    <div class="hero__banner">
+      <HeroWaves />
+      <div class="hero__title">
+        <Mark class="hero__mark" />
+        <h1>{site.title}</h1>
+        <p class="hero__edition">
+          {site.acronym} {site.year}, the {site.edition.toLowerCase()} international workshop
+        </p>
+        <p class="hero__where">
+          Co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
+          {formatDayRange(site.host.startDate, site.host.endDate)}, {hostLocation(site)}.
+        </p>
+      </div>
     </div>
     <div class="hero__body">
       <div>
-        <p class="lede">{siteSummary(site)}</p>
+        <p class="exchange">
+          <span>{dataForAi}</span> <span>{aiForData}</span>
+        </p>
         {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
         <div class="hero__actions">
-          {!submissionOpen(site, deadlines) ? (
-            <>
-              <a class="button button--primary" href={url("/call-for-papers/")}>
-                Read the call for papers
-              </a>
-              <a class="button" href={url("/submission/")}>
-                Submission details
-              </a>
-            </>
-          ) : (
+          {submissionOpen(site, deadlines) ? (
             <>
               <ExternalLink
                 class="button button--primary"
@@ -70,10 +62,14 @@ const jsonLd = serializeJsonLd(
               >
                 Submit a paper
               </ExternalLink>
-              <a class="button" href={url("/call-for-papers/")}>
+              <a class="hero__link" href={url("/call-for-papers/")}>
                 Read the call for papers
               </a>
             </>
+          ) : (
+            <a class="button button--primary" href={url("/call-for-papers/")}>
+              Read the call for papers
+            </a>
           )}
         </div>
       </div>
@@ -90,69 +86,22 @@ const jsonLd = serializeJsonLd(
         </li>
       ))}
     </ul>
-    <p class="more-link">
-      <a href={url("/call-for-papers/")}>Read the full call for papers</a>
-    </p>
   </section>
 
   <section class="purpose">
     <Heading id="about">Why data quality for AI</Heading>
-    <p class="exchange">
-      <span>{dataForAi}</span> <span>{aiForData}</span>
-    </p>
-    <p>{why}</p>
-    <p>{relationship}</p>
     <p>{cfp.goal}</p>
+    <p class="more-link">
+      <a href={url("/call-for-papers/#scope")}>Read the full scope</a>
+    </p>
   </section>
 
-  {keynotes.length > 0 && (
-    <section>
-      <Heading id="keynote">{keynotes.length === 1 ? "Keynote" : "Keynotes"}</Heading>
-      {keynotes.map((keynote) => (
-        <div class="entry">
-          <h3>
-            <Value of={keynote.person.name} unknown="Speaker to be announced" />
-          </h3>
-          {isKnown(keynote.person.name) && (
-            <p class="entry__meta">
-              <Value of={keynote.person.affiliation} />
-            </p>
-          )}
-          <p>
-            <a href={url(`/keynotes/#${keynote.id}`)}>
-              {keynote.title === TBA ? (
-                <>
-                  Keynote details
-                  <span class="visually-hidden">
-                    :{" "}
-                    {isKnown(keynote.person.name) ? keynote.person.name : "speaker to be announced"}
-                  </span>
-                </>
-              ) : (
-                keynote.title
-              )}
-            </a>
-          </p>
-        </div>
-      ))}
-    </section>
-  )}
-
-  {news.length > 0 && (
-    <section>
-      <Heading id="latest-news">Latest news</Heading>
-      {news.slice(0, 3).map((item) => (
-        <div class="entry">
-          <p class="entry__meta">
-            <time datetime={item.data.date}>{formatIsoDay(item.data.date)}</time>
-          </p>
-          <h3>
-            <a href={url(`/news/#news-${item.id}`)}>{item.data.title}</a>
-          </h3>
-          <p>{item.data.summary}</p>
-        </div>
-      ))}
-    </section>
+  {latest && (
+    <p class="news-line">
+      <span class="news-line__label">Latest news</span>{" "}
+      <a href={url(`/news/#news-${latest.id}`)}>{latest.data.title}</a>,{" "}
+      <time datetime={latest.data.date}>{formatIsoDay(latest.data.date)}</time>
+    </p>
   )}
 
   {sponsors.length > 0 && (

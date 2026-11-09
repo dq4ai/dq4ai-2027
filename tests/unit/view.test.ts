@@ -4,6 +4,7 @@ import { cfpSchema, siteSchema, submissionSchema } from "../../src/lib/schemas";
 import type { Site } from "../../src/lib/schemas";
 import {
   pageContext,
+  pendingSentence,
   stripPrefix,
   submissionOpen,
   topicAnchor,
@@ -153,5 +154,20 @@ describe("topics in content", () => {
       { title: "t", description: "d", icon: "knowledge-graph" },
     ]);
     expect(parsed.success).toBe(false);
+  });
+});
+
+describe("pendingSentence", () => {
+  it("names what is still unknown in one sentence", () => {
+    expect(pendingSentence(["Submission system", "Template", "Review model"])).toBe(
+      "Submission system, template and review model: to be announced.",
+    );
+    expect(pendingSentence(["Dual submission", "Use of generative AI"])).toBe(
+      "Dual submission and use of generative AI: to be announced.",
+    );
+    expect(pendingSentence(["Template"])).toBe("Template: to be announced.");
+  });
+  it("is empty when everything is known", () => {
+    expect(pendingSentence([])).toBe("");
   });
 });

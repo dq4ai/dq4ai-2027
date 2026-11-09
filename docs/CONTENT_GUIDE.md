@@ -28,7 +28,7 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Two-line statement on the home page     | `cfp.yaml` (`exchange`)             |
 | Workshop date, contact, submission link | `site.yaml`                         |
 | Template, review model                  | `site.yaml`                         |
-| Page limits, topics, communities        | `cfp.yaml`                          |
+| Page limits, topics                     | `cfp.yaml`                          |
 | Dual submission, generative AI policies | `cfp.yaml`                          |
 | Formatting, anonymization, FAQ          | `submission.yaml`                   |
 | People and committees                   | `people.yaml` and `committees.yaml` |
