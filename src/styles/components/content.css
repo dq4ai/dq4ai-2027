@@ -36,6 +36,8 @@
   block-size: 100%;
   object-fit: cover;
   object-position: 75% center;
+  /* The dusk photo, lifted so the square reads clearly. */
+  filter: brightness(1.15) saturate(1.1);
 }
 
 /* On a phone the photo would be the slowest thing on the page, for a strip of it under the scrim. */
@@ -59,8 +61,8 @@
     background: linear-gradient(
       90deg,
       var(--color-scrim-text) 0%,
-      var(--color-scrim-text) 60%,
-      var(--color-scrim-clear) 100%
+      var(--color-scrim-text) 52%,
+      var(--color-scrim-clear) 85%
     );
   }
 
@@ -94,91 +96,18 @@
   stroke: var(--color-surface);
 }
 
-.topic-icon {
-  flex: none;
-  inline-size: 3rem;
-  block-size: 3rem;
-  fill: none;
-  stroke: var(--color-brand-a);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2.4;
+/* The topics, as a plain list of titles. */
+.topic-list {
+  padding-inline-start: 1.25em;
+  list-style: disc;
 }
 
-.topic-icon__ok {
-  stroke: var(--color-brand-b);
+.topic-list li + li {
+  margin-block-start: var(--space-1);
 }
 
-/* The eight topics: what the workshop is about, at a glance. */
-.topic-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-2);
-  max-inline-size: none;
-  padding: 0;
-  list-style: none;
-}
-
-@media (width >= 48rem) {
-  .topic-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: var(--space-3);
-  }
-}
-
-/* Only reached with a very large browser font: two columns would leave no room for a word. */
-@media (width < 18rem) {
-  .topic-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
-.topic-grid a {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-2);
-  block-size: 100%;
-  padding: var(--space-3) var(--space-2);
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-large);
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  font-size: var(--text-sm);
-  font-weight: 600;
-  line-height: 1.3;
-  text-align: center;
-  text-decoration: none;
-}
-
-@media (hover: hover) {
-  .topic-grid a:hover {
-    border-color: var(--color-brand-a);
-    color: var(--color-text);
-  }
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .topic-grid a:hover {
-    transition: border-color var(--dur-fast) var(--ease-out);
-  }
-}
-
-.topic-grid a:active {
-  border-color: var(--color-brand-a);
-  background: var(--color-rule);
-  color: var(--color-text);
-}
-
-.topic-title {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--space-2);
-}
-
-.topic-title .topic-icon {
-  inline-size: 1.75rem;
-  block-size: 1.75rem;
+.topic-list li::marker {
+  color: var(--color-brand-b);
 }
 
 /* What this is, for someone who arrives here rather than at the home page. */
@@ -217,8 +146,7 @@ main > section:not(.session) > h2 {
   margin-block: 0 var(--space-3);
 }
 
-.page-header + section:not(.session),
-.toc + section:not(.session) {
+.page-header + section:not(.session) {
   border-block-start: 0;
 }
 
@@ -241,14 +169,14 @@ main > section:not(.session) > h2 {
   }
 
   /* Loose content at the top level of a page lines up with the column beside the rail. */
-  main > :is(p, .toolbar, .table-wrap, .toc) {
+  main > :is(p, .toolbar, .table-wrap) {
     margin-inline-start: calc(var(--rail) + var(--rail-gap));
   }
 }
 
 /* The opening of the home page: the title, then what is known. */
 .hero {
-  padding-block: var(--space-5) var(--space-6);
+  padding-block: var(--space-4) var(--space-6);
 }
 
 .hero__title {
@@ -319,7 +247,7 @@ main > section:not(.session) > h2 {
         1fr
       );
     gap: var(--space-4);
-    margin-block-start: var(--space-6);
+    margin-block-start: var(--space-5);
   }
 }
 
@@ -386,21 +314,12 @@ main > section:not(.session) > h2 {
 }
 
 .exchange span {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  display: block;
   color: var(--color-brand-a);
 }
 
-.exchange span + span,
-.exchange span + span .topic-icon {
+.exchange span + span {
   color: var(--color-brand-b);
-  stroke: var(--color-brand-b);
-}
-
-.exchange .topic-icon {
-  inline-size: 1.75em;
-  block-size: 1.75em;
 }
 
 /* Set apart by lines on screen. Read aloud, only this keeps them from running together. */
@@ -500,19 +419,16 @@ main > section:not(.session) > h2 {
   align-items: flex-start;
 }
 
-/* A value nobody has supplied yet, shown as an empty cell. */
+/* A value nobody has supplied yet: said quietly, in the body type, wherever it appears. */
 .tba {
-  display: inline-block;
-  padding-inline: var(--space-2);
-  border: 1px dashed var(--color-text-muted);
-  border-radius: var(--radius);
+  display: inline;
   color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
+  font-family: var(--font-serif);
+  font-size: inherit;
   font-style: normal;
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 1.5;
+  line-height: inherit;
 }
 
 /* The next deadline: the only flagged cell on a page. */
@@ -613,44 +529,14 @@ main > section:not(.session) > h2 {
   }
 }
 
-/* "On this page", for long documents. */
-.toc {
-  padding-block: var(--space-3);
-  border-block-end: 1px solid var(--color-rule);
-  font-size: var(--text-sm);
-}
-
-.toc ul {
-  display: flex;
-  padding: 0;
-  list-style: none;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
-  max-inline-size: none;
-}
-
-.toc a {
-  display: inline-block;
-  min-block-size: 1.5rem;
-}
-
-@media (pointer: coarse) {
-  .toc a {
-    min-block-size: 2.75rem;
-    padding-block: calc((2.75rem - 1lh) / 2);
-  }
-}
-
 .topics {
   max-inline-size: none;
-  border-block-end: 1px solid var(--color-rule);
 }
 
 .topics li {
   display: grid;
   gap: 0 var(--space-4);
-  padding-block: var(--space-3);
-  border-block-start: 1px solid var(--color-rule);
+  padding-block: var(--space-2);
 }
 
 @media (width >= 40rem) {
@@ -670,18 +556,6 @@ main > section:not(.session) > h2 {
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-/* A long page on a narrow screen: the contents are many screens back. */
-.to-contents {
-  margin-block-start: var(--space-3);
-  font-size: var(--text-sm);
-}
-
-@media (width >= 60rem) {
-  .to-contents {
-    display: none;
-  }
 }
 
 .more-link {
@@ -726,36 +600,17 @@ main > section:not(.session) > h2 {
   }
 }
 
+/* Officers as conference sites list them: one person per line, "Name, Affiliation, Country". */
 .people {
-  display: grid;
-  gap: 0 var(--space-5);
   max-inline-size: none;
 }
 
-@media (width >= 48rem) {
-  .people {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.person {
-  padding-block: var(--space-3);
-  border-block-start: 1px solid var(--color-rule);
+.person + .person {
+  margin-block-start: var(--space-1);
 }
 
 .person__name {
   font-weight: 600;
-}
-
-.person__detail {
-  display: block;
-  color: var(--color-text-muted);
-}
-
-.person__links {
-  margin-inline-start: var(--space-2);
-  font-size: var(--text-sm);
-  font-weight: 400;
 }
 
 /* The padding keeps a focus ring from being cut off, the margin keeps the table on its column. */
@@ -840,7 +695,7 @@ main > section:not(.session) > h2 {
 
 /* As wide as its longest label, so a second click still lands on it. */
 .tz-toggle {
-  min-inline-size: min(11rem, 100%);
+  min-inline-size: min(12rem, 100%);
   min-block-size: 2.75rem;
   padding-inline: var(--space-3);
 }
@@ -1066,8 +921,7 @@ details p {
   margin-block-end: var(--space-3);
 }
 
-.entry__meta a,
-.person__links a {
+.entry__meta a {
   display: inline-block;
   min-block-size: 1.5rem;
   margin-inline-end: var(--space-2);
@@ -1079,17 +933,9 @@ main > section > :is(.facts, .topics) {
 }
 
 main > section > .topics li:first-child,
-main > section > .steps li:first-child,
-main > section > .people li:first-child {
+main > section > .steps li:first-child {
   padding-block-start: 0;
   border-block-start: 0;
-}
-
-@media (width >= 48rem) {
-  main > section > .people li:nth-child(2) {
-    padding-block-start: 0;
-    border-block-start: 0;
-  }
 }
 
 main > section > .facts > div:first-child {
@@ -1115,7 +961,7 @@ main > section > .page-limits > div:first-child {
 }
 
 /* These lists end in their own padding, which would add to the section's. */
-main > section > :is(.people, .steps) {
+main > section > .steps {
   margin-block-end: calc(-1 * var(--space-3));
 }
 

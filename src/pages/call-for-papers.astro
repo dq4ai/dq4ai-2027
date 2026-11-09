@@ -4,7 +4,6 @@ import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
 import PageHeader from "../components/PageHeader.astro";
 import PaperTemplate from "../components/PaperTemplate.astro";
-import TopicIcon from "../components/TopicIcon.astro";
 import Value from "../components/Value.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getDeadlines, getSite } from "../lib/content";
@@ -13,15 +12,6 @@ import { url } from "../lib/paths";
 import { hostDatesSentence, pageLimitsUnknown, topicAnchor, workshopTitle } from "../lib/view";
 
 const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadlines()]);
-const sections = [
-  ["important-dates", "Dates"],
-  ["scope", "Scope"],
-  ["topics", "Topics"],
-  ["paper-categories", "Paper categories"],
-  ["submission", "Submission details"],
-  ["policies", "Submission policies"],
-  ["related-venues", "Related venues"],
-];
 const limitsUnknown = pageLimitsUnknown(cfp);
 ---
 
@@ -31,19 +21,6 @@ const limitsUnknown = pageLimitsUnknown(cfp);
     photo={site.cfpPhoto}
     lede={`${workshopTitle(site)} (${site.acronym} ${site.year}), co-located with ${site.host.name}. ${hostDatesSentence(site)}`}
   />
-  <nav class="toc no-print" id="contents" aria-label="On this page">
-    <ul>
-      {sections.map(([id, label]) => (
-        <li>
-          <a href={`#${id}`}>{label}</a>
-        </li>
-      ))}
-      <li>
-        <a href={url("/cfp.txt")}>Plain text, for mailing lists</a>
-      </li>
-    </ul>
-  </nav>
-
   <section>
     <Heading id="important-dates">Important dates</Heading>
     <dl class="facts">
@@ -60,9 +37,6 @@ const limitsUnknown = pageLimitsUnknown(cfp);
         Deadlines are Anywhere on Earth (AoE, UTC−12). See <a href={url("/dates/")}>all dates</a>.
       </p>
     )}
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
   </section>
 
   <section>
@@ -71,9 +45,6 @@ const limitsUnknown = pageLimitsUnknown(cfp);
       <p>{paragraph}</p>
     ))}
     <p>{cfp.goal}</p>
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
   </section>
 
   <section>
@@ -82,17 +53,10 @@ const limitsUnknown = pageLimitsUnknown(cfp);
     <ul class="topics">
       {cfp.topics.map((topic) => (
         <li id={topicAnchor(topic.title)}>
-          <strong class="topic-title">
-            {topic.icon && <TopicIcon name={topic.icon} />}
-            {topic.title}
-          </strong>{" "}
-          <span>{topic.description}</span>
+          <strong class="topic-title">{topic.title}</strong> <span>{topic.description}</span>
         </li>
       ))}
     </ul>
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
   </section>
 
   <section>
@@ -118,9 +82,6 @@ const limitsUnknown = pageLimitsUnknown(cfp);
         </div>
       </dl>
     )}
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
   </section>
 
   <section>
@@ -162,9 +123,6 @@ const limitsUnknown = pageLimitsUnknown(cfp);
         <dd>{cfp.presentation}</dd>
       </div>
     </dl>
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
   </section>
 
   <section>
@@ -187,21 +145,5 @@ const limitsUnknown = pageLimitsUnknown(cfp);
       Code of conduct, conflict of interest and ethics are on the{" "}
       <a href={url("/policies/")}>Policies page</a>.
     </p>
-    <p class="to-contents no-print">
-      <a href="#contents">Contents</a>
-    </p>
-  </section>
-
-  <section class="no-print">
-    <Heading id="related-venues">Interest to EDBT/ICDT and related venues</Heading>
-    <p>{cfp.relatedVenues.intro}</p>
-    <ul>
-      {cfp.relatedVenues.venues.map((venue) => (
-        <li>
-          <strong>{venue.name}</strong>, co-located with {venue.colocation}. {venue.focus}
-        </li>
-      ))}
-    </ul>
-    <p>{cfp.relatedVenues.distinction}</p>
   </section>
 </BaseLayout>

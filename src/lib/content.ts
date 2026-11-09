@@ -2,7 +2,7 @@
 import { getCollection, type CollectionEntry } from "astro:content";
 import { buildTime } from "./dates";
 import type { Person } from "./schemas";
-import { sortBySurname, toDeadlineViews } from "./view";
+import { sortByName, sortBySurname, toDeadlineViews } from "./view";
 
 const onlyEntry = <T extends { data: unknown }>(entries: T[], file: string): T["data"] => {
   const [entry] = entries;
@@ -58,7 +58,12 @@ export const getCommittees = async () => {
     const members = committee.members.map((id) => requirePerson(people, id));
     return {
       ...committee,
-      people: committee.order === "surname" ? sortBySurname(members) : members,
+      people:
+        committee.order === "surname"
+          ? sortBySurname(members)
+          : committee.order === "name"
+            ? sortByName(members)
+            : members,
     };
   });
 };

@@ -1,7 +1,7 @@
 ---
-import plexRegular from "../assets/fonts/ibm-plex-sans-latin-400-normal.woff2?url";
-import plexSemibold from "../assets/fonts/ibm-plex-sans-latin-600-normal.woff2?url";
 import serifMedium from "../assets/fonts/source-serif-4-latin-500-normal.woff2?url";
+import serifRegular from "../assets/fonts/source-serif-4-latin-400-normal.woff2?url";
+import serifSemibold from "../assets/fonts/source-serif-4-latin-600-normal.woff2?url";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
 import NextDeadline from "../components/NextDeadline.astro";
@@ -51,8 +51,8 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
     {noindex && <meta name="robots" content="noindex" />}
     <script is:inline set:html={THEME_INIT_SCRIPT} />
     <link rel="preload" href={serifMedium} as="font" type="font/woff2" crossorigin="anonymous" />
-    <link rel="preload" href={plexRegular} as="font" type="font/woff2" crossorigin="anonymous" />
-    <link rel="preload" href={plexSemibold} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={serifRegular} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={serifSemibold} as="font" type="font/woff2" crossorigin="anonymous" />
     <link rel="icon" href={url("/favicon.svg")} type="image/svg+xml" />
     <link rel="author" href={url("/humans.txt")} />
     <link
@@ -61,8 +61,8 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
       title={`${label} news`}
       href={url("/rss.xml")}
     />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fcfdfe" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0d1626" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf9f4" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141820" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={label} />
     <meta property="og:title" content={title} />

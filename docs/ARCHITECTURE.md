@@ -21,8 +21,16 @@ contradicts itself.
 
 **The logo first.** The palette comes from logo D: navy for data quality for AI, teal for AI for
 data quality. `src/lib/brand.ts` draws it once, for the page, the favicon's shape and the social
-images. Amber is only ever the next deadline. The home page opens with the logo and the eight topic
-icons, so a researcher sees what the workshop is about before reading anything.
+images. Amber is only ever the next deadline. The home page opens with the logo, then the eight
+topics as a plain list of titles.
+
+**Warm and plain, like an academic page.** The organizers found the first design too "industrial" and
+pointed to classic workshop sites. So: a warm paper background, serif type throughout (Source Serif
+4 in three weights, about the same weight in bytes as the two IBM Plex files it replaced; IBM Plex
+remains only in the social images), no icons, tiles or boxed labels, an unset value in muted text,
+organizers listed one per line as "Name, Affiliation, Country", and the Call for Papers read straight
+through without a links bar. The banner photo keeps a navy scrim only behind the text (66%, still 6:1
+for white) and clears to nothing on the right, with the photo itself lightened.
 
 **The header stays on screen.** Any page is one click away. The deadline bar scrolls with the page,
 because stacked they would take too much of a small screen. A very large browser font turns the

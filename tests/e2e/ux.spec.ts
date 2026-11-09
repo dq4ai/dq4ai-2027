@@ -280,14 +280,15 @@ test.describe("authors' tasks", () => {
     ).toHaveAttribute("href", /call-for-papers\/#policies/);
   });
 
-  test("a long page offers its contents again on a phone", async ({ page }) => {
-    await page.setViewportSize(PHONE);
+  // The organizers asked for the call to read straight through, without the links bar or the
+  // related-venues section.
+  test("the call for papers reads straight through", async ({ page }) => {
     await page.goto("call-for-papers/");
-    await expect(page.locator(".to-contents a").first()).toHaveAttribute("href", "#contents");
-    await expect(page.locator("#contents")).toHaveCount(1);
-    await expect(page.locator(".to-contents").first()).toBeVisible();
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await expect(page.locator(".to-contents").first()).toBeHidden();
+    await expect(page.locator("#contents, .toc, .to-contents")).toHaveCount(0);
+    await expect(page.locator("#related-venues")).toHaveCount(0);
+    await expect(page.locator("main")).not.toContainText("QDB");
+    await page.goto("");
+    await expect(page.locator("#related-venues")).toHaveCount(0);
   });
 });
 
@@ -322,7 +323,12 @@ test.describe("values not yet known", () => {
     await page.goto("keynotes/");
     const chip = page.locator("h2 .tba");
     await expect(chip).toHaveText("Speaker to be announced");
-    expect(await chip.evaluate((e) => getComputedStyle(e).fontFamily)).toContain("IBM Plex Sans");
+    const type = await chip.evaluate((e) => {
+      const style = getComputedStyle(e);
+      return { fontFamily: style.fontFamily, fontWeight: style.fontWeight };
+    });
+    expect(type.fontFamily).toContain("Source Serif 4");
+    expect(type.fontWeight).toBe("400");
     await expect(page.locator(".keynote .entry__meta .tba")).toHaveCount(0);
   });
 
@@ -680,7 +686,11 @@ test.describe("reading without seeing the layout", () => {
   test("repeated links name what they lead to", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs profile links");
     await page.goto("organization/");
-    await expect(page.getByRole("link", { name: /^ORCID of / }).first()).toBeVisible();
+    // A name is itself the link to the person's profile, so the link reads as who it is about.
+    await expect(page.getByRole("link", { name: "Jane Doe" }).first()).toHaveAttribute(
+      "href",
+      "https://dblp.org/pid/00/0000.html",
+    );
     await page.goto("");
     await expect(page.getByRole("link", { name: /^Keynote details\s*:/ }).first()).toBeVisible();
   });

@@ -39,17 +39,6 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Venue, visa and travel information      | `attend.yaml`                       |
 | Code of conduct, conflicts, ethics      | `policies.yaml`                     |
 
-## Choose a topic's icon
-
-Each topic in `cfp.yaml` can name its icon. Leave `icon` out and the topic still appears without one.
-A mistyped name stops the build and lists the choices: `data-quality`, `ai-for-quality`,
-`knowledge-graph`, `language-models`, `governance`, `multimodal`, `benchmarks`, `applications`.
-
-```yaml
-- title: Knowledge graphs
-  icon: knowledge-graph
-```
-
 ## Say when details will be known
 
 If you know roughly when the missing details will be announced, add one sentence to `site.yaml`. It
@@ -106,7 +95,9 @@ Add the person once to `people.yaml`:
 ```
 
 Then add `jane-doe` to `members` under `program-committee` in `committees.yaml`. The list sorts
-itself by surname. If the surname is not the last word of the name, add `surname: van der Berg`.
+itself alphabetically by name as written, first name first (`order: name`). To sort a committee by
+surname instead, set `order: surname`; if a surname is not the last word of the name, add
+`surname: van der Berg`.
 Optional links: `url`, `orcid`, `dblp` (full addresses).
 
 When membership is final, delete the `note:` line from the program committee in `committees.yaml`.
