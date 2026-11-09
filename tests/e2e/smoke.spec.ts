@@ -118,10 +118,13 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
 test("the first screen states the essentials as a short record", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("");
+  // Where and when the host meets is said once, in the banner; the record keeps the rest.
+  const banner = page.locator(".hero__banner");
+  await expect(banner).toContainText("Lille, France");
+  await expect(banner.getByRole("link", { name: "EDBT/ICDT 2027" })).toBeVisible();
   const record = page.locator(".record");
-  await expect(record).toContainText("Lille, France");
-  await expect(record).toContainText("EDBT/ICDT 2027");
-  await expect(record.locator("> div")).toHaveCount(4);
+  await expect(record.locator("> div")).toHaveCount(3);
+  await expect(record).not.toContainText("Lille");
   await expect(record).not.toContainText("Proceedings");
   await expect(record).not.toContainText("Communities");
   await expect(record).toBeInViewport({ ratio: 1 });
@@ -219,7 +222,7 @@ test("the home statement does not depend on the order of the topics", async ({ p
     return { statement: size(".exchange"), heading: size(".purpose h2") };
   });
   expect(sizes.statement).toBeLessThan(sizes.heading);
-  await expect(page.locator(".hero__body .exchange + .lede")).toHaveCount(1);
+  await expect(page.locator(".hero__body .exchange")).toHaveCount(1);
 });
 
 test("no page shows the raw value TBA or the old wording", async ({ page }) => {

@@ -1,0 +1,79 @@
+---
+/* The home banner's art: the logo's two directions as ribbons of colour. Navy flows in from the
+   left (data quality for AI), teal from the right (AI for data quality); each ribbon tapers and
+   fades as it passes the centre, so the two meet under the title. Two separate drawings, so each
+   can drift in from its own side on its own layer. Colours come from the theme tokens, so the
+   theme switch recolours them like everything else. The shapes were drawn as S-curves between
+   an edge and a point past the centre; to redraw, keep each ribbon closed and edge-anchored. */
+---
+
+<svg
+  class="hero-waves hero-waves--a"
+  viewBox="0 0 1440 480"
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id="wave-a-deep" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--a-deep"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--a-deep wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--a-deep wave-stop--gone"></stop>
+    </linearGradient>
+    <linearGradient id="wave-a-soft" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--a-soft"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--a-soft wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--a-soft wave-stop--gone"></stop>
+    </linearGradient>
+    <linearGradient id="wave-a-sand" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--a-sand"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--a-sand wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--a-sand wave-stop--gone"></stop>
+    </linearGradient>
+  </defs>
+  <path class="wave wave--deep" d="M0 -40C371 -110 657 220 1060 150C636 381 350 143 0 190Z"></path>
+  <path class="wave wave--soft" d="M0 120C402 30 713 390 1150 300C690 509 380 217 0 290Z"></path>
+  <path class="wave wave--sand" d="M0 250C343 310 608 300 980 360C588 405 323 475 0 400Z"></path>
+  <path class="wave wave--deep" d="M0 360C315 310 558 520 900 470C540 632 297 486 0 520Z"></path>
+</svg>
+<svg
+  class="hero-waves hero-waves--b"
+  viewBox="0 0 1440 480"
+  preserveAspectRatio="xMidYMid slice"
+  aria-hidden="true"
+  focusable="false"
+>
+  <defs>
+    <linearGradient id="wave-b-deep" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--b-deep"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--b-deep wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--b-deep wave-stop--gone"></stop>
+    </linearGradient>
+    <linearGradient id="wave-b-soft" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--b-soft"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--b-soft wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--b-soft wave-stop--gone"></stop>
+    </linearGradient>
+    <linearGradient id="wave-b-sand" x1="1" y1="0" x2="0" y2="0">
+      <stop offset="0" class="wave-stop wave-stop--b-sand"></stop>
+      <stop offset="0.6" class="wave-stop wave-stop--b-sand wave-stop--fading"></stop>
+      <stop offset="1" class="wave-stop wave-stop--b-sand wave-stop--gone"></stop>
+    </linearGradient>
+  </defs>
+  <path
+    class="wave wave--deep"
+    d="M1440 300C1069 380 783 220 380 300C804 381 1090 633 1440 530Z"
+  ></path>
+  <path
+    class="wave wave--soft"
+    d="M1440 120C1048 190 746 100 320 170C768 212 1070 366 1440 280Z"
+  ></path>
+  <path
+    class="wave wave--sand"
+    d="M1440 20C1108 -40 851 160 490 100C870 244 1126 92 1440 140Z"
+  ></path>
+  <path
+    class="wave wave--soft"
+    d="M1440 420C1139 460 907 360 580 400C924 444 1156 592 1440 540Z"
+  ></path>
+</svg>

@@ -1,9 +1,8 @@
 ---
 import { getDeadlines, getKeynotes, getSite } from "../lib/content";
-import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { formatAoE, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { hostLocation, isKnown, nextDeadline, stripPrefix } from "../lib/view";
-import ExternalLink from "./ExternalLink.astro";
+import { isKnown, nextDeadline, stripPrefix } from "../lib/view";
 import Value from "./Value.astro";
 
 const [site, deadlines, keynotes] = await Promise.all([getSite(), getDeadlines(), getKeynotes()]);
@@ -45,13 +44,6 @@ const anyDated = deadlines.some((deadline) => deadline.due);
         ) : (
           <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
         )}
-      </dd>
-    </div>
-    <div>
-      <dt>Where</dt>
-      <dd>
-        {hostLocation(site)}, at <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
-        {formatDayRange(site.host.startDate, site.host.endDate)}
       </dd>
     </div>
     {keynotes.length > 0 && (

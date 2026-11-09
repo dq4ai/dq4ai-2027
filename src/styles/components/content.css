@@ -220,20 +220,157 @@ main > section:not(.session) > h2 {
   }
 }
 
-/* The opening of the home page: the title, then what is known. */
+/* The opening of the home page: a banner of the two directions meeting, then what is known. */
 .hero {
   padding-block: var(--space-4) var(--space-6);
+}
+
+.hero__banner {
+  position: relative;
+  isolation: isolate;
+  padding: var(--space-5) var(--space-3);
+  overflow: clip;
+  border-radius: var(--radius-large);
+  background: linear-gradient(
+    115deg,
+    var(--wave-sand) 0%,
+    var(--color-surface) 45%,
+    var(--color-surface) 55%,
+    var(--wave-sand) 100%
+  );
+  text-align: center;
+}
+
+/* A veil of paper behind the words, so the ribbons never compete with them. */
+.hero__banner::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 40% 50% at 50% 52%,
+    var(--wave-veil) 0%,
+    var(--wave-veil) 40%,
+    transparent 100%
+  );
+  content: "";
+}
+
+.hero-waves {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Each ribbon is full colour at its edge and gone by its tip. */
+.wave-stop--a-deep {
+  stop-color: var(--wave-a1);
+}
+
+.wave-stop--a-soft {
+  stop-color: var(--wave-a2);
+}
+
+.wave-stop--b-deep {
+  stop-color: var(--wave-b1);
+}
+
+.wave-stop--b-soft {
+  stop-color: var(--wave-b2);
+}
+
+:is(.wave-stop--a-sand, .wave-stop--b-sand) {
+  stop-color: var(--wave-sand);
+}
+
+.wave-stop--fading {
+  stop-opacity: 0.55;
+}
+
+.wave-stop--gone {
+  stop-opacity: 0;
+}
+
+.hero-waves--a .wave--deep {
+  fill: url("#wave-a-deep");
+}
+
+.hero-waves--a .wave--soft {
+  fill: url("#wave-a-soft");
+}
+
+.hero-waves--a .wave--sand {
+  fill: url("#wave-a-sand");
+}
+
+.hero-waves--b .wave--deep {
+  fill: url("#wave-b-deep");
+}
+
+.hero-waves--b .wave--soft {
+  fill: url("#wave-b-soft");
+}
+
+.hero-waves--b .wave--sand {
+  fill: url("#wave-b-sand");
+}
+
+.wave {
+  opacity: 0.85;
+}
+
+/* The page's one arrival: each direction drifts in from its own side and settles, once, with the
+   logo. Whole drawings move, so the browser slides layers rather than repainting curves.
+   From-only, so the art can never be left hidden. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-waves--a {
+    animation: drift-from-left var(--dur-hero) var(--ease-out);
+  }
+
+  .hero-waves--b {
+    animation: drift-from-right var(--dur-hero) var(--ease-out);
+  }
+}
+
+@keyframes drift-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-4%);
+  }
+}
+
+@keyframes drift-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(4%);
+  }
 }
 
 .hero__title {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  align-items: center;
 }
 
+/* On a phone the header already shows the logo, and the record needs the room. */
 .hero__mark {
-  inline-size: 3.5rem;
-  block-size: 3.5rem;
+  display: none;
+}
+
+.hero__edition {
+  max-inline-size: none;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-h3);
+  font-weight: 600;
+}
+
+.hero__where {
+  max-inline-size: 36em;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  text-wrap: balance;
 }
 
 /* The one moment nobody asked for: the two directions settle once around the checked data, which
@@ -254,21 +391,22 @@ main > section:not(.session) > h2 {
 }
 
 @media (width >= 40rem) {
-  .hero__title {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-5);
+  .hero__banner {
+    padding: var(--space-7) var(--space-5);
   }
 
   .hero__mark {
-    inline-size: clamp(6rem, 11vw, 10rem);
-    block-size: clamp(6rem, 11vw, 10rem);
+    display: block;
+    inline-size: 6rem;
+    block-size: 6rem;
   }
 }
 
 .hero h1 {
   max-inline-size: 13em;
+  margin: 0;
   font-size: var(--text-hero);
+  text-wrap: balance;
   line-height: 1.03;
   letter-spacing: -0.028em;
 }

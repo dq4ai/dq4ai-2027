@@ -1,15 +1,16 @@
 ---
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
+import HeroWaves from "../components/HeroWaves.astro";
 import Heading from "../components/Heading.astro";
 import Mark from "../components/Mark.astro";
 import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getCommittees, getDeadlines, getNews, getSite, getSponsors } from "../lib/content";
-import { formatIsoDay } from "../lib/dates";
+import { formatDayRange, formatIsoDay } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { siteSummary, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
+import { hostLocation, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
 
 const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
   getSite(),
@@ -31,16 +32,25 @@ const jsonLd = serializeJsonLd(
 <BaseLayout slug="home">
   <script slot="head" is:inline type="application/ld+json" set:html={jsonLd} />
   <div class="hero">
-    <div class="hero__title">
-      <Mark class="hero__mark" />
-      <h1>{site.title}</h1>
+    <div class="hero__banner">
+      <HeroWaves />
+      <div class="hero__title">
+        <Mark class="hero__mark" />
+        <h1>{site.title}</h1>
+        <p class="hero__edition">
+          {site.acronym} {site.year}, the {site.edition.toLowerCase()} international workshop
+        </p>
+        <p class="hero__where">
+          Co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
+          {formatDayRange(site.host.startDate, site.host.endDate)}, {hostLocation(site)}.
+        </p>
+      </div>
     </div>
     <div class="hero__body">
       <div>
         <p class="exchange">
           <span>{dataForAi}</span> <span>{aiForData}</span>
         </p>
-        <p class="lede">{siteSummary(site)}</p>
         {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
         <div class="hero__actions">
           {submissionOpen(site, deadlines) ? (

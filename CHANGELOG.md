@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+The home page opens with a soft banner, in the spirit of classic workshop sites: the title, the
+edition and where it meets, centered over ribbons of colour. The ribbons are the logo's two
+directions, navy flowing in from the left and teal from the right, meeting under the title, and drift
+in once on arrival. They follow the theme, stay still with reduced motion, and are left off print.
+The record no longer repeats where the workshop is. Home is back in the menu at every width.
+
 Less at once, so a first visit invites rather than overwhelms. The home page opens with the two-way
 statement and one button, a record of four facts (next deadline, workshop date, where, keynote), the
 topics as tags, one paragraph on the goal, and the latest news in one line. Proceedings, communities,

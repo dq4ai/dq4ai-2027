@@ -815,11 +815,15 @@ test.describe("one name for one thing", () => {
 // The organizers asked for a site that does not overwhelm: a short menu, and a call for papers
 // that leads with what matters and folds away the rest.
 test.describe("less at once", () => {
-  test("the menu keeps five pages and the footer links the rest", async ({ page }, testInfo) => {
+  // Home is in the menu at every width: the organizers want the way back always named.
+  test("the menu keeps Home and five pages, and the footer links the rest", async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
-    const menu = page.locator("#site-nav li:not(.site-nav__home) a");
-    const expected = ["Call for Papers", "Dates", "Program", "Organization", "Attend"];
-    if (populated(testInfo.project.name)) expected.splice(3, 0, "Accepted Papers");
+    const menu = page.locator("#site-nav a");
+    const expected = ["Home", "Call for Papers", "Dates", "Program", "Organization", "Attend"];
+    if (populated(testInfo.project.name)) expected.splice(4, 0, "Accepted Papers");
     await expect(menu).toHaveText(expected);
     const footer = page.locator(".site-footer__links");
     for (const name of ["Submission", "Keynotes", "News", "Policies", "Previous Editions"]) {
