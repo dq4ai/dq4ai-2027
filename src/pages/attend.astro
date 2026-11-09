@@ -18,6 +18,8 @@ const imageProps = photo && {
   widths: [480, 832, 1200, 1664],
   sizes: "(min-width: 70rem) 52rem, 100vw",
   loading: "eager" as const,
+  // On a phone the whole panorama would be a sliver; a crop on the belfry side stays a photo.
+  phone: { width: 720, height: 480, position: "right", sizes: "calc(100vw - 2rem)" },
 };
 ---
 

@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+A finished phone view. The Call for Papers header shows a strip of the Grand'Place, the belfry and the
+Vieille Bourse, fading into the navy behind the title, instead of a plain panel; it is a small crop
+made at build time and stays lighter than the words, so the page still paints in about 0.9 s on a
+phone. The host city photo on Attend becomes a 3:2 crop on a phone rather than a sliver of the whole
+panorama. Every label and value now stack the same way on a phone, on every page. A list that ends a
+section no longer draws a second rule, the coffee break is set in the page's type, the topic tags
+share rows, the footer links flow without splitting, the Submit button has room before the next
+section, and both "to be announced" sentences in the call look alike. The photo credits now say the
+photos are cropped as well as resized.
+
 The home page opens with a soft banner, in the spirit of classic workshop sites: the title, the
 edition and where it meets, centered over ribbons of colour. The ribbons are the logo's two
 directions, navy flowing in from the left and teal from the right, meeting under the title, and drift

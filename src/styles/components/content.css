@@ -9,6 +9,8 @@
 /* A title over a photo. The scrim is there from the first paint, so the text never waits for the
    image, and it holds AA over the lightest pixel a photo could have. */
 .page-header--photo {
+  --photo-strip: 7.5rem;
+
   position: relative;
   isolation: isolate;
   margin-block-start: var(--space-4);
@@ -40,10 +42,26 @@
   filter: brightness(1.15) saturate(1.1);
 }
 
-/* On a phone the photo would be the slowest thing on the page, for a strip of it under the scrim. */
+/* On a phone the header reads like a postcard: a strip of the photo across the top, fading into
+   the navy where the words sit. The strip stays smaller than the lede (see PageHeader.astro). */
 @media (width < 40rem) {
+  .page-header--photo {
+    padding-block-start: calc(var(--photo-strip) + var(--space-3));
+  }
+
   .page-header__photo {
-    display: none;
+    block-size: var(--photo-strip);
+    object-position: 60% 35%;
+  }
+
+  .page-header--photo::before {
+    background: linear-gradient(
+      180deg,
+      var(--color-scrim-clear) 0,
+      var(--color-scrim-clear) calc(var(--photo-strip) * 0.45),
+      var(--color-photo-base) var(--photo-strip),
+      var(--color-photo-base) 100%
+    );
   }
 }
 
@@ -134,10 +152,22 @@
   }
 }
 
+/* On a phone the tags shrink to the size of the text around them, so several share a row. */
+@media (width < 40rem) {
+  .topic-list a {
+    padding-inline: var(--space-2);
+    font-size: var(--text-sm);
+  }
+}
+
 /* The latest news, said in one line rather than given a section. */
 .news-line {
   margin-block: 0 var(--space-5);
   color: var(--color-text-muted);
+}
+
+.news-line time {
+  white-space: nowrap;
 }
 
 .news-line__label {
@@ -562,18 +592,14 @@ main > section:not(.session) > h2 {
     margin-block-start: var(--space-3);
   }
 
-  .record > div {
-    grid-template-columns: 7.5rem minmax(0, 1fr);
+  /* One row shape on a phone, on every page: a small label above its value. */
+  .facts dt {
+    font-size: var(--text-sm);
   }
 
   .hero__actions .button {
     flex: 1 1 100%;
     justify-content: center;
-  }
-
-  /* A value not yet known is short, so it can stay beside its label. */
-  .facts:not(.record) > div:has(> dd > .tba:only-child) {
-    grid-template-columns: min(10rem, 45%) minmax(0, 1fr);
   }
 
   .toolbar {
@@ -586,15 +612,13 @@ main > section:not(.session) > h2 {
   }
 }
 
-/* Only reached with a very large browser font: a label column would leave no room for its value. */
-@media (width < 18rem) {
-  .record > div {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-
 .facts dt {
   color: var(--color-text-muted);
+}
+
+/* The next section's rule closes a list that ends its section; a second line would double it. */
+main > section > .facts:last-child > div:last-child {
+  border-block-end: 0;
 }
 
 .facts dd {
@@ -626,6 +650,7 @@ main > section:not(.session) > h2 {
 /* The next deadline: the only flagged cell on a page. */
 .flag {
   padding-inline: var(--space-2);
+  box-decoration-break: clone;
   background: var(--color-flag);
   color: var(--color-on-flag);
   font-weight: 600;
@@ -877,6 +902,11 @@ main > section:not(.session) > h2 {
   font-size: var(--text-sm);
 }
 
+/* A page's one action, given room before the first section's rule. */
+.page-action {
+  margin-block-end: var(--space-5);
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -1009,7 +1039,7 @@ details p {
 .session--brief h2 {
   line-height: 1.6;
   color: var(--color-text-muted);
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-size: var(--text-base);
   font-weight: 400;
   letter-spacing: 0;
@@ -1083,6 +1113,14 @@ details p {
   inline-size: 100%;
   block-size: auto;
   border-radius: var(--radius-large);
+}
+
+/* A phone shows a 3:2 crop of the panorama (see attend.astro), not a sliver of all of it. */
+@media (width < 40rem) {
+  .city-photo img {
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
 }
 
 .city-photo figcaption {

@@ -7,10 +7,7 @@ import ContentImage from "./ContentImage.astro";
 interface Props {
   title: string;
   lede?: string;
-  /**
-   * Set behind the title, under a scrim that keeps the text readable whatever the photo holds.
-   * Lazy on purpose: hidden on a phone, where the CSS leaves it unloaded, it costs nothing there.
-   */
+  /** Set behind the title, under a scrim that keeps the text readable whatever the photo holds. */
   photo?: Site["hostPhoto"];
 }
 const { title, lede, photo } = Astro.props;
@@ -18,15 +15,25 @@ const site = await getSite();
 ---
 
 <header class:list={["page-header", { "page-header--photo": photo }]}>
-  {photo && (
-    <ContentImage
-      class="page-header__photo"
-      file={photo.file}
-      alt={photo.alt}
-      widths={[800, 1056, 1600]}
-      sizes="(min-width: 70rem) 66rem, 100vw"
-    />
-  )}
+  {
+    /* Two framings. A phone gets a strip cropped from the right of the photo (for the Grand'Place,
+       the belfry and the Vieille Bourse) across the top of the header, kept smaller than the lede
+       so the words, not the photo, are the first screen's largest paint: Lighthouse's phone budget
+       cannot be met by any photo that is. Wider screens get the whole photo behind the words.
+       Eager, because on either it is on the first screen. */
+    photo && (
+      <ContentImage
+        class="page-header__photo"
+        file={photo.file}
+        alt={photo.alt}
+        widths={[800, 1056, 1600]}
+        sizes="(min-width: 70rem) 66rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        phone={{ width: 800, height: 400, position: "right", sizes: "calc(100vw - 2rem)" }}
+      />
+    )
+  }
   <div class="page-header__text">
     <p class="page-context">{pageContext(site)}</p>
     <h1>{title}</h1>
