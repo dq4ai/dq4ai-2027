@@ -1,18 +1,15 @@
 ---
-import { getCfp, getDeadlines, getKeynotes, getSite } from "../lib/content";
-import { formatDayRange, formatIsoDay, TBA } from "../lib/dates";
+import { getDeadlines, getKeynotes, getSite } from "../lib/content";
+import { formatAoE, formatDayRange, formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { hostLocation, isKnown } from "../lib/view";
-import DeadlineRows from "./DeadlineRows.astro";
+import { hostLocation, isKnown, nextDeadline, stripPrefix } from "../lib/view";
 import ExternalLink from "./ExternalLink.astro";
 import Value from "./Value.astro";
 
-const [site, cfp, deadlines, keynotes] = await Promise.all([
-  getSite(),
-  getCfp(),
-  getDeadlines(),
-  getKeynotes(),
-]);
+const [site, deadlines, keynotes] = await Promise.all([getSite(), getDeadlines(), getKeynotes()]);
+// Only the next deadline: the full list is on the Dates page, one link away.
+const next = nextDeadline(deadlines);
+const anyDated = deadlines.some((deadline) => deadline.due);
 ---
 
 <section aria-labelledby="key-facts">
@@ -20,7 +17,26 @@ const [site, cfp, deadlines, keynotes] = await Promise.all([
     Key facts
   </h2>
   <dl class="facts record">
-    <DeadlineRows />
+    {next ? (
+      <div>
+        <dt>{next.label}</dt>
+        <dd>
+          <span class="visually-hidden next-label">{stripPrefix(next.kind)}</span>
+          <time class="flag" datetime={next.due.toISOString()} data-due={next.due.toISOString()}>
+            {formatAoE(next.due)}
+          </time>
+        </dd>
+      </div>
+    ) : (
+      !anyDated && (
+        <div>
+          <dt>Paper deadlines</dt>
+          <dd>
+            <Value of={TBA} />
+          </dd>
+        </div>
+      )
+    )}
     <div>
       <dt>Workshop date</dt>
       <dd>
@@ -32,15 +48,11 @@ const [site, cfp, deadlines, keynotes] = await Promise.all([
       </dd>
     </div>
     <div>
-      <dt>Host conference</dt>
+      <dt>Where</dt>
       <dd>
-        <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
+        {hostLocation(site)}, at <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
         {formatDayRange(site.host.startDate, site.host.endDate)}
       </dd>
-    </div>
-    <div>
-      <dt>City</dt>
-      <dd>{hostLocation(site)}</dd>
     </div>
     {keynotes.length > 0 && (
       <div>
@@ -60,20 +72,9 @@ const [site, cfp, deadlines, keynotes] = await Promise.all([
         </dd>
       </div>
     )}
-    <div>
-      <dt>Proceedings</dt>
-      <dd>
-        <ExternalLink href={site.proceedings.url}>{site.proceedings.name}</ExternalLink>
-      </dd>
-    </div>
-    <div>
-      <dt>Communities</dt>
-      <dd>{cfp.communities.join(", ")}</dd>
-    </div>
   </dl>
   <p class="record__note">
-    {deadlines.some((deadline) => deadline.due) &&
-      "Deadlines are Anywhere on Earth (AoE, UTC−12). "}
+    {next && "Anywhere on Earth (AoE, UTC−12). "}
     <a href={url("/dates/")}>All dates</a>
   </p>
 </section>

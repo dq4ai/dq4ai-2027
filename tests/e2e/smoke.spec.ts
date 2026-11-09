@@ -104,23 +104,38 @@ test("switching the theme in one tab updates another, and the browser toolbar co
 
 test("the home page leads with the workshop's purpose", async ({ page }) => {
   await page.goto("");
-  const purpose = page.locator(".purpose");
-  await expect(purpose).toContainText("two-way relationship");
-  await expect(purpose).toContainText("bring together researchers and practitioners");
-  const exchange = purpose.locator(".exchange");
+  const exchange = page.locator(".hero .exchange");
   await expect(exchange).toContainText("Data quality for AI");
   await expect(exchange).toContainText("AI for data quality");
+  await expect(page.locator(".purpose")).toContainText(
+    "bring together researchers and practitioners",
+  );
   await expect(page.locator("main .topic-list")).toContainText("Multimodal data quality");
 });
 
-test("the first screen states what is known as a record", async ({ page }) => {
+// The organizers asked for a home page that invites rather than tells everything: a short record,
+// one paragraph, and the rest one click away.
+test("the first screen states the essentials as a short record", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("");
   const record = page.locator(".record");
   await expect(record).toContainText("Lille, France");
   await expect(record).toContainText("EDBT/ICDT 2027");
-  await expect(record).toContainText("CEUR Workshop Proceedings");
+  await expect(record.locator("> div")).toHaveCount(4);
+  await expect(record).not.toContainText("Proceedings");
+  await expect(record).not.toContainText("Communities");
   await expect(record).toBeInViewport({ ratio: 1 });
+});
+
+test("the home page keeps the details for the pages that hold them", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator(".purpose > p:not(.more-link)")).toHaveCount(1);
+  await expect(
+    page.locator(".purpose").getByRole("link", { name: "Read the full scope" }),
+  ).toHaveAttribute("href", /call-for-papers\/#scope$/);
+  await expect(page.locator("main")).not.toContainText("two-way relationship");
+  await expect(page.locator("#keynote, #latest-news")).toHaveCount(0);
+  await expect(page.locator("main h2", { hasText: /keynote|news/i })).toHaveCount(0);
 });
 
 test("a phone's first screen reaches the record", async ({ page }) => {
@@ -204,8 +219,7 @@ test("the home statement does not depend on the order of the topics", async ({ p
     return { statement: size(".exchange"), heading: size(".purpose h2") };
   });
   expect(sizes.statement).toBeLessThan(sizes.heading);
-  const first = page.locator(".purpose > p").first();
-  await expect(first).toHaveClass("exchange");
+  await expect(page.locator(".hero__body .exchange + .lede")).toHaveCount(1);
 });
 
 test("no page shows the raw value TBA or the old wording", async ({ page }) => {
@@ -431,17 +445,19 @@ test.describe("states that depend on content", () => {
     }
     await expect(primary).toHaveText("Read the call for papers");
     await expect(page.locator(".hero__actions")).not.toContainText("Submit a paper");
-    await expect(page.locator(".hero__actions")).toContainText("Submission details");
+    await expect(page.locator(".hero__actions a")).toHaveCount(1);
   });
 
   test("an extended deadline says so even when it is not the next one", async ({
     page,
   }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an extended deadline");
-    await page.goto("");
-    const row = page.locator(".record > div", { hasText: "Author notification" });
+    // The home page names only the next deadline; the call for papers lists them all.
+    await page.goto("call-for-papers/");
+    const dates = page.locator("#important-dates ~ dl").first();
+    const row = dates.locator("> div", { hasText: "Author notification" });
     await expect(row.locator(".status--extended")).toHaveText("Extended");
-    const plain = page.locator(".record > div", { hasText: "Camera-ready" });
+    const plain = dates.locator("> div", { hasText: "Camera-ready" });
     await expect(plain.locator(".status-group")).toHaveCount(0);
   });
 
@@ -454,26 +470,6 @@ test.describe("states that depend on content", () => {
     await expect(row).toContainText("To be announced");
     await expect(row.getByRole("link")).toHaveCount(1);
     await expect(row.getByRole("link", { name: "Jane Doe" })).toHaveCount(1);
-  });
-
-  test("the record's status lines up with the date above it when it wraps", async ({
-    page,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("");
-    const cell = page.locator(".record dd", { has: page.locator(".flag") });
-    const boxes = await cell.evaluate((dd) => {
-      const left = (selector: string) => dd.querySelector(selector)?.getBoundingClientRect();
-      return {
-        cell: dd.getBoundingClientRect().left,
-        flag: left(".flag")?.top ?? 0,
-        group: left(".status-group")?.left ?? 0,
-        groupTop: left(".status-group")?.top ?? 0,
-      };
-    });
-    expect(boxes.groupTop, "status wraps at this width").toBeGreaterThan(boxes.flag);
-    expect(boxes.group).toBeCloseTo(boxes.cell, 0);
   });
 
   test("on a phone the dates table is two columns and keeps its status", async ({

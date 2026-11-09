@@ -139,3 +139,14 @@ export function pageDescription(site: Site, description: string): string {
 export function isKnown(value: string | number | undefined): boolean {
   return value !== undefined && value !== TBA;
 }
+
+/** One sentence naming the facts not yet known, so they do not each take a row. */
+export function pendingSentence(labels: string[]): string {
+  if (labels.length === 0) return "";
+  const [first = "", ...rest] = labels.map((label, index) =>
+    index === 0 ? label : label.charAt(0).toLowerCase() + label.slice(1),
+  );
+  const last = rest.pop();
+  const list = last ? `${[first, ...rest].join(", ")} and ${last}` : first;
+  return `${list}: to be announced.`;
+}

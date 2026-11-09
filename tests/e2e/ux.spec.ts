@@ -578,17 +578,6 @@ test.describe("rows and tables line up", () => {
       "pretty",
     );
   });
-
-  test("in the record, status sits under each date", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("");
-    const direction = await page
-      .locator(".record .deadline-cell")
-      .first()
-      .evaluate((e) => getComputedStyle(e).flexDirection);
-    expect(direction).toBe("column");
-  });
 });
 
 test.describe("printing", () => {
@@ -692,7 +681,10 @@ test.describe("reading without seeing the layout", () => {
       "https://dblp.org/pid/00/0000.html",
     );
     await page.goto("");
-    await expect(page.getByRole("link", { name: /^Keynote details\s*:/ }).first()).toBeVisible();
+    await expect(page.locator(".record").getByRole("link", { name: "Jane Doe" })).toHaveAttribute(
+      "href",
+      /keynotes\/#/,
+    );
   });
 
   test("the current edition does not link to itself", async ({ page }) => {
@@ -817,5 +809,62 @@ test.describe("one name for one thing", () => {
       await page.goto("dates/");
       await expect(page.locator(".toolbar a")).toHaveText("Deadlines calendar (.ics)");
     }
+  });
+});
+
+// The organizers asked for a site that does not overwhelm: a short menu, and a call for papers
+// that leads with what matters and folds away the rest.
+test.describe("less at once", () => {
+  test("the menu keeps five pages and the footer links the rest", async ({ page }, testInfo) => {
+    await page.goto("");
+    const menu = page.locator("#site-nav li:not(.site-nav__home) a");
+    const expected = ["Call for Papers", "Dates", "Program", "Organization", "Attend"];
+    if (populated(testInfo.project.name)) expected.splice(3, 0, "Accepted Papers");
+    await expect(menu).toHaveText(expected);
+    const footer = page.locator(".site-footer__links");
+    for (const name of ["Submission", "Keynotes", "News", "Policies", "Previous Editions"]) {
+      await expect(footer.getByRole("link", { name, exact: true })).toBeVisible();
+    }
+  });
+
+  test("the call's scope opens on its goal, with the rest one click away", async ({ page }) => {
+    await page.goto("call-for-papers/");
+    const scope = page.locator("section", { has: page.locator("#scope") });
+    await expect(scope.locator("> p").first()).toContainText("The goal of the workshop");
+    const more = scope.locator("details");
+    await expect(more.getByText("two-way relationship")).toBeHidden();
+    await more.locator("summary").click();
+    await expect(more.getByText("two-way relationship")).toBeVisible();
+  });
+
+  test("paper categories open onto their descriptions", async ({ page }) => {
+    await page.goto("call-for-papers/");
+    const research = page.locator(".paper-types details", { hasText: "Research papers" });
+    await expect(research.getByRole("heading", { name: "Research papers" })).toBeVisible();
+    await expect(research.getByText("Original research contributions")).toBeHidden();
+    await research.locator("summary").click();
+    await expect(research.getByText("Original research contributions")).toBeVisible();
+  });
+
+  test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {
+    await page.goto("call-for-papers/");
+    const details = page.locator("section", { has: page.locator("#submission") });
+    const policies = page.locator("section", { has: page.locator("#policies") });
+    if (populated(testInfo.project.name)) {
+      await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(1);
+      await expect(details).not.toContainText("to be announced");
+      return;
+    }
+    await expect(details).toContainText(
+      "Submission system, template and review model: to be announced.",
+    );
+    await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(0);
+    await expect(policies).toContainText(
+      "Dual submission and use of generative AI: to be announced.",
+    );
+    await expect(policies.locator(".facts")).toHaveCount(0);
+    await expect(
+      details.getByRole("link", { name: "How to prepare and submit a paper" }),
+    ).toHaveAttribute("href", /submission\/$/);
   });
 });

@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+Less at once, so a first visit invites rather than overwhelms. The home page opens with the two-way
+statement and one button, a record of four facts (next deadline, workshop date, where, keynote), the
+topics as tags, one paragraph on the goal, and the latest news in one line. Proceedings, communities,
+the keynote section and the full scope now live one click away. The menu keeps five pages; Submission,
+Keynotes and News move to the footer. The Call for Papers opens its scope on the goal with the rest
+folded under "More on the scope", lists paper categories as titles that open onto their description,
+and says the facts not yet known in one sentence instead of a row of "To be announced" each. The
+unused `communities` field is gone from `cfp.yaml`.
+
 Simpler and warmer, after the organizers' review. Serif type on a warm paper background, the topics
 as a plain list of titles without icons, and a brighter photo behind the Call for Papers title. The
 Call for Papers reads straight through: the links bar and the section on related venues are gone,

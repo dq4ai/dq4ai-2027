@@ -9,10 +9,35 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getDeadlines, getSite } from "../lib/content";
 import { formatIsoDay, TBA } from "../lib/dates";
 import { url } from "../lib/paths";
-import { hostDatesSentence, pageLimitsUnknown, topicAnchor, workshopTitle } from "../lib/view";
+import {
+  hostDatesSentence,
+  isKnown,
+  pageLimitsUnknown,
+  pendingSentence,
+  topicAnchor,
+  workshopTitle,
+} from "../lib/view";
 
 const [site, cfp, deadlines] = await Promise.all([getSite(), getCfp(), getDeadlines()]);
 const limitsUnknown = pageLimitsUnknown(cfp);
+// Facts not yet known share one sentence instead of each taking a row of "To be announced".
+const templateKnown =
+  isKnown(site.paperTemplate) ||
+  (site.paperTemplateUrl !== undefined && isKnown(site.paperTemplateUrl));
+const systemKnown = isKnown(site.submissionSystem) || isKnown(site.submissionUrl);
+const submissionPending = pendingSentence(
+  [
+    !systemKnown && "Submission system",
+    !templateKnown && "Template",
+    !isKnown(site.reviewModel) && "Review model",
+  ].filter((label) => typeof label === "string"),
+);
+const policiesPending = pendingSentence(
+  [
+    !isKnown(cfp.dualSubmission) && "Dual submission",
+    !isKnown(cfp.generativeAi) && "Use of generative AI",
+  ].filter((label) => typeof label === "string"),
+);
 ---
 
 <BaseLayout slug="call-for-papers">
@@ -41,10 +66,13 @@ const limitsUnknown = pageLimitsUnknown(cfp);
 
   <section>
     <Heading id="scope">Scope</Heading>
-    {cfp.scope.map((paragraph) => (
-      <p>{paragraph}</p>
-    ))}
     <p>{cfp.goal}</p>
+    <details>
+      <summary>More on the scope</summary>
+      {cfp.scope.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </details>
   </section>
 
   <section>
@@ -61,17 +89,23 @@ const limitsUnknown = pageLimitsUnknown(cfp);
 
   <section>
     <Heading id="paper-categories">Paper categories</Heading>
-    {cfp.paperTypes.map((type) => (
-      <div class="entry">
-        <h3>{type.title}</h3>
-        <p>{type.description}</p>
-        {!limitsUnknown && (
-          <p class="entry__fact">
-            <strong>Page limit:</strong> <Value of={type.pageLimit} />
-          </p>
-        )}
-      </div>
-    ))}
+    <ul class="paper-types">
+      {cfp.paperTypes.map((type) => (
+        <li>
+          <details>
+            <summary>
+              <h3>{type.title}</h3>
+            </summary>
+            <p>{type.description}</p>
+            {!limitsUnknown && (
+              <p class="entry__fact">
+                <strong>Page limit:</strong> <Value of={type.pageLimit} />
+              </p>
+            )}
+          </details>
+        </li>
+      ))}
+    </ul>
     {limitsUnknown && (
       <dl class="facts page-limits">
         <div>
@@ -87,33 +121,37 @@ const limitsUnknown = pageLimitsUnknown(cfp);
   <section>
     <Heading id="submission">Submission details</Heading>
     <dl class="facts">
-      <div>
-        <dt>Submission system</dt>
-        <dd>
-          {site.submissionUrl === TBA ? (
-            <Value of={site.submissionSystem} />
-          ) : (
-            <ExternalLink
-              href={site.submissionUrl}
-              class={site.submissionSystem === TBA ? "link-is-address" : undefined}
-            >
-              {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
-            </ExternalLink>
-          )}
-        </dd>
-      </div>
-      <div>
-        <dt>Template</dt>
-        <dd>
-          <PaperTemplate />
-        </dd>
-      </div>
-      <div>
-        <dt>Review model</dt>
-        <dd>
-          <Value of={site.reviewModel} />
-        </dd>
-      </div>
+      {systemKnown && (
+        <div>
+          <dt>Submission system</dt>
+          <dd>
+            {site.submissionUrl === TBA ? (
+              <Value of={site.submissionSystem} />
+            ) : (
+              <ExternalLink
+                href={site.submissionUrl}
+                class={site.submissionSystem === TBA ? "link-is-address" : undefined}
+              >
+                {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
+              </ExternalLink>
+            )}
+          </dd>
+        </div>
+      )}
+      {templateKnown && (
+        <div>
+          <dt>Template</dt>
+          <dd>
+            <PaperTemplate />
+          </dd>
+        </div>
+      )}
+      {isKnown(site.reviewModel) && (
+        <div>
+          <dt>Review model</dt>
+          <dd>{site.reviewModel}</dd>
+        </div>
+      )}
       <div>
         <dt>Proceedings</dt>
         <dd>{cfp.proceedingsNote}</dd>
@@ -123,24 +161,31 @@ const limitsUnknown = pageLimitsUnknown(cfp);
         <dd>{cfp.presentation}</dd>
       </div>
     </dl>
+    {submissionPending && <p class="note">{submissionPending}</p>}
+    <p class="more-link">
+      <a href={url("/submission/")}>How to prepare and submit a paper</a>
+    </p>
   </section>
 
   <section>
     <Heading id="policies">Submission policies</Heading>
-    <dl class="facts">
-      <div>
-        <dt>Dual submission</dt>
-        <dd>
-          <Value of={cfp.dualSubmission} />
-        </dd>
-      </div>
-      <div>
-        <dt>Use of generative AI</dt>
-        <dd>
-          <Value of={cfp.generativeAi} />
-        </dd>
-      </div>
-    </dl>
+    {policiesPending !== "" && <p>{policiesPending}</p>}
+    {(isKnown(cfp.dualSubmission) || isKnown(cfp.generativeAi)) && (
+      <dl class="facts">
+        {isKnown(cfp.dualSubmission) && (
+          <div>
+            <dt>Dual submission</dt>
+            <dd>{cfp.dualSubmission}</dd>
+          </div>
+        )}
+        {isKnown(cfp.generativeAi) && (
+          <div>
+            <dt>Use of generative AI</dt>
+            <dd>{cfp.generativeAi}</dd>
+          </div>
+        )}
+      </dl>
+    )}
     <p class="note">
       Code of conduct, conflict of interest and ethics are on the{" "}
       <a href={url("/policies/")}>Policies page</a>.

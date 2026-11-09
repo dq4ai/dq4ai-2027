@@ -96,18 +96,64 @@
   stroke: var(--color-surface);
 }
 
-/* The topics, as a plain list of titles. */
+/* The topics, as a row of soft tags: a glance, with each one a door into the call. */
 .topic-list {
-  padding-inline-start: 1.25em;
-  list-style: disc;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-inline-size: none;
+  padding: 0;
+  list-style: none;
 }
 
-.topic-list li + li {
-  margin-block-start: var(--space-1);
+.topic-list a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-rule);
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  text-decoration: none;
 }
 
-.topic-list li::marker {
-  color: var(--color-brand-b);
+@media (hover: hover) {
+  .topic-list a:hover {
+    border-color: var(--color-brand-b);
+    color: var(--color-accent);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* Only while pointed at, so a theme switch stays instant. */
+  .topic-list a:hover {
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+}
+
+/* The latest news, said in one line rather than given a section. */
+.news-line {
+  margin-block: 0 var(--space-5);
+  color: var(--color-text-muted);
+}
+
+.news-line__label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.news-line__label::after {
+  content: ":";
+}
+
+/* The quieter of the home page's two ways in. */
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
 }
 
 /* What this is, for someone who arrives here rather than at the home page. */
@@ -365,6 +411,19 @@ main > section:not(.session) > h2 {
 }
 
 @media (width < 40rem) {
+  /* Room for the record on a phone's first screen, now that the statement opens the hero. */
+  .hero__body {
+    margin-block-start: var(--space-4);
+  }
+
+  .hero__body .exchange {
+    margin-block-end: var(--space-2);
+  }
+
+  .hero__actions {
+    margin-block-start: var(--space-3);
+  }
+
   .record > div {
     grid-template-columns: 7.5rem minmax(0, 1fr);
   }
@@ -412,11 +471,6 @@ main > section:not(.session) > h2 {
   flex-wrap: wrap;
   gap: 0 var(--space-3);
   align-items: baseline;
-}
-
-.record .deadline-cell {
-  flex-direction: column;
-  align-items: flex-start;
 }
 
 /* A value nobody has supplied yet: said quietly, in the body type, wherever it appears. */
@@ -967,4 +1021,32 @@ main > section > .steps {
 
 main > section > .toolbar:first-of-type {
   margin-block-start: 0;
+}
+
+/* Paper categories: titles first, each opening onto its description. */
+.paper-types {
+  max-inline-size: var(--measure);
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--color-rule);
+}
+
+.paper-types li {
+  border-block-end: 1px solid var(--color-rule);
+}
+
+.paper-types details {
+  margin-block: 0;
+  padding-block: var(--space-2);
+}
+
+.paper-types summary {
+  font-size: inherit;
+}
+
+.paper-types summary h3 {
+  display: inline;
+  margin: 0;
+  font-size: var(--text-base, 1rem);
+  font-weight: 600;
 }
