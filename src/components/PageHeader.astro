@@ -16,11 +16,10 @@ const site = await getSite();
 
 <header class:list={["page-header", { "page-header--photo": photo }]}>
   {
-    /* Two framings. A phone gets a strip cropped from the right of the photo (for the Grand'Place,
-       the belfry and the Vieille Bourse) across the top of the header, kept smaller than the lede
-       so the words, not the photo, are the first screen's largest paint: Lighthouse's phone budget
-       cannot be met by any photo that is. Wider screens get the whole photo behind the words.
-       Eager, because on either it is on the first screen. */
+    /* Two framings. A phone gets a 16:9 crop from the right of the photo (for the Grand'Place, the
+       belfry and the Vieille Bourse) as a card above a plain header; wider screens get the whole
+       photo behind the words. Eager and high priority: on either it is the largest thing on the
+       first screen, which is why this page has its own phone budget in lighthouserc.json. */
     photo && (
       <ContentImage
         class="page-header__photo"
@@ -30,7 +29,7 @@ const site = await getSite();
         sizes="(min-width: 70rem) 66rem, 100vw"
         loading="eager"
         fetchpriority="high"
-        phone={{ width: 800, height: 400, position: "right", sizes: "calc(100vw - 2rem)" }}
+        phone={{ width: 800, height: 450, position: "right", sizes: "calc(100vw - 2rem)" }}
       />
     )
   }

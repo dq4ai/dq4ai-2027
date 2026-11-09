@@ -201,15 +201,10 @@ test.describe("the call for papers banner", () => {
       await page.setViewportSize({ width, height });
       await page.goto("call-for-papers/");
       if (width < 640) {
-        // On a phone the photo is a strip above the words, which sit on the solid base colour.
-        const strip = await page.locator(".page-header__photo").boundingBox();
+        // On a phone the photo is a card above the words, which sit on the page's own paper.
+        const photo = await page.locator(".page-header__photo").boundingBox();
         const text = await page.locator(".page-header .page-context").boundingBox();
-        expect(text?.y ?? 0).toBeGreaterThanOrEqual((strip?.y ?? 0) + (strip?.height ?? 0));
-        const base = await page
-          .locator(".page-header--photo")
-          .evaluate((e) => getComputedStyle(e).backgroundColor);
-        const rgb = (base.match(/\d+/g) ?? []).slice(0, 3).map(Number);
-        expect(contrastOverWhite([...rgb, 1])).toBeGreaterThanOrEqual(4.5);
+        expect(text?.y ?? 0).toBeGreaterThanOrEqual((photo?.y ?? 0) + (photo?.height ?? 0));
         return;
       }
       const samples = await page.locator(".page-header--photo").evaluate((header) => {
@@ -255,7 +250,7 @@ test.describe("the call for papers banner", () => {
   });
 
   // Replaced after the phone review: the organizers wanted Lille on a phone too, not a navy panel.
-  // The phone still downloads no more than a small crop, never the panorama itself.
+  // The phone still downloads one small crop, never the panorama itself.
   test("a phone downloads only a small crop of the photo", async ({ page }) => {
     const images: { url: string; bytes: number }[] = [];
     page.on("response", async (response) => {

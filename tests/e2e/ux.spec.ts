@@ -885,26 +885,27 @@ test.describe("on a phone", () => {
     await page.setViewportSize(PHONE);
   });
 
-  test("the call's header shows a strip of Lille, smaller than its words", async ({ page }) => {
+  // The organizers chose a photo card over a navy panel or a strip, and gave the call its own
+  // phone budget in lighthouserc.json for it.
+  test("the call opens on a photo of Lille, with its words on paper below", async ({ page }) => {
     await page.goto("call-for-papers/");
     const photo = page.locator(".page-header__photo");
     await expect(photo).toBeVisible();
     await expect
       .poll(() => photo.evaluate((img: HTMLImageElement) => img.naturalWidth))
       .toBeGreaterThan(0);
-    // The phone crop, not the whole panorama, and never the largest paint: Lighthouse's phone
-    // budget cannot be met when a photo is.
-    expect(
-      await photo.evaluate((img: HTMLImageElement) => img.naturalWidth / img.naturalHeight),
-    ).toBeCloseTo(2, 1);
-    const area = async (selector: string) => {
-      const box = await page.locator(selector).boundingBox();
-      return (box?.width ?? 0) * (box?.height ?? 0);
-    };
-    expect(await area(".page-header__photo")).toBeLessThan(await area(".page-header .lede"));
-    const strip = await photo.boundingBox();
-    const title = await page.locator(".page-header h1").boundingBox();
-    expect(title?.y ?? 0).toBeGreaterThan((strip?.y ?? 0) + (strip?.height ?? 0));
+    const box = await photo.boundingBox();
+    expect((box?.width ?? 0) / (box?.height ?? 1)).toBeCloseTo(16 / 9, 1);
+    const heading = await page.locator(".page-header h1").boundingBox();
+    expect(heading?.y ?? 0).toBeGreaterThan((box?.y ?? 0) + (box?.height ?? 0));
+    const title = await page
+      .locator(".page-header--photo h1")
+      .evaluate((e) => getComputedStyle(e).color);
+    expect(title).toBe(await page.evaluate(() => getComputedStyle(document.body).color));
+    await expect(page.locator(".page-header--photo")).toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    );
   });
 
   test("the host city photo is a photo, not a sliver", async ({ page }) => {
@@ -922,7 +923,7 @@ test.describe("on a phone", () => {
     await page.goto("");
     for (const link of await page.locator(".site-footer__links a").all()) {
       const lines = await link.evaluate((a) => a.getClientRects().length);
-      expect(lines, await link.textContent()).toBe(1);
+      expect(lines, (await link.textContent()) ?? "").toBe(1);
     }
   });
 

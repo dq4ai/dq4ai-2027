@@ -6,67 +6,64 @@
   border-image: linear-gradient(90deg, var(--color-brand-a) 0 50%, var(--color-brand-b) 50% 100%) 1;
 }
 
-/* A title over a photo. The scrim is there from the first paint, so the text never waits for the
-   image, and it holds AA over the lightest pixel a photo could have. */
-.page-header--photo {
-  --photo-strip: 7.5rem;
-
-  position: relative;
-  isolation: isolate;
-  margin-block-start: var(--space-4);
-  padding: var(--space-6) var(--space-4);
-  overflow: clip;
-  border: 0;
-  border-image: none;
-  border-radius: var(--radius-large);
-  background: var(--color-photo-base);
-}
-
-.page-header--photo::before {
-  position: absolute;
-  z-index: -1;
-  inset: 0;
-  background: linear-gradient(90deg, var(--color-scrim) 0%, var(--color-scrim) 100%);
-  content: "";
-}
-
+/* On a phone the photo is a card of its own above a plain header, as on every other page: a 16:9
+   crop on the belfry and the Vieille Bourse (see PageHeader.astro), with the words on paper. */
 .page-header__photo {
-  position: absolute;
-  z-index: -2;
-  inset: 0;
+  display: block;
   inline-size: 100%;
-  block-size: 100%;
+  block-size: auto;
+  aspect-ratio: 16 / 9;
+  margin-block-end: var(--space-5);
+  border-radius: var(--radius-large);
   object-fit: cover;
-  object-position: 75% center;
-  /* The dusk photo, lifted so the square reads clearly. */
-  filter: brightness(1.15) saturate(1.1);
+  object-position: 55% 40%;
 }
 
-/* On a phone the header reads like a postcard: a strip of the photo across the top, fading into
-   the navy where the words sit. The strip stays smaller than the lede (see PageHeader.astro). */
 @media (width < 40rem) {
   .page-header--photo {
-    padding-block-start: calc(var(--photo-strip) + var(--space-3));
+    padding-block-start: var(--space-4);
   }
+}
 
-  .page-header__photo {
-    block-size: var(--photo-strip);
-    object-position: 60% 35%;
+/* From a tablet up, a title over the photo. The scrim is there from the first paint, so the text
+   never waits for the image, and it holds AA over the lightest pixel a photo could have. */
+@media (width >= 40rem) {
+  .page-header--photo {
+    position: relative;
+    isolation: isolate;
+    margin-block-start: var(--space-4);
+    padding: var(--space-6) var(--space-4);
+    overflow: clip;
+    border: 0;
+    border-image: none;
+    border-radius: var(--radius-large);
+    background: var(--color-photo-base);
   }
 
   .page-header--photo::before {
-    background: linear-gradient(
-      180deg,
-      var(--color-scrim-clear) 0,
-      var(--color-scrim-clear) calc(var(--photo-strip) * 0.45),
-      var(--color-photo-base) var(--photo-strip),
-      var(--color-photo-base) 100%
-    );
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: linear-gradient(90deg, var(--color-scrim) 0%, var(--color-scrim) 100%);
+    content: "";
   }
-}
 
-.page-header--photo :is(h1, .lede, .page-context) {
-  color: var(--color-on-photo);
+  .page-header__photo {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    block-size: 100%;
+    aspect-ratio: auto;
+    margin: 0;
+    border-radius: 0;
+    object-position: 75% center;
+    /* The dusk photo, lifted so the square reads clearly. */
+    filter: brightness(1.15) saturate(1.1);
+  }
+
+  .page-header--photo :is(h1, .lede, .page-context) {
+    color: var(--color-on-photo);
+  }
 }
 
 /* From here the text keeps to the left, so the photo can show on the right. */

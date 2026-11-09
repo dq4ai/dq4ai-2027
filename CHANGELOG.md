@@ -2,10 +2,11 @@
 
 ## Unreleased
 
-A finished phone view. The Call for Papers header shows a strip of the Grand'Place, the belfry and the
-Vieille Bourse, fading into the navy behind the title, instead of a plain panel; it is a small crop
-made at build time and stays lighter than the words, so the page still paints in about 0.9 s on a
-phone. The host city photo on Attend becomes a 3:2 crop on a phone rather than a sliver of the whole
+A finished phone view. On a phone the Call for Papers opens on a photo card of the Grand'Place, the
+belfry and the Vieille Bourse, with the title and lede on paper below it like every other page,
+instead of a navy panel. The photo is a small 16:9 crop made at build time; as the page's largest
+paint it takes about 1.95 s in Lighthouse's phone run, so this one page now has its own budget
+(performance at least 0.99, largest paint under 2 s) while every other page keeps 100 and 1.2 s. The host city photo on Attend becomes a 3:2 crop on a phone rather than a sliver of the whole
 panorama. Every label and value now stack the same way on a phone, on every page. A list that ends a
 section no longer draws a second rule, the coffee break is set in the page's type, the topic tags
 share rows, the footer links flow without splitting, the Submit button has room before the next
