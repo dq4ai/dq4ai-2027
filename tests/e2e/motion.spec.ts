@@ -54,7 +54,7 @@ test.describe("what moves", () => {
   test("a hovered button eases, and only then", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("call-for-papers/");
-    const link = page.locator(".toc a").first();
+    const link = page.getByRole("link", { name: "Policies page" });
     const duration = () => link.evaluate((e) => getComputedStyle(e).transitionDuration);
     expect(await duration()).toBe("0s");
     await link.hover();
@@ -130,17 +130,6 @@ test.describe("every control shows its state", () => {
     await expect.poll(() => colorOf(page, ".site-header .brand")).not.toBe(before);
   });
 
-  test("a topic tile responds to a press", async ({ page }) => {
-    await page.goto("");
-    const tile = page.locator(".topic-grid a").first();
-    const background = () => tile.evaluate((e) => getComputedStyle(e).backgroundColor);
-    const before = await background();
-    await tile.hover();
-    await page.mouse.down();
-    await expect.poll(background).not.toBe(before);
-    await page.mouse.up();
-  });
-
   test("the deadline bar responds to a pointer", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "populated-content", "needs a dated deadline");
     await page.goto("");
@@ -190,7 +179,7 @@ test.describe("every control shows its state", () => {
     });
     const page = await context.newPage();
     await page.goto("call-for-papers/");
-    for (const selector of [".toc a", ".site-footer__links a"]) {
+    for (const selector of [".site-footer__links a"]) {
       const box = await page.locator(selector).first().boundingBox();
       expect(box?.height ?? 0, selector).toBeGreaterThanOrEqual(44);
     }

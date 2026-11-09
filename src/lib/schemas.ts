@@ -17,19 +17,6 @@ const isoInstant = z
   .string()
   .refine(isIsoWithZone, "must be ISO 8601 with a time zone, e.g. 2026-12-11T23:59:00-12:00");
 
-/** Topic icons a co-chair can choose by name in cfp.yaml. */
-export const TOPIC_ICONS = [
-  "data-quality",
-  "ai-for-quality",
-  "knowledge-graph",
-  "language-models",
-  "governance",
-  "multimodal",
-  "benchmarks",
-  "applications",
-] as const;
-export type TopicIconName = (typeof TOPIC_ICONS)[number];
-
 const urlOrTba = z.union([tba, httpUrl]);
 const dayOrTba = z.union([tba, isoDay]);
 const instantOrTba = z.union([tba, isoInstant]);
@@ -195,9 +182,6 @@ export const cfpSchema = z.strictObject({
       z.strictObject({
         title: text,
         description: text,
-        icon: z
-          .enum(TOPIC_ICONS, { error: `must be one of: ${TOPIC_ICONS.join(", ")}` })
-          .optional(),
       }),
     )
     .min(1),
@@ -208,11 +192,6 @@ export const cfpSchema = z.strictObject({
   presentation: text,
   dualSubmission: text,
   generativeAi: text,
-  relatedVenues: z.strictObject({
-    intro: text,
-    venues: z.array(z.strictObject({ name: text, colocation: text, focus: text })),
-    distinction: text,
-  }),
 });
 
 export const submissionSchema = z.strictObject({

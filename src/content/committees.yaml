@@ -1,12 +1,12 @@
 # order: listed keeps the order below; order: surname sorts alphabetically by surname.
-- id: chairs
-  title: Workshop Chairs
-  order: listed
-  members: [soror-sahri, farah-benamara]
 - id: honorary-chair
   title: Honorary Chair
   order: listed
   members: [divesh-srivastava]
+- id: chairs
+  title: Workshop Chairs
+  order: listed
+  members: [soror-sahri, farah-benamara]
 - id: program-committee
   title: Program Committee
   order: surname

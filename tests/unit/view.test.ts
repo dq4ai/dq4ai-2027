@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { parseIso } from "../../src/lib/dates";
-import { cfpSchema, siteSchema, submissionSchema, TOPIC_ICONS } from "../../src/lib/schemas";
+import { cfpSchema, siteSchema, submissionSchema } from "../../src/lib/schemas";
 import type { Site } from "../../src/lib/schemas";
 import {
   pageContext,
@@ -143,16 +143,15 @@ describe("topicAnchor", () => {
   });
 });
 
-describe("topic icons in content", () => {
+describe("topics in content", () => {
   const topicsOnly = cfpSchema.shape.topics;
-  it("offers eight named icons", () => {
-    expect(TOPIC_ICONS).toHaveLength(8);
-  });
-  it("an icon is optional, so a new topic still displays", () => {
+  it("a topic is a title and a description", () => {
     expect(topicsOnly.safeParse([{ title: "t", description: "d" }]).success).toBe(true);
   });
-  it("a mistyped icon name fails the build", () => {
-    const parsed = topicsOnly.safeParse([{ title: "t", description: "d", icon: "knowlege-graph" }]);
+  it("topics no longer take an icon, so a leftover icon field fails the build", () => {
+    const parsed = topicsOnly.safeParse([
+      { title: "t", description: "d", icon: "knowledge-graph" },
+    ]);
     expect(parsed.success).toBe(false);
   });
 });

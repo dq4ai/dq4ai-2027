@@ -8,31 +8,15 @@ interface Props {
   person: Person;
 }
 const { person } = Astro.props;
+// One line, as conference officer lists read: "Name, Affiliation, Country". The name links to the
+// person's own page when there is one, otherwise to their DBLP or ORCID profile.
+const profile = person.url ?? person.dblp ?? person.orcid;
 const place = isKnown(person.affiliation)
   ? [person.affiliation, person.country].filter(Boolean).join(", ")
   : undefined;
 ---
 
 <span class="person__name">
-  <Value of={person.name} />
-</span>{" "}
-{(person.orcid || person.dblp || person.url) && (
-  <span class="person__links">
-    {person.url && (
-      <ExternalLink href={person.url}>
-        Web<span class="visually-hidden"> page of {person.name}</span>
-      </ExternalLink>
-    )}{" "}
-    {person.orcid && (
-      <ExternalLink href={person.orcid}>
-        ORCID<span class="visually-hidden"> of {person.name}</span>
-      </ExternalLink>
-    )}{" "}
-    {person.dblp && (
-      <ExternalLink href={person.dblp}>
-        DBLP<span class="visually-hidden"> of {person.name}</span>
-      </ExternalLink>
-    )}
-  </span>
-)}{" "}
-<span class="person__detail">{place ?? <span class="tba">Affiliation to be announced</span>}</span>
+  {profile ? <ExternalLink href={profile}>{person.name}</ExternalLink> : <Value of={person.name} />}
+</span>
+, {place ?? <span class="tba">affiliation to be announced</span>}

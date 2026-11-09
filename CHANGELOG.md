@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+Simpler and warmer, after the organizers' review. Serif type on a warm paper background, the topics
+as a plain list of titles without icons, and a brighter photo behind the Call for Papers title. The
+Call for Papers reads straight through: the links bar and the section on related venues are gone,
+as is the matching section on the home page. The Organization page opens with the Honorary Chair and
+lists each person on one line, "Name, Affiliation, Country", the name linking to their profile.
+
 The header now stays on screen while scrolling, so any page is one click away. The host city photo is
 now the Grand'Place at dusk and links to a description of Lille, and the Call for Papers opens with a
 panorama of the square behind its title.

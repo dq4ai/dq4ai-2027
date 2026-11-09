@@ -78,64 +78,53 @@ test.describe("logo", () => {
     await page.emulateMedia({ colorScheme: "light" });
     await page.goto("");
     const surface = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-    expect(surface).toBe("rgb(252, 253, 254)");
+    expect(surface).toBe("rgb(251, 249, 244)");
     await expect(
       page.locator('meta[name="theme-color"][media="(prefers-color-scheme: light)"]'),
-    ).toHaveAttribute("content", "#fcfdfe");
+    ).toHaveAttribute("content", "#fbf9f4");
     await expect(
       page.locator('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]'),
-    ).toHaveAttribute("content", "#0d1626");
+    ).toHaveAttribute("content", "#141820");
   });
 });
 
-test.describe("topic icons", () => {
-  test("the home page's first section is the eight topics, each with its icon", async ({
+// The organizers asked for the topics as titles only, without icons.
+test.describe("topics", () => {
+  test("the home page's first section lists the eight topics by title, without icons", async ({
     page,
   }) => {
     await page.goto("");
-    await expect(page.locator("main > section").first()).toHaveClass(/topic-band/);
-    const tiles = page.locator(".topic-grid > li");
-    const titles = await tiles.allTextContents();
+    const first = page.locator("main > section").first();
+    await expect(first.getByRole("heading", { name: "Topics of interest" })).toBeVisible();
+    const titles = await first.locator(".topic-list > li").allTextContents();
     expect(titles.map((title) => title.trim()).toSorted()).toEqual(TOPICS.toSorted());
-    for (const tile of await tiles.all()) {
-      await expect(tile.locator("svg.topic-icon")).toBeVisible();
-      await expect(tile.locator("svg.topic-icon")).toHaveAttribute("aria-hidden", "true");
-    }
+    await expect(first.locator("svg")).toHaveCount(0);
   });
 
-  test("a tile leads to that topic's full description", async ({ page }) => {
+  test("a topic title leads to its full description", async ({ page }) => {
     await page.goto("");
-    await page.locator(".topic-grid a", { hasText: "Knowledge graphs" }).click();
+    await page.locator(".topic-list a", { hasText: "Knowledge graphs" }).click();
     await expect(page).toHaveURL(/call-for-papers\/#topic-knowledge-graphs$/);
     await expect(page.locator("#topic-knowledge-graphs")).toContainText("entity resolution");
     await expect(page.locator("#topic-knowledge-graphs")).toBeInViewport();
   });
 
-  test("the call for papers keeps each description with its icon", async ({ page }) => {
+  test("the call for papers gives each topic its title and description, without icons", async ({
+    page,
+  }) => {
     await page.goto("call-for-papers/");
     const rows = page.locator(".topics > li");
     await expect(rows).toHaveCount(TOPICS.length);
-    for (const row of await rows.all()) {
-      await expect(row.locator("svg.topic-icon")).toBeVisible();
-    }
+    await expect(page.locator(".topics svg")).toHaveCount(0);
     await expect(page.locator("#topic-data-quality-for-ai")).toContainText(
       "Quality of training and fine-tuning data",
     );
   });
 
-  test("the grid fits every width without sideways scrolling", async ({ page }) => {
-    for (const [width, columns] of [
-      [320, 2],
-      [390, 2],
-      [820, 4],
-      [1440, 4],
-    ] as const) {
+  test("the topics fit every width without sideways scrolling", async ({ page }) => {
+    for (const width of [320, 390, 820, 1440]) {
       await page.setViewportSize({ width, height: 800 });
       await page.goto("");
-      const tracks = await page
-        .locator(".topic-grid")
-        .evaluate((e) => getComputedStyle(e).gridTemplateColumns.split(" ").length);
-      expect(tracks, `${width}px`).toBe(columns);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
       );
@@ -143,22 +132,9 @@ test.describe("topic icons", () => {
     }
   });
 
-  test("a tile is a large target", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 });
+  test("the two-way statement is said in type alone", async ({ page }) => {
     await page.goto("");
-    const box = await page.locator(".topic-grid a").first().boundingBox();
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-  });
-
-  test("the two-way statement carries the first two topics' icons", async ({ page }) => {
-    await page.goto("");
-    await expect(page.locator(".exchange svg.topic-icon")).toHaveCount(2);
-  });
-
-  test("the icons print, since the home page's topics are only titles now", async ({ page }) => {
-    await page.goto("");
-    await page.emulateMedia({ media: "print" });
-    await expect(page.locator(".topic-grid > li").first()).toBeVisible();
-    await expect(page.locator(".topic-grid svg").first()).toBeVisible();
+    await expect(page.locator(".exchange span")).toHaveCount(2);
+    await expect(page.locator(".exchange svg")).toHaveCount(0);
   });
 });

@@ -110,7 +110,7 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   const exchange = purpose.locator(".exchange");
   await expect(exchange).toContainText("Data quality for AI");
   await expect(exchange).toContainText("AI for data quality");
-  await expect(page.locator("main .topic-grid")).toContainText("Multimodal data quality");
+  await expect(page.locator("main .topic-list")).toContainText("Multimodal data quality");
 });
 
 test("the first screen states what is known as a record", async ({ page }) => {
@@ -382,6 +382,8 @@ test("organizers are listed once and the committee is sorted by surname", async 
       "Soror Sahri",
       "Farah Benamara",
     ]);
+    // The organizers asked for the Honorary Chair to open the page.
+    await expect(page.locator("main h2").first()).toHaveText("Honorary Chair");
   }
 });
 

@@ -9,7 +9,7 @@ body {
   min-block-size: 100dvh;
   background: var(--color-surface);
   color: var(--color-text);
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-size: var(--text-base);
   font-synthesis: none;
   line-height: 1.6;
