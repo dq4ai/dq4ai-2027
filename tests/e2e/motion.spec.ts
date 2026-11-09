@@ -224,3 +224,47 @@ test.describe("every control shows its state", () => {
     expect((await toggle.boundingBox())?.width).toBe(before?.width);
   });
 });
+
+// The organizers asked for a banner as soft and inviting as classic workshop sites. Its art is the
+// logo's two directions, so it says what the workshop is about without a word.
+test.describe("the home banner", () => {
+  test("its two directions drift in once from their own sides", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.goto("");
+    const name = (selector: string) =>
+      page.locator(selector).evaluate((e) => getComputedStyle(e).animationName);
+    expect(await name(".hero-waves--a")).toBe("drift-from-left");
+    expect(await name(".hero-waves--b")).toBe("drift-from-right");
+    const count = await page
+      .locator(".hero-waves--a")
+      .evaluate((e) => getComputedStyle(e).animationIterationCount);
+    expect(count).toBe("1");
+  });
+
+  test("its art is decoration, recoloured by the theme, and left off paper", async ({ page }) => {
+    await page.goto("");
+    await expect(page.locator(".hero-waves")).toHaveCount(2);
+    for (const svg of await page.locator(".hero-waves").all()) {
+      await expect(svg).toHaveAttribute("aria-hidden", "true");
+    }
+    const stop = page.locator(".wave-stop--a-deep").first();
+    await page.emulateMedia({ colorScheme: "light" });
+    const light = await stop.evaluate((e) => getComputedStyle(e).stopColor);
+    await page.emulateMedia({ colorScheme: "dark" });
+    expect(await stop.evaluate((e) => getComputedStyle(e).stopColor)).not.toBe(light);
+    await page.emulateMedia({ media: "print" });
+    await expect(page.locator(".hero-waves").first()).toBeHidden();
+  });
+
+  test("its words stay readable over the art", async ({ page }) => {
+    for (const scheme of ["light", "dark"] as const) {
+      await page.emulateMedia({ colorScheme: scheme });
+      await page.goto("");
+      await expect(page.locator(".hero__banner h1")).toBeVisible();
+      const veil = await page
+        .locator(".hero__banner")
+        .evaluate((e) => getComputedStyle(e, "::after").backgroundImage);
+      expect(veil, scheme).toContain("radial-gradient");
+    }
+  });
+});

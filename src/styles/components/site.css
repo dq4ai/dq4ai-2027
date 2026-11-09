@@ -262,11 +262,6 @@
     order: 0;
   }
 
-  /* The wordmark is the way home here; the menu's link is for when the page has scrolled past it. */
-  .site-nav__home {
-    display: none;
-  }
-
   .site-nav ul {
     flex-direction: row;
     flex-wrap: wrap;

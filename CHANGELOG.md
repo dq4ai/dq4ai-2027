@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+The home page opens with a soft banner, in the spirit of classic workshop sites: the title, the
+edition and where it meets, centered over ribbons of colour. The ribbons are the logo's two
+directions, navy flowing in from the left and teal from the right, meeting under the title, and drift
+in once on arrival. They follow the theme, stay still with reduced motion, and are left off print.
+The record no longer repeats where the workshop is. Home is back in the menu at every width.
+
+Less at once, so a first visit invites rather than overwhelms. The home page opens with the two-way
+statement and one button, a record of four facts (next deadline, workshop date, where, keynote), the
+topics as tags, one paragraph on the goal, and the latest news in one line. Proceedings, communities,
+the keynote section and the full scope now live one click away. The menu keeps five pages; Submission,
+Keynotes and News move to the footer. The Call for Papers opens its scope on the goal with the rest
+folded under "More on the scope", lists paper categories as titles that open onto their description,
+and says the facts not yet known in one sentence instead of a row of "To be announced" each. The
+unused `communities` field is gone from `cfp.yaml`.
+
 Simpler and warmer, after the organizers' review. Serif type on a warm paper background, the topics
 as a plain list of titles without icons, and a brighter photo behind the Call for Papers title. The
 Call for Papers reads straight through: the links bar and the section on related venues are gone,

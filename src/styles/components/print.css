@@ -22,6 +22,7 @@
   .skip-link,
   .toolbar,
   .hero__actions,
+  .hero-waves,
   .section-anchor,
   .record__note a,
   .more-link,
@@ -75,6 +76,16 @@
 
   .page-header--photo .page-header__text {
     max-inline-size: none;
+  }
+
+  /* Paper needs no banner: the title prints plain, on white. */
+  .hero__banner {
+    padding: 0;
+    background: none;
+  }
+
+  .hero__banner::after {
+    content: none;
   }
 
   .hero__mark,

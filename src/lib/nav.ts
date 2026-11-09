@@ -4,6 +4,7 @@ export interface Route {
   slug: string;
   title: string;
   description: string;
+  /** In the main menu. The rest are linked from the footer, so the menu stays short. */
   primary?: boolean;
   /** Left out of navigation and the sitemap until the page has content. */
   onlyWithPapers?: boolean;
@@ -37,7 +38,6 @@ export const ROUTES: Route[] = [
     slug: "submission",
     title: "Submission",
     description: "How to prepare and submit a paper.",
-    primary: true,
   },
   {
     path: "/program/",
@@ -52,7 +52,6 @@ export const ROUTES: Route[] = [
     slug: "keynotes",
     title: "Keynotes",
     description: "Keynote speakers and talks.",
-    primary: true,
   },
   {
     path: "/accepted-papers/",
@@ -81,7 +80,6 @@ export const ROUTES: Route[] = [
     slug: "news",
     title: "News",
     description: "Announcements about the workshop.",
-    primary: true,
   },
   {
     path: "/policies/",
@@ -105,6 +103,11 @@ export function routeBySlug(slug: string): Route {
 
 export function visibleRoutes(hasPapers: boolean): Route[] {
   return ROUTES.filter((route) => !route.onlyWithPapers || hasPapers);
+}
+
+/** The pages kept out of the main menu, for the footer. */
+export function secondaryRoutes(): Route[] {
+  return ROUTES.filter((route) => !route.primary && route.slug !== "home");
 }
 
 export function sitemapRoutes(hasPapers: boolean, hasProgram: boolean): Route[] {

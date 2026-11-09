@@ -96,18 +96,64 @@
   stroke: var(--color-surface);
 }
 
-/* The topics, as a plain list of titles. */
+/* The topics, as a row of soft tags: a glance, with each one a door into the call. */
 .topic-list {
-  padding-inline-start: 1.25em;
-  list-style: disc;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-inline-size: none;
+  padding: 0;
+  list-style: none;
 }
 
-.topic-list li + li {
-  margin-block-start: var(--space-1);
+.topic-list a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-rule);
+  border-radius: 999px;
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  text-decoration: none;
 }
 
-.topic-list li::marker {
-  color: var(--color-brand-b);
+@media (hover: hover) {
+  .topic-list a:hover {
+    border-color: var(--color-brand-b);
+    color: var(--color-accent);
+  }
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  /* Only while pointed at, so a theme switch stays instant. */
+  .topic-list a:hover {
+    transition:
+      border-color var(--dur-fast) var(--ease-out),
+      color var(--dur-fast) var(--ease-out);
+  }
+}
+
+/* The latest news, said in one line rather than given a section. */
+.news-line {
+  margin-block: 0 var(--space-5);
+  color: var(--color-text-muted);
+}
+
+.news-line__label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.news-line__label::after {
+  content: ":";
+}
+
+/* The quieter of the home page's two ways in. */
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
 }
 
 /* What this is, for someone who arrives here rather than at the home page. */
@@ -174,20 +220,157 @@ main > section:not(.session) > h2 {
   }
 }
 
-/* The opening of the home page: the title, then what is known. */
+/* The opening of the home page: a banner of the two directions meeting, then what is known. */
 .hero {
   padding-block: var(--space-4) var(--space-6);
+}
+
+.hero__banner {
+  position: relative;
+  isolation: isolate;
+  padding: var(--space-5) var(--space-3);
+  overflow: clip;
+  border-radius: var(--radius-large);
+  background: linear-gradient(
+    115deg,
+    var(--wave-sand) 0%,
+    var(--color-surface) 45%,
+    var(--color-surface) 55%,
+    var(--wave-sand) 100%
+  );
+  text-align: center;
+}
+
+/* A veil of paper behind the words, so the ribbons never compete with them. */
+.hero__banner::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 40% 50% at 50% 52%,
+    var(--wave-veil) 0%,
+    var(--wave-veil) 40%,
+    transparent 100%
+  );
+  content: "";
+}
+
+.hero-waves {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Each ribbon is full colour at its edge and gone by its tip. */
+.wave-stop--a-deep {
+  stop-color: var(--wave-a1);
+}
+
+.wave-stop--a-soft {
+  stop-color: var(--wave-a2);
+}
+
+.wave-stop--b-deep {
+  stop-color: var(--wave-b1);
+}
+
+.wave-stop--b-soft {
+  stop-color: var(--wave-b2);
+}
+
+:is(.wave-stop--a-sand, .wave-stop--b-sand) {
+  stop-color: var(--wave-sand);
+}
+
+.wave-stop--fading {
+  stop-opacity: 0.55;
+}
+
+.wave-stop--gone {
+  stop-opacity: 0;
+}
+
+.hero-waves--a .wave--deep {
+  fill: url("#wave-a-deep");
+}
+
+.hero-waves--a .wave--soft {
+  fill: url("#wave-a-soft");
+}
+
+.hero-waves--a .wave--sand {
+  fill: url("#wave-a-sand");
+}
+
+.hero-waves--b .wave--deep {
+  fill: url("#wave-b-deep");
+}
+
+.hero-waves--b .wave--soft {
+  fill: url("#wave-b-soft");
+}
+
+.hero-waves--b .wave--sand {
+  fill: url("#wave-b-sand");
+}
+
+.wave {
+  opacity: 0.85;
+}
+
+/* The page's one arrival: each direction drifts in from its own side and settles, once, with the
+   logo. Whole drawings move, so the browser slides layers rather than repainting curves.
+   From-only, so the art can never be left hidden. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero-waves--a {
+    animation: drift-from-left var(--dur-hero) var(--ease-out);
+  }
+
+  .hero-waves--b {
+    animation: drift-from-right var(--dur-hero) var(--ease-out);
+  }
+}
+
+@keyframes drift-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-4%);
+  }
+}
+
+@keyframes drift-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(4%);
+  }
 }
 
 .hero__title {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
+  align-items: center;
 }
 
+/* On a phone the header already shows the logo, and the record needs the room. */
 .hero__mark {
-  inline-size: 3.5rem;
-  block-size: 3.5rem;
+  display: none;
+}
+
+.hero__edition {
+  max-inline-size: none;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-h3);
+  font-weight: 600;
+}
+
+.hero__where {
+  max-inline-size: 36em;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  text-wrap: balance;
 }
 
 /* The one moment nobody asked for: the two directions settle once around the checked data, which
@@ -208,21 +391,22 @@ main > section:not(.session) > h2 {
 }
 
 @media (width >= 40rem) {
-  .hero__title {
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-5);
+  .hero__banner {
+    padding: var(--space-7) var(--space-5);
   }
 
   .hero__mark {
-    inline-size: clamp(6rem, 11vw, 10rem);
-    block-size: clamp(6rem, 11vw, 10rem);
+    display: block;
+    inline-size: 6rem;
+    block-size: 6rem;
   }
 }
 
 .hero h1 {
   max-inline-size: 13em;
+  margin: 0;
   font-size: var(--text-hero);
+  text-wrap: balance;
   line-height: 1.03;
   letter-spacing: -0.028em;
 }
@@ -365,6 +549,19 @@ main > section:not(.session) > h2 {
 }
 
 @media (width < 40rem) {
+  /* Room for the record on a phone's first screen, now that the statement opens the hero. */
+  .hero__body {
+    margin-block-start: var(--space-4);
+  }
+
+  .hero__body .exchange {
+    margin-block-end: var(--space-2);
+  }
+
+  .hero__actions {
+    margin-block-start: var(--space-3);
+  }
+
   .record > div {
     grid-template-columns: 7.5rem minmax(0, 1fr);
   }
@@ -412,11 +609,6 @@ main > section:not(.session) > h2 {
   flex-wrap: wrap;
   gap: 0 var(--space-3);
   align-items: baseline;
-}
-
-.record .deadline-cell {
-  flex-direction: column;
-  align-items: flex-start;
 }
 
 /* A value nobody has supplied yet: said quietly, in the body type, wherever it appears. */
@@ -967,4 +1159,32 @@ main > section > .steps {
 
 main > section > .toolbar:first-of-type {
   margin-block-start: 0;
+}
+
+/* Paper categories: titles first, each opening onto its description. */
+.paper-types {
+  max-inline-size: var(--measure);
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--color-rule);
+}
+
+.paper-types li {
+  border-block-end: 1px solid var(--color-rule);
+}
+
+.paper-types details {
+  margin-block: 0;
+  padding-block: var(--space-2);
+}
+
+.paper-types summary {
+  font-size: inherit;
+}
+
+.paper-types summary h3 {
+  display: inline;
+  margin: 0;
+  font-size: var(--text-base, 1rem);
+  font-weight: 600;
 }

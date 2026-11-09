@@ -8,7 +8,22 @@ with EDBT/ICDT 2027 in Lille, France.
 
 **Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
-![Home page of the DQ4AI 2027 website](docs/screenshot.png)
+![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the title, then the key facts](docs/screenshot.png)
+
+## The site
+
+The site shows a little at a time, so a first visit invites rather than overwhelms.
+
+- **Home** opens with a banner: the title, the edition and where it meets, over ribbons of navy and
+  teal that are the logo's two directions (data quality for AI, AI for data quality). Below it are one
+  button, three key facts (next deadline, workshop date, keynote), the topics as tags, one paragraph on
+  the goal, and the latest news in one line.
+- **Menu:** Home, Call for Papers, Dates, Program, Organization and Attend. Accepted Papers joins
+  once papers are published.
+- **Footer:** Submission, Keynotes, News, Policies, Previous Editions, the call as plain text, the
+  deadlines calendar and the news feed.
+- **Call for Papers** leads with the goal and the topics. The full scope and each paper category open
+  on a click, and facts not yet known are named in one sentence rather than a row each.
 
 ## Update the content
 
@@ -42,4 +57,5 @@ pnpm i && pnpm dev
 
 ## License
 
-Code under MIT, content under CC BY 4.0, with one photo under CC BY-SA 4.0. See [LICENSE](LICENSE).
+Code under MIT, content under CC BY 4.0, except two photos of Lille under CC BY-SA (4.0 and 3.0) and
+the fonts under the SIL Open Font License. See [LICENSE](LICENSE).

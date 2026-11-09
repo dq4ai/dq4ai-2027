@@ -1,14 +1,14 @@
 ---
 import { getDeadlines, getSite } from "../lib/content";
 import { TBA } from "../lib/dates";
-import { routeBySlug } from "../lib/nav";
+import { secondaryRoutes } from "../lib/nav";
 import { url } from "../lib/paths";
 import { workshopTitle } from "../lib/view";
 import ExternalLink from "./ExternalLink.astro";
 import Wordmark from "./Wordmark.astro";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
-const moreLinks = ["policies", "previous-editions"].map(routeBySlug);
+const moreLinks = secondaryRoutes();
 ---
 
 <footer class="site-footer">
