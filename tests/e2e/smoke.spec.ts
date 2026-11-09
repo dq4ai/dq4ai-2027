@@ -367,7 +367,7 @@ test("the deadlines calendar downloads and parses", async ({ request, baseURL },
   expect(summaries).toHaveLength(populated(testInfo.project.name) ? 6 : 1);
 });
 
-test("organizers are listed once and the committee is sorted by surname", async ({
+test("organizers are listed once and the committee is sorted as configured", async ({
   page,
 }, testInfo) => {
   await page.goto("organization/");
@@ -375,9 +375,19 @@ test("organizers are listed once and the committee is sorted by surname", async 
   if (populated(testInfo.project.name)) {
     expect(names).toEqual(["Jane Doe", "John Roe", "Ana van der Berg"]);
   } else {
-    expect(names[0]).toBe("Asma Abboura");
-    expect(names).toContain("Jesualdo Fernandez Breis");
-    expect(names).toHaveLength(10);
+    // The organizers asked for the committee in order of the names as they read.
+    expect(names).toEqual([
+      "Asma Abboura",
+      "Fabian M. Suchanek",
+      "Hazar Harmouch",
+      "Imane Hocine",
+      "Jahid Hasan",
+      "Jesualdo Fernandez Breis",
+      "Mohammad Sadoghi",
+      "Mourad Ouzzani",
+      "Nathalie Aussenac",
+      "Sijie Dong",
+    ]);
     await expect(page.locator("#chairs ~ ul .person__name")).toHaveText([
       "Soror Sahri",
       "Farah Benamara",

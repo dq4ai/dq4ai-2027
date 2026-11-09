@@ -95,7 +95,9 @@ Add the person once to `people.yaml`:
 ```
 
 Then add `jane-doe` to `members` under `program-committee` in `committees.yaml`. The list sorts
-itself by surname. If the surname is not the last word of the name, add `surname: van der Berg`.
+itself alphabetically by name as written, first name first (`order: name`). To sort a committee by
+surname instead, set `order: surname`; if a surname is not the last word of the name, add
+`surname: van der Berg`.
 Optional links: `url`, `orcid`, `dblp` (full addresses).
 
 When membership is final, delete the `note:` line from the program committee in `committees.yaml`.

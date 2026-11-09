@@ -10,6 +10,7 @@ import {
   nextDeadline,
   pageDescription,
   siteSummary,
+  sortByName,
   sortBySurname,
   surnameOf,
   toDeadlineViews,
@@ -50,6 +51,14 @@ describe("view helpers", () => {
   it("sorts by surname, ignoring case and accents", () => {
     const sorted = sortBySurname([person("A Zed"), person("B Élan"), person("C alpha")]);
     expect(sorted.map((p) => p.name)).toEqual(["C alpha", "B Élan", "A Zed"]);
+  });
+  it("sorts by name as written, ignoring case and accents", () => {
+    const sorted = sortByName([
+      person("Mourad Ouzzani"),
+      person("Élan Zed"),
+      person("asma Abboura"),
+    ]);
+    expect(sorted.map((p) => p.name)).toEqual(["asma Abboura", "Élan Zed", "Mourad Ouzzani"]);
   });
   it("picks the earliest open deadline, using extensions", () => {
     const views = toDeadlineViews(

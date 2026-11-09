@@ -86,6 +86,11 @@ export function sortBySurname<T extends Person>(people: T[]): T[] {
   );
 }
 
+/** Alphabetical by the name as it reads on the page, first name first. */
+export function sortByName<T extends Person>(people: T[]): T[] {
+  return [...people].sort((a, b) => a.name.localeCompare(b.name, "en", { sensitivity: "base" }));
+}
+
 /** The wordmark's parts: the acronym's digit is the flagged cell. No digit, no parts. */
 export function wordmarkParts(
   acronym: string,

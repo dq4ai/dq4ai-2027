@@ -96,7 +96,7 @@ export const peopleSchema = z.strictObject({
 export const committeesSchema = z.strictObject({
   id,
   title: text,
-  order: z.enum(["listed", "surname"]),
+  order: z.enum(["listed", "surname", "name"]),
   note: text.optional(),
   members: z.array(id),
 });

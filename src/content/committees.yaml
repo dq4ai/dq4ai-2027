@@ -1,4 +1,5 @@
-# order: listed keeps the order below; order: surname sorts alphabetically by surname.
+# order: listed keeps the order below; order: name sorts alphabetically by name as written (first
+# name first); order: surname sorts alphabetically by surname.
 - id: honorary-chair
   title: Honorary Chair
   order: listed
@@ -9,7 +10,7 @@
   members: [soror-sahri, farah-benamara]
 - id: program-committee
   title: Program Committee
-  order: surname
+  order: name
   note: Membership is being finalized.
   members:
     - nathalie-aussenac
