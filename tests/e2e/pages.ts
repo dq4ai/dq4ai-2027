@@ -21,3 +21,8 @@ export const OLD_PAGES = {
 export function section(page: Page, id: string): Locator {
   return page.locator(`main section:has(> h2#${id})`);
 }
+
+/** The important dates, a part of the Submission section. */
+export function datesTable(page: Page): Locator {
+  return page.locator("main .subsection.dates");
+}

@@ -1,14 +1,14 @@
 ---
-import { getPapers } from "../lib/content";
+import { getKeynotes, getPapers } from "../lib/content";
 import { menuSections } from "../lib/nav";
 import { url } from "../lib/paths";
 import Wordmark from "./Wordmark.astro";
 
-const papers = await getPapers();
+const [papers, keynotes] = await Promise.all([getPapers(), getKeynotes()]);
 // Every link but Home is a section of the one page.
 const links = [
   { href: url("/"), label: "Home", home: true },
-  ...menuSections(papers.length > 0).map((section) => ({
+  ...menuSections({ papers: papers.length > 0, keynotes: keynotes.length > 0 }).map((section) => ({
     href: url(`/#${section.id}`),
     label: section.menu,
     home: false,

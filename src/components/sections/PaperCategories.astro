@@ -2,14 +2,15 @@
 import { getCfp } from "../../lib/content";
 import { TBA } from "../../lib/dates";
 import { pageLimitsUnknown } from "../../lib/view";
-import PageSection from "../PageSection.astro";
 import Value from "../Value.astro";
 
 const cfp = await getCfp();
 const limitsUnknown = pageLimitsUnknown(cfp);
+// Part of the Submission section, as the organizers asked.
 ---
 
-<PageSection id="paper-categories">
+<div class="subsection paper-categories">
+  <h3 id="paper-categories">Paper categories</h3>
   {/* Read in place, as the previous edition listed them: no link or toggle to open. */}
   <ul class="paper-types">
     {cfp.paperTypes.map((type) => (
@@ -34,4 +35,4 @@ const limitsUnknown = pageLimitsUnknown(cfp);
       </div>
     </dl>
   )}
-</PageSection>
+</div>

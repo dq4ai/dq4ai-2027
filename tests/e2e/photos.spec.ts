@@ -32,9 +32,9 @@ test.describe("the header stays within reach", () => {
     await page.evaluate(() => {
       scrollTo(0, 2000);
     });
-    await page.locator("#site-nav").getByRole("link", { name: "Dates" }).click();
-    await expect(page).toHaveURL(/\/#dates$/);
-    await expect(page.locator("#dates")).toBeInViewport();
+    await page.locator("#site-nav").getByRole("link", { name: "Organization" }).click();
+    await expect(page).toHaveURL(/\/#organization$/);
+    await expect(page.locator("#organization")).toBeInViewport();
   });
 
   test("a section link does not land under it", async ({ page }) => {

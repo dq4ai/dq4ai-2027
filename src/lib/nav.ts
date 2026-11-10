@@ -6,12 +6,16 @@ export interface Section {
   /** The section's anchor on the home page, and its heading's id. */
   id: string;
   title: string;
-  /** In the main menu, under this label. Sections without one are reached by scrolling. */
-  menu?: string;
+  /** Its label in the menu, which lists every section on the page, as the organizers asked. */
+  menu: string;
   /** The address this section had when it was a page of its own: it now redirects here. */
   oldPath?: string;
   /** Left out of the page and the menu until papers are accepted. */
   onlyWithPapers?: boolean;
+  /** Left out of the page and the menu until there is a keynote. */
+  onlyWithKeynotes?: boolean;
+  /** On the page when there is one, but not in the menu. */
+  notInMenu?: boolean;
 }
 
 export const HOME = {
@@ -22,14 +26,18 @@ export const HOME = {
 } as const;
 
 export const SECTIONS: Section[] = [
-  { id: "about", title: "About", oldPath: "/call-for-papers/" },
-  { id: "topics", title: "Topics of interest", menu: "Call for Papers" },
-  { id: "paper-categories", title: "Paper categories" },
-  { id: "dates", title: "Important dates", menu: "Dates", oldPath: "/dates/" },
-  { id: "submission", title: "Submission", oldPath: "/submission/" },
-  { id: "policies", title: "Policies", oldPath: "/policies/" },
+  { id: "about", title: "About", menu: "About", oldPath: "/call-for-papers/" },
+  { id: "topics", title: "Topics of interest", menu: "Topics" },
+  { id: "submission", title: "Submission", menu: "Submission", oldPath: "/submission/" },
+  { id: "policies", title: "Policies", menu: "Policies", oldPath: "/policies/" },
   { id: "program", title: "Program", menu: "Program", oldPath: "/program/" },
-  { id: "keynotes", title: "Keynotes", oldPath: "/keynotes/" },
+  {
+    id: "keynotes",
+    title: "Keynotes",
+    menu: "Keynotes",
+    oldPath: "/keynotes/",
+    onlyWithKeynotes: true,
+  },
   {
     id: "accepted-papers",
     title: "Accepted papers",
@@ -39,9 +47,14 @@ export const SECTIONS: Section[] = [
   },
   { id: "organization", title: "Organization", menu: "Organization", oldPath: "/organization/" },
   { id: "attend", title: "Attend", menu: "Attend", oldPath: "/attend/" },
-  { id: "contact", title: "Contact" },
-  { id: "previous-editions", title: "Previous editions", oldPath: "/previous-editions/" },
-  { id: "sponsors", title: "Supported by" },
+  { id: "contact", title: "Contact", menu: "Contact" },
+  {
+    id: "previous-editions",
+    title: "Previous editions",
+    menu: "Previous editions",
+    oldPath: "/previous-editions/",
+  },
+  { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
 ];
 
 export function sectionById(id: string): Section {
@@ -50,9 +63,14 @@ export function sectionById(id: string): Section {
   return section;
 }
 
-/** The menu: a link to each section that has a label and is on the page. */
-export function menuSections(hasPapers: boolean): Section[] {
-  return SECTIONS.filter((section) => section.menu && (!section.onlyWithPapers || hasPapers));
+/** The menu: a link to each section on the page, in the page's order. */
+export function menuSections(has: { papers: boolean; keynotes: boolean }): Section[] {
+  return SECTIONS.filter(
+    (section) =>
+      !section.notInMenu &&
+      (!section.onlyWithPapers || has.papers) &&
+      (!section.onlyWithKeynotes || has.keynotes),
+  );
 }
 
 /**
@@ -65,6 +83,6 @@ export function redirects(hasPapers: boolean): { path: string; to: string }[] {
     const id = section.onlyWithPapers && !hasPapers ? "program" : section.id;
     return [{ path: section.oldPath, to: `/#${id}` }];
   });
-  // The organizers asked for no News section; its old address goes to the top of the page.
-  return [...moved, { path: "/news/", to: "/#about" }];
+  // The organizers asked for no News section, and for the dates inside Submission.
+  return [...moved, { path: "/dates/", to: "/#dates" }, { path: "/news/", to: "/#about" }];
 }

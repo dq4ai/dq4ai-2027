@@ -210,26 +210,25 @@
   }
 }
 
+/* A link for every section of the page, as the organizers asked: too many to share the logo's line,
+   so they take a row of their own under it. */
 @media (width >= 65rem) {
-  .brand {
-    margin-inline-end: 0;
+  .site-header__inner {
+    row-gap: 0;
+    padding-block: var(--space-2) 0;
   }
 
   .site-nav {
-    flex: 1;
-    inline-size: auto;
-    min-inline-size: 0;
-    order: 0;
+    border-block-start: 1px solid var(--color-rule);
   }
 
   .site-nav ul {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 0 1.25rem;
-    justify-content: flex-end;
   }
 
-  /* Tight until the page reaches its full width: the logo needs the room. */
+  /* Tight until the page reaches its full width. */
   @media (width < 72rem) {
     .site-nav ul {
       gap: 0 0.75rem;

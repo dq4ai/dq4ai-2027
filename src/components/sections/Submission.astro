@@ -4,6 +4,8 @@ import { TBA } from "../../lib/dates";
 import { url } from "../../lib/paths";
 import { isKnown, pendingSentence, submissionCloses, submissionOpen } from "../../lib/view";
 import ExternalLink from "../ExternalLink.astro";
+import Dates from "./Dates.astro";
+import PaperCategories from "./PaperCategories.astro";
 import PageSection from "../PageSection.astro";
 import PaperTemplate from "../PaperTemplate.astro";
 import ReadMore from "../ReadMore.astro";
@@ -60,60 +62,65 @@ const pending = pendingSentence(
       <strong>Submission has closed.</strong> See the <a href={url("/#dates")}>important dates</a>.
     </p>
   )}
-  <dl class="facts">
-    {systemKnown && (
+  <Dates />
+  <PaperCategories />
+  <div class="subsection">
+    <h3 id="submission-details">Submission details</h3>
+    <dl class="facts">
+      {systemKnown && (
+        <div>
+          <dt>Submission system</dt>
+          <dd>
+            {site.submissionUrl === TBA ? (
+              <Value of={site.submissionSystem} />
+            ) : (
+              <ExternalLink
+                href={site.submissionUrl}
+                class={site.submissionSystem === TBA ? "link-is-address" : undefined}
+              >
+                {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
+              </ExternalLink>
+            )}
+          </dd>
+        </div>
+      )}
+      {templateKnown && (
+        <div>
+          <dt>Template</dt>
+          <dd>
+            <PaperTemplate />
+          </dd>
+        </div>
+      )}
+      {isKnown(site.reviewModel) && (
+        <div>
+          <dt>Review model</dt>
+          <dd>{site.reviewModel}</dd>
+        </div>
+      )}
+      {isKnown(submission.formatting) && (
+        <div>
+          <dt>Formatting</dt>
+          <dd>{submission.formatting}</dd>
+        </div>
+      )}
+      {isKnown(submission.anonymization) && (
+        <div>
+          <dt>Anonymization</dt>
+          <dd>{submission.anonymization}</dd>
+        </div>
+      )}
       <div>
-        <dt>Submission system</dt>
-        <dd>
-          {site.submissionUrl === TBA ? (
-            <Value of={site.submissionSystem} />
-          ) : (
-            <ExternalLink
-              href={site.submissionUrl}
-              class={site.submissionSystem === TBA ? "link-is-address" : undefined}
-            >
-              {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
-            </ExternalLink>
-          )}
-        </dd>
+        <dt>Proceedings</dt>
+        <dd>{cfp.proceedingsNote}</dd>
       </div>
-    )}
-    {templateKnown && (
       <div>
-        <dt>Template</dt>
-        <dd>
-          <PaperTemplate />
-        </dd>
+        <dt>Presentation</dt>
+        <dd>{cfp.presentation}</dd>
       </div>
-    )}
-    {isKnown(site.reviewModel) && (
-      <div>
-        <dt>Review model</dt>
-        <dd>{site.reviewModel}</dd>
-      </div>
-    )}
-    {isKnown(submission.formatting) && (
-      <div>
-        <dt>Formatting</dt>
-        <dd>{submission.formatting}</dd>
-      </div>
-    )}
-    {isKnown(submission.anonymization) && (
-      <div>
-        <dt>Anonymization</dt>
-        <dd>{submission.anonymization}</dd>
-      </div>
-    )}
-    <div>
-      <dt>Proceedings</dt>
-      <dd>{cfp.proceedingsNote}</dd>
-    </div>
-    <div>
-      <dt>Presentation</dt>
-      <dd>{cfp.presentation}</dd>
-    </div>
-  </dl>
-  {pending && <p class="note">{pending}</p>}
+    </dl>
+    {pending && <p class="note">{pending}</p>}
+  </div>
   <ReadMore>
     <div class="subsection">
       <h3 id="checklist">Checklist</h3>

@@ -3,6 +3,13 @@ html {
   scroll-padding-block-end: var(--space-3);
 }
 
+/* The header is two rows from here (see site.css), so a section must land below both. */
+@media (width >= 65rem) {
+  html {
+    scroll-padding-block-start: 8.5rem;
+  }
+}
+
 body {
   display: flex;
   flex-direction: column;

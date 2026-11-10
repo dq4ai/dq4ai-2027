@@ -8,8 +8,24 @@ describe("the one page's sections", () => {
   });
 
   it("keeps Accepted Papers out of the menu until papers exist", () => {
-    expect(menuSections(false).map((section) => section.id)).not.toContain("accepted-papers");
-    expect(menuSections(true).map((section) => section.id)).toContain("accepted-papers");
+    expect(
+      menuSections({ papers: false, keynotes: true }).map((section) => section.id),
+    ).not.toContain("accepted-papers");
+    expect(menuSections({ papers: true, keynotes: true }).map((section) => section.id)).toContain(
+      "accepted-papers",
+    );
+  });
+
+  it("lists every section in the menu, in the page's order, but the sponsors", () => {
+    const ids = menuSections({ papers: true, keynotes: true }).map((section) => section.id);
+    expect(ids).toEqual(SECTIONS.map((section) => section.id).filter((id) => id !== "sponsors"));
+    expect(ids).not.toContain("dates");
+  });
+
+  it("leaves Keynotes out of the menu until there is one", () => {
+    expect(menuSections({ papers: true, keynotes: false }).map((s) => s.id)).not.toContain(
+      "keynotes",
+    );
   });
 
   it("sends every old page address to its section", () => {

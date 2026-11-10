@@ -2,7 +2,7 @@
 import { chromium, expect, test, type Browser, type Page } from "@playwright/test";
 import ICAL from "ical.js";
 import { readFileSync } from "node:fs";
-import { PAGES, section } from "./pages";
+import { datesTable, PAGES, section } from "./pages";
 
 const populated = (name: string) => name === "populated-content";
 const PHONE = { width: 390, height: 844 };
@@ -429,12 +429,12 @@ test.describe("rows and tables line up", () => {
       .locator("dl.facts dd")
       .first()
       .evaluate((dd) => dd.getBoundingClientRect().left);
-    for (const id of ["dates", "previous-editions"]) {
-      const left = await section(page, id)
+    for (const table of [datesTable(page), section(page, "previous-editions")]) {
+      const left = await table
         .locator("thead th")
         .nth(1)
         .evaluate((th) => th.getBoundingClientRect().left);
-      expect(left, id).toBeCloseTo(edge, 0);
+      expect(left).toBeCloseTo(edge, 0);
     }
   });
 
@@ -694,8 +694,8 @@ test.describe("one name for one thing", () => {
   test("terms match across the page", async ({ page }, testInfo) => {
     await page.goto("");
     await expect(page.getByRole("heading", { name: "Important dates", exact: true })).toBeVisible();
-    await expect(section(page, "dates").locator("thead")).not.toContainText("Milestone");
-    await expect(section(page, "dates").locator("tbody")).toContainText("Workshop date");
+    await expect(datesTable(page).locator("thead")).not.toContainText("Milestone");
+    await expect(datesTable(page).locator("tbody")).toContainText("Workshop date");
     await expect(page.getByRole("heading", { name: "Submission", exact: true })).toBeVisible();
     if (populated(testInfo.project.name)) {
       await expect(page.locator("#accepted-papers")).toHaveText("Accepted papers");
@@ -706,19 +706,31 @@ test.describe("one name for one thing", () => {
 // The organizers asked for a site that does not overwhelm: a short menu, and a call for papers
 // that leads with what matters and folds away the rest.
 test.describe("less at once", () => {
-  // Home is in the menu at every width: the organizers want the way back always named.
-  test("the menu keeps Home and five sections", async ({ page }, testInfo) => {
+  // The organizers asked for the menu to reflect the page: Home, then one link per section, in
+  // the page's order.
+  test("the menu has a link for every section of the page", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
     const menu = page.locator("#site-nav a");
-    const expected = ["Home", "Call for Papers", "Dates", "Program", "Organization", "Attend"];
-    if (populated(testInfo.project.name)) expected.splice(4, 0, "Accepted Papers");
-    await expect(menu).toHaveText(expected);
-    // Every menu link but Home is a section of the one page.
+    await expect(menu.first()).toHaveText("Home");
+    const targets = await menu.evaluateAll((links) =>
+      links.slice(1).map((link) => new URL((link as HTMLAnchorElement).href).hash.slice(1)),
+    );
+    const sections = await page
+      .locator("main > section > h2")
+      .evaluateAll((headings) => headings.map((h) => h.id).filter((id) => id !== "sponsors"));
+    expect(targets).toEqual(sections);
     await expect(page.locator(".site-footer nav")).toHaveCount(0);
-    for (const link of (await menu.all()).slice(1)) {
-      await expect(link).toHaveAttribute("href", /\/#[a-z-]+$/);
-    }
+  });
+
+  test("the menu takes its own row under the logo on a wide screen", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("");
+    const [brand, nav] = await Promise.all([
+      page.locator(".site-header .brand").boundingBox(),
+      page.locator("#site-nav").boundingBox(),
+    ]);
+    expect(nav?.y ?? 0).toBeGreaterThanOrEqual((brand?.y ?? 0) + (brand?.height ?? 0));
   });
 
   test("paper categories are read in place, one bullet each", async ({ page }) => {

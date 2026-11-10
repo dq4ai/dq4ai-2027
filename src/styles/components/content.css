@@ -941,7 +941,7 @@ main > section > .entry:first-of-type {
   font-size: var(--text-sm);
 }
 
-main > section > .page-limits > div:first-child {
+.page-limits > div:first-child {
   padding-block-start: var(--space-2);
 }
 

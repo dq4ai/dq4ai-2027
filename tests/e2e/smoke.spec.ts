@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import ICAL from "ical.js";
-import { OLD_PAGES, PAGES, section } from "./pages";
+import { datesTable, OLD_PAGES, PAGES, section } from "./pages";
 
 const populated = (name: string) => name === "populated-content";
 const PRINT_PAGES = 8;
@@ -161,8 +161,14 @@ test("a heading's name is its text, without its section link", async ({ page }) 
 });
 
 test("the navigation stays visible wherever its links fit", async ({ page }) => {
-  await page.setViewportSize({ width: 1040, height: 800 });
+  // A link for every section: one row on a wide screen, and it may wrap where the page narrows.
+  await page.setViewportSize({ width: 1440, height: 800 });
   await page.goto("");
+  const tops = await page
+    .locator("#site-nav a:visible")
+    .evaluateAll((all) => all.map((link) => link.getBoundingClientRect().top));
+  expect(new Set(tops).size, "links share one row at 1440px").toBe(1);
+  await page.setViewportSize({ width: 1040, height: 800 });
   await expect(page.locator(".nav-toggle")).toBeHidden();
   const links = page.locator("#site-nav a:visible");
   const boxes = await links.evaluateAll((all) =>
@@ -171,7 +177,6 @@ test("the navigation stays visible wherever its links fit", async ({ page }) => 
       return { top, right };
     }),
   );
-  expect(new Set(boxes.map((box) => box.top)).size, "links share one row").toBe(1);
   const header = await page.locator(".site-header__inner").boundingBox();
   expect(Math.max(...boxes.map((box) => box.right))).toBeLessThanOrEqual(
     (header?.x ?? 0) + (header?.width ?? 0),
@@ -283,7 +288,7 @@ test("the footer is one line with the copyright and no menu", async ({ page }) =
 test("every section ends on a way back to the top", async ({ page }) => {
   await page.goto("");
   const sections = page.locator("main > section");
-  expect(await sections.count()).toBeGreaterThan(10);
+  expect(await sections.count()).toBeGreaterThanOrEqual(8);
   for (const each of await sections.all()) {
     const link = each.locator("> .go-top:last-child a");
     await expect(link).toHaveText("Go to top ↑");
@@ -340,7 +345,7 @@ test("a section heading is plain text with its link beside it", async ({ page })
 // calendar file or time-zone buttons.
 test("the dates section lists the deadlines and the workshop's day only", async ({ page }) => {
   await page.goto("");
-  const dates = section(page, "dates");
+  const dates = datesTable(page);
   await expect(dates.locator("tbody th").last()).toHaveText("Workshop date");
   await expect(dates.locator("table")).not.toContainText("EDBT/ICDT");
   await expect(page.locator("main")).not.toContainText("6–9 April");
@@ -457,7 +462,7 @@ test.describe("states that depend on content", () => {
   }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an extended deadline");
     await page.goto("");
-    const dates = section(page, "dates");
+    const dates = datesTable(page);
     const row = dates.locator("tbody tr", { hasText: "Author notification" });
     await expect(row.locator(".status--extended:visible")).toHaveText("Extended");
     const plain = dates.locator("tbody tr", { hasText: "Camera-ready" });
@@ -492,7 +497,7 @@ test.describe("states that depend on content", () => {
 
   test("only the next deadline is flagged, where deadlines are listed", async ({ page }) => {
     await page.goto("");
-    await expect(section(page, "dates").locator(".flag")).toHaveCount(1);
+    await expect(datesTable(page).locator(".flag")).toHaveCount(1);
     await expect(page.locator("main .flag")).toHaveCount(1);
     await expect(page.locator(".deadline-strip")).toHaveCount(0);
   });
@@ -510,7 +515,7 @@ test.describe("states that depend on content", () => {
 
   test("the page limit is with the paper categories", async ({ page }) => {
     await page.goto("");
-    await expect(section(page, "paper-categories")).toContainText(/Page limit/);
+    await expect(page.locator(".subsection.paper-categories")).toContainText(/Page limit/);
   });
 
   test("details not yet known are listed once, and keep their addresses", async ({
@@ -559,7 +564,7 @@ test("a flagged date prints on the same column as the others", async ({ page }, 
   test.skip(!populated(testInfo.project.name), "needs a flagged date");
   await page.goto("");
   await page.emulateMedia({ media: "print" });
-  const lefts = await section(page, "dates")
+  const lefts = await datesTable(page)
     .locator("td > time")
     .evaluateAll((times) => times.map((time) => time.getBoundingClientRect().left));
   expect(lefts.length).toBeGreaterThan(1);

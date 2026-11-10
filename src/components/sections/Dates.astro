@@ -2,7 +2,6 @@
 import { getDeadlines, getSite } from "../../lib/content";
 import { formatAoE, formatIsoDay, TBA } from "../../lib/dates";
 import { nextDeadline, stripPrefix } from "../../lib/view";
-import PageSection from "../PageSection.astro";
 import StatusBadge from "../StatusBadge.astro";
 import Value from "../Value.astro";
 
@@ -11,10 +10,12 @@ const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
 const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
 const next = nextDeadline(deadlines);
 // The deadlines and the workshop's own day only: the organizers asked to leave out the host
-// conference's dates, the calendar file and the time-zone switch.
+// conference's dates, the calendar file and the time-zone switch. Part of the Submission section,
+// as the organizers asked.
 ---
 
-<PageSection id="dates">
+<div class="subsection dates">
+  <h3 id="dates">Important dates</h3>
   <section class="table-wrap" tabindex="0" aria-label="Important dates">
     <table class="table">
       <thead>
@@ -99,4 +100,4 @@ const next = nextDeadline(deadlines);
     All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended
     everywhere on Earth.
   </p>
-</PageSection>
+</div>
