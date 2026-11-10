@@ -105,15 +105,6 @@ test.describe("the header stays within reach", () => {
     await large.close();
   });
 
-  test("the deadline bar scrolls away rather than stacking under it", async ({
-    page,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("");
-    await expect(page.locator(".deadline-strip")).toHaveCSS("position", "static");
-  });
-
   test("it is not printed", async ({ page }) => {
     await page.goto("");
     await page.emulateMedia({ media: "print" });

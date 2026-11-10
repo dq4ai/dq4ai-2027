@@ -132,10 +132,4 @@ test.describe("topics", () => {
       expect(overflow, `${width}px`).toBe(0);
     }
   });
-
-  test("the two-way statement is said in type alone", async ({ page }) => {
-    await page.goto("");
-    await expect(page.locator(".exchange span")).toHaveCount(2);
-    await expect(page.locator(".exchange svg")).toHaveCount(0);
-  });
 });

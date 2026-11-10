@@ -18,7 +18,7 @@ host:
   cityUrl: https://fr.wikipedia.org/wiki/Lille # A description of the host city
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-06"
-contactEmail: TBA
+contactEmail: soror.sahri@u-pariscite.fr
 submissionSystem: TBA # e.g. EasyChair, CMT, OpenReview, HotCRP
 submissionUrl: TBA
 proceedings:

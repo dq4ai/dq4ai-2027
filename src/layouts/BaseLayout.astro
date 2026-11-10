@@ -3,8 +3,8 @@ import serifMedium from "../assets/fonts/source-serif-4-latin-500-normal.woff2?u
 import serifRegular from "../assets/fonts/source-serif-4-latin-400-normal.woff2?url";
 import serifSemibold from "../assets/fonts/source-serif-4-latin-600-normal.woff2?url";
 import Footer from "../components/Footer.astro";
+import DeadlineSync from "../components/DeadlineSync.astro";
 import Header from "../components/Header.astro";
-import NextDeadline from "../components/NextDeadline.astro";
 import { getSite } from "../lib/content";
 import { routeBySlug } from "../lib/nav";
 import { pageDescription, siteSummary } from "../lib/view";
@@ -80,7 +80,6 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
       Skip to content
     </a>
     <Header />
-    <NextDeadline />
     <main id="main" tabindex="-1">
       <slot />
       <p class="go-top">
@@ -88,5 +87,6 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
       </p>
     </main>
     <Footer />
+    <DeadlineSync />
   </body>
 </html>

@@ -39,26 +39,6 @@ for (const path of [...PAGES, "this-page-does-not-exist/"]) {
   });
 }
 
-test("the theme toggle persists without flashing the system theme", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "light" });
-  await page.goto("");
-  const toggle = page.locator(".theme-toggle");
-  await expect(toggle).toHaveAttribute("aria-pressed", "false");
-  await toggle.click();
-  await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-
-  // The attribute must be present before any body content parses, or a reload would flash.
-  const themeAtFirstParse = await page.evaluate(async () => {
-    const response = await fetch(location.href);
-    const html = await response.text();
-    return html.indexOf('localStorage.getItem("theme")') < html.indexOf("<body");
-  });
-  expect(themeAtFirstParse).toBe(true);
-  await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
-});
-
 test("the mobile menu is a keyboard-operable disclosure", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 });
   await page.goto("");
@@ -84,50 +64,27 @@ test("Tab moves from the opened mobile menu into its links", async ({ page }) =>
   await expect(page.locator("#site-nav a").first()).toBeFocused();
 });
 
-test("switching the theme in one tab updates another, and the browser toolbar color", async ({
-  context,
-  baseURL,
-}) => {
-  const first = await context.newPage();
-  await first.goto(baseURL ?? "");
-  const second = await context.newPage();
-  await second.goto(`${baseURL}dates/`);
-  await second.locator(".theme-toggle").click();
-  await expect(first.locator("html")).toHaveAttribute("data-theme", "dark");
-  await expect(first.locator(".theme-toggle")).toHaveAttribute("aria-pressed", "true");
-  const background = await second.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  await expect(second.locator('meta[name="theme-color"]').first()).toHaveAttribute(
-    "content",
-    background,
-  );
-});
-
 test("the home page leads with the workshop's purpose", async ({ page }) => {
   await page.goto("");
-  const exchange = page.locator(".hero .exchange");
-  await expect(exchange).toContainText("Data quality for AI");
-  await expect(exchange).toContainText("AI for data quality");
   await expect(page.locator(".about")).toContainText(
     "bring together researchers and practitioners",
   );
   await expect(page.locator("main .topics")).toContainText("Multimodal data quality");
 });
 
-// The organizers asked for a home page that invites rather than tells everything: a short record,
-// one paragraph, and the rest one click away.
-test("the first screen states the essentials as a short record", async ({ page }) => {
+// The chairs asked for nothing between the banner and "About": no statement, button or key facts.
+test("the home page goes from the banner straight to About", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("");
-  // Where and when the host meets is said once, in the banner; the record keeps the rest.
   const banner = page.locator(".hero__banner");
   await expect(banner).toContainText("Lille, France");
   await expect(banner.getByRole("link", { name: "EDBT/ICDT 2027" })).toBeVisible();
-  const record = page.locator(".record");
-  await expect(record.locator("> div")).toHaveCount(3);
-  await expect(record).not.toContainText("Lille");
-  await expect(record).not.toContainText("Proceedings");
-  await expect(record).not.toContainText("Communities");
-  await expect(record).toBeInViewport({ ratio: 1 });
+  await expect(page.locator(".hero > *")).toHaveCount(1);
+  await expect(page.locator(".exchange, .record, .hero__actions, .hero__body")).toHaveCount(0);
+  await expect(page.locator("main").getByRole("link", { name: /call for papers/i })).toHaveCount(0);
+  await expect(page.locator("main > section").first().locator("h2")).toHaveText(
+    "About the DQ4AI Workshop",
+  );
 });
 
 // The organizers asked for the previous edition's home page: the whole scope and every topic read
@@ -144,10 +101,11 @@ test("the home page shows the whole scope and every topic in place", async ({ pa
   await expect(page.locator("main h2", { hasText: /keynote|news/i })).toHaveCount(0);
 });
 
-test("a phone's first screen reaches the record", async ({ page }) => {
+test("a phone's first screen reaches About", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("");
-  await expect(page.locator(".record > div").first()).toBeInViewport({ ratio: 1 });
+  await expect(page.locator(".hero__banner")).toBeInViewport({ ratio: 1 });
+  await expect(page.locator("#about")).toBeInViewport({ ratio: 1 });
 });
 
 test("no page has sideways scrolling or a color band", async ({ page }) => {
@@ -182,13 +140,15 @@ test("the navigation stays visible wherever its links fit", async ({ page }) => 
     }),
   );
   expect(new Set(boxes.map((box) => box.top)).size, "links share one row").toBe(1);
-  const toggle = await page.locator(".theme-toggle").boundingBox();
-  expect(Math.max(...boxes.map((box) => box.right))).toBeLessThanOrEqual(toggle?.x ?? 0);
+  const header = await page.locator(".site-header__inner").boundingBox();
+  expect(Math.max(...boxes.map((box) => box.right))).toBeLessThanOrEqual(
+    (header?.x ?? 0) + (header?.width ?? 0),
+  );
   await page.setViewportSize({ width: 1024, height: 800 });
   await expect(page.locator(".nav-toggle")).toBeVisible();
 });
 
-test("the wordmark and the home statement keep their words apart", async ({ page }) => {
+test("the wordmark keeps its words apart", async ({ page }) => {
   await page.goto("");
   for (const area of [".site-header", ".site-footer"]) {
     await expect(
@@ -197,8 +157,6 @@ test("the wordmark and the home statement keep their words apart", async ({ page
     const text = await page.locator(`${area} .brand`).textContent();
     expect(text?.trim()).toBe("DQ4AI 2027");
   }
-  const statement = await page.locator(".exchange").textContent();
-  expect(statement?.trim()).toBe("Data quality for AI AI for data quality");
 });
 
 test("the wordmark looks the same in the footer as in the header", async ({ page }) => {
@@ -211,21 +169,6 @@ test("the wordmark looks the same in the footer as in the header", async ({ page
       return ((yearBox?.left ?? 0) - (nameBox?.right ?? 0)) / size;
     });
   expect(await gap(".site-footer")).toBeCloseTo(await gap(".site-header"), 1);
-});
-
-test("the home statement does not depend on the order of the topics", async ({ page }) => {
-  await page.goto("");
-  await expect(page.locator(".exchange span")).toHaveText([
-    "Data quality for AI",
-    "AI for data quality",
-  ]);
-  const sizes = await page.evaluate(() => {
-    const size = (selector: string) =>
-      parseFloat(getComputedStyle(document.querySelector(selector) as Element).fontSize);
-    return { statement: size(".exchange"), heading: size(".about h2") };
-  });
-  expect(sizes.statement).toBeLessThan(sizes.heading);
-  await expect(page.locator(".hero__body .exchange")).toHaveCount(1);
 });
 
 test("no page shows the raw value TBA or the old wording", async ({ page }) => {
@@ -278,14 +221,14 @@ test("the photo does not reach the first screen of the home page", async ({ page
   await expect(page.locator("main img")).toHaveCount(0);
 });
 
-// As the previous edition: the footer is the workshop's name on one line, with no menu, and each
-// page ends on a way back to the top.
-test("the footer is one line with the workshop's name and no menu", async ({ page }) => {
+// As the previous edition: "© QuaLLM-KG 2026 — All rights reserved" on one line, with no menu,
+// and each page ends on a way back to the top.
+test("the footer is one line with the copyright and no menu", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("");
   const footer = page.locator(".site-footer");
-  await expect(footer).toContainText(
-    "Second International Workshop on Data Quality for Artificial Intelligence (DQ4AI 2027)",
+  await expect(footer.locator(".site-footer__title")).toHaveText(
+    "© DQ4AI 2027 — All rights reserved",
   );
   await expect(footer.getByRole("link")).toHaveCount(1);
   await expect(footer.locator("nav")).toHaveCount(0);
@@ -342,19 +285,19 @@ test("a section heading is plain text with its link beside it", async ({ page })
   await expect(anchor).toBeHidden();
 });
 
-test("the dates page offers the calendar once deadlines have dates", async ({ page }) => {
+// The chairs asked for the deadlines and the workshop's day only: no host conference dates, no
+// calendar file or time-zone buttons.
+test("the dates page lists the deadlines and the workshop's day only", async ({ page }) => {
   await page.goto("dates/");
-  await expect(page.getByRole("link", { name: "Deadlines calendar (.ics)" })).toHaveCount(1);
+  const rows = page.locator("tbody th");
+  await expect(rows.last()).toHaveText("Workshop date");
+  await expect(page.locator("main table")).not.toContainText("EDBT/ICDT");
+  await expect(page.locator("main")).not.toContainText("6–9 April");
+  await expect(page.locator("main .toolbar, main .tz-toggle, main [data-zone-note]")).toHaveCount(
+    0,
+  );
+  await expect(page.locator('main a[href$=".ics"]')).toHaveCount(0);
   await expect(page.locator('meta[name="description"]')).not.toHaveAttribute("content", /calendar/);
-});
-
-test("the open menu's keyboard order matches what is on screen", async ({ page }) => {
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("");
-  await page.locator(".nav-toggle").click();
-  const lastLink = await page.locator("#site-nav a").last().boundingBox();
-  const theme = await page.locator(".theme-toggle").boundingBox();
-  expect(theme?.y ?? 0).toBeGreaterThan(lastLink?.y ?? Infinity);
 });
 
 test("a table that may scroll can be reached by keyboard", async ({ page }) => {
@@ -379,7 +322,7 @@ test("navigation reaches a page and marks it current", async ({ page }) => {
   await expect(page.locator('#site-nav a[aria-current="page"]')).toHaveText("Organization");
 });
 
-test("the site works without JavaScript", async ({ browser, baseURL }, testInfo) => {
+test("the site works without JavaScript", async ({ browser, baseURL }) => {
   const context = await browser.newContext({
     javaScriptEnabled: false,
     viewport: { width: 390, height: 800 },
@@ -388,9 +331,6 @@ test("the site works without JavaScript", async ({ browser, baseURL }, testInfo)
   await page.goto(baseURL ?? "");
   await expect(page.locator("#site-nav a").first()).toBeVisible();
   await expect(page.locator(".nav-toggle")).toBeHidden();
-  if (populated(testInfo.project.name)) {
-    await expect(page.locator("[data-countdown]")).toHaveText(/\d+ days? \d+ hours? left/);
-  }
   await context.close();
 });
 
@@ -461,18 +401,6 @@ test.describe("states that depend on content", () => {
     );
   });
 
-  test("the main button on the home page only promises what exists", async ({ page }, testInfo) => {
-    await page.goto("");
-    const primary = page.locator(".hero__actions .button--primary");
-    if (populated(testInfo.project.name)) {
-      await expect(primary).toHaveText("Submit a paper");
-      return;
-    }
-    await expect(primary).toHaveText("Read the call for papers");
-    await expect(page.locator(".hero__actions")).not.toContainText("Submit a paper");
-    await expect(page.locator(".hero__actions a")).toHaveCount(1);
-  });
-
   test("an extended deadline says so even when it is not the next one", async ({
     page,
   }, testInfo) => {
@@ -484,17 +412,6 @@ test.describe("states that depend on content", () => {
     await expect(row.locator(".status--extended")).toHaveText("Extended");
     const plain = dates.locator("> div", { hasText: "Camera-ready" });
     await expect(plain.locator(".status-group")).toHaveCount(0);
-  });
-
-  test("a keynote speaker who is not yet known is an empty cell, not a link", async ({
-    page,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs an unknown speaker");
-    await page.goto("");
-    const row = page.locator(".record > div", { hasText: "Keynotes" });
-    await expect(row).toContainText("To be announced");
-    await expect(row.getByRole("link")).toHaveCount(1);
-    await expect(row.getByRole("link", { name: "Jane Doe" })).toHaveCount(1);
   });
 
   test("on a phone the dates table is two columns and keeps its status", async ({
@@ -523,38 +440,25 @@ test.describe("states that depend on content", () => {
     await expect(row.getByText("To be announced")).toHaveCount(0);
   });
 
-  test("only the next deadline is flagged, and the dates page offers its tools", async ({
-    page,
-  }) => {
-    for (const path of ["", "dates/"]) {
+  test("only the next deadline is flagged, where deadlines are listed", async ({ page }) => {
+    for (const path of ["call-for-papers/", "dates/"]) {
       await page.goto(path);
-      await expect(page.locator("main .flag")).toHaveCount(1);
+      await expect(page.locator("main .flag"), path).toHaveCount(1);
     }
-    await expect(page.locator(".toolbar")).toHaveCount(1);
-  });
-
-  test("a section link is not hidden by the deadline bar on a phone", async ({
-    page,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto("call-for-papers/#topics");
-    await page.waitForTimeout(800);
-    const heading = await page.locator("#topics").boundingBox();
-    const bar = await page.locator(".deadline-strip").boundingBox();
-    expect(heading).not.toBeNull();
-    if (bar && bar.y + bar.height > 0) {
-      expect(heading?.y ?? 0).toBeGreaterThanOrEqual(bar.y + bar.height);
-    }
+    await page.goto("");
+    await expect(page.locator("main .flag, .deadline-strip")).toHaveCount(0);
   });
 
   test("the conference's dates are not given as the workshop's", async ({ page }, testInfo) => {
     const expected = populated(testInfo.project.name)
-      ? "Workshop date: 7 April 2027."
-      : "Workshop date: 6 April 2027.";
+      ? /Workshop date: 7 April 2027, in [^.]+\./
+      : "Workshop date: 6 April 2027, in Lille, France.";
     for (const path of ["call-for-papers/", "attend/"]) {
       await page.goto(path);
-      await expect(page.locator(".page-header, main").first()).toContainText(expected);
+      const header = page.locator(".page-header");
+      await expect(header).toContainText(expected);
+      // The organizers asked to leave out the host conference's dates.
+      await expect(header).not.toContainText("6–9 April 2027");
     }
   });
 
@@ -590,36 +494,6 @@ test.describe("states that depend on content", () => {
     await expect(row).toContainText("Was");
     await expect(row).toContainText("Now");
   });
-
-  test("the time-zone toggle converts an extended deadline's old and new dates", async ({
-    browser,
-    baseURL,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs an extended deadline");
-    const context = await browser.newContext({ timezoneId: "Asia/Tokyo" });
-    const page = await context.newPage();
-    await page.goto(`${baseURL}dates/`);
-    await page.locator(".tz-toggle").click();
-    await expect(page.locator("del").first()).toContainText("GMT+9");
-    await context.close();
-  });
-
-  test("the time-zone toggle converts deadlines and restores AoE", async ({
-    browser,
-    baseURL,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    const context = await browser.newContext({ timezoneId: "Asia/Tokyo" });
-    const page = await context.newPage();
-    await page.goto(`${baseURL}dates/`);
-    const row = page.locator("tbody tr", { hasText: "Abstract submission" }).locator("time");
-    await expect(row).toHaveText("1 December 2026, 23:59 AoE");
-    await page.locator(".tz-toggle").click();
-    await expect(row).toContainText("2 December 2026 at 20:59");
-    await page.locator(".tz-toggle").click();
-    await expect(row).toHaveText("1 December 2026, 23:59 AoE");
-    await context.close();
-  });
 });
 
 test("the CFP prints without site chrome", async ({ page }) => {
@@ -645,10 +519,9 @@ test("a flagged date prints on the same column as the others", async ({ page }, 
   expect(new Set(lefts).size).toBe(1);
 });
 
-test("the home page prints at document sizes, without its buttons", async ({ page }) => {
+test("the home page prints at document sizes", async ({ page }) => {
   await page.goto("");
   await page.emulateMedia({ media: "print" });
-  await expect(page.locator(".hero__actions")).toBeHidden();
   const title = await page
     .locator(".hero h1")
     .evaluate((h1) => parseFloat(getComputedStyle(h1).fontSize));

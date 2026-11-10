@@ -21,20 +21,13 @@ test.describe("contact", () => {
           "mailto:chairs@example.org",
         );
       } else {
-        await expect(contact).toContainText("To be announced");
+        await expect(contact.locator('a[href^="mailto:"]')).toHaveAttribute(
+          "href",
+          "mailto:soror.sahri@u-pariscite.fr",
+        );
       }
     });
   }
-
-  // The footer is now the workshop's name alone; the contact lives on the Organization page.
-  test("the organization page says a contact is coming until there is one", async ({
-    page,
-  }, testInfo) => {
-    await page.goto("organization/");
-    await expect(page.locator(".contact")).toContainText(
-      populated(testInfo.project.name) ? "chairs@example.org" : "To be announced",
-    );
-  });
 });
 
 test.describe("deadlines as they pass", () => {
@@ -50,9 +43,6 @@ test.describe("deadlines as they pass", () => {
   test("a closed deadline stops being next everywhere on the page", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
     await page.goto("dates/");
-    const strip = page.locator(".deadline-strip");
-    await expect(strip).toContainText("Author notification");
-    await expect(strip).not.toContainText("Paper submission");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.locator(".status--passed:visible")).toHaveText("Passed");
     await expect(row.locator(".flag")).toHaveCount(0);
@@ -75,36 +65,27 @@ test.describe("deadlines as they pass", () => {
     await expect(page.getByRole("link", { name: "Submit a paper" })).toBeHidden();
   });
 
-  test("the strip does not call an announcement a deadline", async ({ page }) => {
+  test("an announcement is not called a deadline", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
-    await page.goto("");
-    await expect(page.locator("[data-deadline-prefix]")).toHaveText("Next date:");
+    await page.goto("dates/");
+    await expect(page.locator("main .next-label")).toHaveText("Next date:");
   });
 
-  test("the strip goes once nothing is left to wait for", async ({ page }) => {
+  test("nothing is flagged once nothing is left to wait for", async ({ page }) => {
     await page.clock.install({ time: new Date("2027-03-01T12:00:00Z") });
-    await page.goto("");
-    await expect(page.locator(".deadline-strip")).toBeHidden();
+    await page.goto("dates/");
+    await expect(page.locator("main .flag")).toHaveCount(0);
   });
 
-  test("the countdown ticks on the minute", async ({ page }) => {
+  test("a deadline passes on the minute, without a rebuild", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T11:57:30Z") });
-    await page.goto("");
-    const countdown = page.locator("[data-countdown]");
-    await expect(countdown).toHaveText("0 hours 1 minute left");
-    await page.clock.runFor(31_000);
-    await expect(countdown).toHaveText("Less than a minute left");
-    await page.clock.runFor(60_000);
-    await expect(page.locator(".deadline-strip")).toContainText("Author notification");
-  });
-
-  test("without JavaScript no countdown goes stale", async ({ browser, baseURL }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
-    const page = await context.newPage();
-    await page.goto(baseURL ?? "");
-    await expect(page.locator(".deadline-strip")).toBeVisible();
-    await expect(page.locator("[data-countdown]")).toBeHidden();
-    await context.close();
+    await page.goto("dates/");
+    const submission = page.locator("tbody tr", { hasText: "Paper submission" });
+    const notification = page.locator("tbody tr", { hasText: "Author notification" });
+    await expect(submission.locator(".flag")).toHaveCount(1);
+    await page.clock.runFor(150_000);
+    await expect(submission.locator(".flag")).toHaveCount(0);
+    await expect(notification.locator(".flag")).toHaveCount(1);
   });
 });
 
@@ -183,47 +164,34 @@ test.describe("phone menu", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("menu and theme work when the script bundles never arrive", async ({ page }) => {
+  test("the menu works when the script bundles never arrive", async ({ page }) => {
     await page.route("**/_astro/*.js", (route) => route.abort());
     await page.goto("");
     await page.locator(".nav-toggle").tap();
     await expect(page.locator("#site-nav a").first()).toBeVisible();
-    await page.locator(".theme-toggle").tap();
-    await expect(page.locator(".theme-toggle")).toHaveAttribute("aria-pressed", "true");
   });
 
   test("the time-zone button holds its place before its script runs", async ({
     page,
   }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
+    test.skip(!populated(testInfo.project.name), "needs a program");
     await page.route("**/_astro/*.js", (route) => route.abort());
-    await page.goto("dates/");
+    await page.goto("program/");
     await expect(page.locator(".tz-toggle")).toBeVisible();
   });
 });
 
-test.describe("theme", () => {
-  test("the button's state follows the system theme", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light" });
-    await page.goto("");
-    const toggle = page.locator(".theme-toggle");
-    await expect(toggle).toHaveAttribute("aria-pressed", "false");
-    await page.emulateMedia({ colorScheme: "dark" });
-    await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  });
-
-  test("choosing the system's theme goes back to following the system", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light" });
-    await page.goto("");
-    const toggle = page.locator(".theme-toggle");
-    await toggle.click();
-    await toggle.click();
-    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
-    await expect(page.locator("html")).not.toHaveAttribute("data-theme");
-    await page.emulateMedia({ colorScheme: "dark" });
-    await page.reload();
-    await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  });
+// The organizers asked for no theme button: the site follows the system's light or dark theme.
+test("the site follows the system theme, with no button to change it", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("");
+  await expect(page.locator(".theme-toggle")).toHaveCount(0);
+  const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+    .not.toBe(light);
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme");
 });
 
 test.describe("authors' tasks", () => {
@@ -434,16 +402,9 @@ test.describe("large text", () => {
       heading.scrollIntoView();
     });
     const heading = await page.locator("#topics").boundingBox();
-    const bar = await page.locator(".deadline-strip").boundingBox();
+    const bar = await page.locator(".site-header").boundingBox();
     expect(heading?.y ?? 0).toBeGreaterThanOrEqual((bar?.y ?? 0) + (bar?.height ?? 0));
     await context.close();
-  });
-
-  test("the deadline bar does not stick on a short screen", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 844, height: 390 });
-    await page.goto("");
-    await expect(page.locator(".deadline-strip")).toHaveCSS("position", "static");
   });
 
   test("a word too long for its line wraps", async ({ page }) => {
@@ -478,10 +439,9 @@ test.describe("time zones", () => {
   test("the choice carries to the next page", async ({ browser, baseURL }) => {
     const context = await browser.newContext({ baseURL, timezoneId: "Asia/Tokyo" });
     const page = await context.newPage();
-    await page.goto("dates/");
-    const toggle = page.locator(".tz-toggle");
-    await toggle.click();
-    await expect(toggle).toHaveText("Show in AoE");
+    await page.goto("program/");
+    await page.locator(".tz-toggle").click();
+    await page.goto("");
     await page.goto("program/");
     await expect(page.locator(".tz-toggle")).toHaveText("Show venue time");
     await expect(page.locator("[data-zone-note]")).toContainText("Asia/Tokyo");
@@ -505,19 +465,6 @@ test.describe("rows and tables line up", () => {
         .evaluate((th) => th.getBoundingClientRect().left);
       expect(left, path).toBeCloseTo(edge, 0);
     }
-  });
-
-  test("the time-zone button does not move the columns", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("dates/");
-    const columns = () =>
-      page
-        .locator("thead th")
-        .evaluateAll((all) => all.map((th) => th.getBoundingClientRect().left));
-    const before = await columns();
-    await page.locator(".tz-toggle").click();
-    expect(await columns()).toEqual(before);
   });
 
   test("an extended date starts on the column, with Now still read aloud", async ({
@@ -564,9 +511,9 @@ test.describe("rows and tables line up", () => {
   });
 
   test("phone toolbars stack evenly", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
+    test.skip(!populated(testInfo.project.name), "needs a program");
     await page.setViewportSize(PHONE);
-    await page.goto("dates/");
+    await page.goto("program/");
     const widths = await page
       .locator(".toolbar > :visible")
       .evaluateAll((all) => all.map((e) => e.getBoundingClientRect().width));
@@ -689,11 +636,6 @@ test.describe("reading without seeing the layout", () => {
       "href",
       "https://dblp.org/pid/00/0000.html",
     );
-    await page.goto("");
-    await expect(page.locator(".record").getByRole("link", { name: "Jane Doe" })).toHaveAttribute(
-      "href",
-      /keynotes\/#/,
-    );
   });
 
   test("the current edition does not link to itself", async ({ page }) => {
@@ -705,7 +647,7 @@ test.describe("reading without seeing the layout", () => {
 
   test("the next deadline is named, not only colored", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a flagged date");
-    for (const path of ["", "dates/"]) {
+    for (const path of ["call-for-papers/", "dates/"]) {
       await page.goto(path);
       await expect(page.locator("main .next-label")).toHaveText("Next deadline:");
     }
@@ -720,15 +662,6 @@ test.describe("reading without seeing the layout", () => {
       .first()
       .evaluate((person) => person.querySelector(".person__name")?.nextSibling?.textContent);
     expect(raw).toMatch(/\s/);
-  });
-
-  test("the statement's two lines read as two sentences", async ({ page }) => {
-    await page.goto("");
-    const pause = await page
-      .locator(".exchange span")
-      .first()
-      .evaluate((span) => getComputedStyle(span, "::after").content);
-    expect(pause).toContain(".");
   });
 });
 
@@ -786,13 +719,6 @@ test.describe("touch and target sizes", () => {
     });
   }
 
-  test("the deadline bar's link is at least 44px tall", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.goto("");
-    const box = await page.locator(".deadline-strip a").boundingBox();
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-  });
-
   test("an abstract's control is at least 24px tall", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an abstract");
     await page.goto("program/");
@@ -802,7 +728,7 @@ test.describe("touch and target sizes", () => {
 });
 
 test.describe("one name for one thing", () => {
-  test("terms match across pages", async ({ page }, testInfo) => {
+  test("terms match across pages", async ({ page }) => {
     await page.goto("dates/");
     await expect(page.getByRole("heading", { name: "All dates" })).toBeVisible();
     await expect(page.locator("thead")).not.toContainText("Milestone");
@@ -814,10 +740,6 @@ test.describe("one name for one thing", () => {
     await expect(page.locator("main").getByRole("link", { name: "News feed" })).toBeVisible();
     await page.goto("accepted-papers/");
     await expect(page.locator("h1")).toHaveText("Accepted Papers");
-    if (populated(testInfo.project.name)) {
-      await page.goto("dates/");
-      await expect(page.locator(".toolbar a")).toHaveText("Deadlines calendar (.ics)");
-    }
   });
 });
 
@@ -837,10 +759,6 @@ test.describe("less at once", () => {
     // The footer no longer has a menu, so the pages it linked are reached from where they matter.
     await expect(page.locator(".site-footer nav")).toHaveCount(0);
     await expect(page.locator(".news-line a")).toHaveAttribute("href", /\/news\/#news-/);
-    await expect(page.locator(".record a", { hasText: /Abedjan|Doe/ }).first()).toHaveAttribute(
-      "href",
-      /\/keynotes\/#/,
-    );
     await page.goto("call-for-papers/");
     await expect(page.locator('main a[href$="/submission/"]')).toHaveCount(1);
     await expect(page.locator('main a[href$="/policies/"]')).toHaveCount(1);

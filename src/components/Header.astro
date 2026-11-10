@@ -2,7 +2,6 @@
 import { getPapers } from "../lib/content";
 import { visibleRoutes } from "../lib/nav";
 import { url } from "../lib/paths";
-import ThemeToggle from "./ThemeToggle.astro";
 import Wordmark from "./Wordmark.astro";
 
 const papers = await getPapers();
@@ -37,7 +36,6 @@ const current = Astro.url.pathname;
         })}
       </ul>
     </nav>
-    <ThemeToggle />
   </div>
 </header>
 

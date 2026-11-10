@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+Less again, as the chairs asked. The home page goes from the banner straight to "About": the
+two-line statement, the "Read the call for papers" button and the key facts are gone, and so is the
+unused `exchange` field in `cfp.yaml`. The deadline bar under the header and the theme button are
+gone; the site follows the system's light or dark theme, and a small script still keeps statuses and
+the flagged date current between rebuilds. The Dates page lists the deadlines and the workshop's day
+only, without the calendar and time-zone buttons or the EDBT/ICDT 2027 dates, and once the workshop
+date is known the call and Attend give it alone ("Workshop date: 6 April 2027, in Lille, France.").
+The footer reads "© DQ4AI 2027 — All rights reserved", as the previous edition's did. The contact
+is soror.sahri@u-pariscite.fr.
+
 The organization's root address, <https://dq4ai.github.io/>, can now send visitors to this edition
 instead of showing GitHub's 404 page. The redirect pages are in `org-root/`, with the steps to
 publish them from a `dq4ai/dq4ai.github.io` repository, which needs an owner of the organization. A

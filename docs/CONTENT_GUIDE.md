@@ -25,7 +25,6 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | To change                               | Edit                                |
 | --------------------------------------- | ----------------------------------- |
 | Deadlines                               | `dates.yaml`                        |
-| Two-line statement on the home page     | `cfp.yaml` (`exchange`)             |
 | Workshop date, contact, submission link | `site.yaml`                         |
 | Template, review model                  | `site.yaml`                         |
 | Page limits, topics and their bullets   | `cfp.yaml` (`topics`: `items`)      |
@@ -80,8 +79,7 @@ To extend it, keep `date` and add one line. The old date appears struck through.
 extendedTo: "2026-12-18T23:59:00-12:00"
 ```
 
-This updates the home page, dates page, CFP, `cfp.txt`, the calendar file and the sticky chip. Also
-post a news item.
+This updates the dates page, CFP, `cfp.txt` and the calendar file. Also post a news item.
 
 ## Add a program committee member
 

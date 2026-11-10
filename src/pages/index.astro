@@ -5,24 +5,22 @@ import HeroWaves from "../components/HeroWaves.astro";
 import Heading from "../components/Heading.astro";
 import Mark from "../components/Mark.astro";
 import TopicList from "../components/TopicList.astro";
-import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCfp, getCommittees, getDeadlines, getNews, getSite, getSponsors } from "../lib/content";
+import { getCfp, getCommittees, getNews, getSite, getSponsors } from "../lib/content";
 import { formatHeadlineDay, formatIsoDay, TBA } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation, submissionCloses, submissionOpen, titleLead } from "../lib/view";
+import { hostLocation, titleLead } from "../lib/view";
 
-const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
+const [site, cfp, committees, news, sponsors] = await Promise.all([
   getSite(),
   getCfp(),
   getCommittees(),
-  getDeadlines(),
   getNews(),
   getSponsors(),
 ]);
-const [dataForAi, aiForData] = cfp.exchange;
-// As the previous edition did: the whole scope and every topic are read here, without a click.
+// As the previous edition did: the banner, then the whole scope and every topic, without a click.
+// The organizers asked for no buttons or key facts between them.
 const latest = news.at(0);
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
@@ -55,36 +53,8 @@ const jsonLd = serializeJsonLd(
         )}
       </div>
     </div>
-    <div class="hero__body">
-      <div>
-        <p class="exchange">
-          <span>{dataForAi}</span> <span>{aiForData}</span>
-        </p>
-        {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
-        <div class="hero__actions">
-          {submissionOpen(site, deadlines) ? (
-            <>
-              <ExternalLink
-                class="button button--primary"
-                href={site.submissionUrl}
-                data-closes={submissionCloses(deadlines)}
-              >
-                Submit a paper
-              </ExternalLink>
-              <a class="hero__link" href={url("/call-for-papers/")}>
-                Read the call for papers
-              </a>
-            </>
-          ) : (
-            <a class="button button--primary" href={url("/call-for-papers/")}>
-              Read the call for papers
-            </a>
-          )}
-        </div>
-      </div>
-      <WorkshopRecord />
-    </div>
   </div>
+  {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
 
   <section class="about">
     <Heading id="about">About the {site.acronym} Workshop</Heading>

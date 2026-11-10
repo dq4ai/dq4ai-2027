@@ -28,7 +28,7 @@ describe("the committed content", () => {
   it("passes every rule and reports its placeholders", () => {
     const { issues, placeholders } = checkContent("src/content");
     expect(issues).toEqual([]);
-    expect(placeholders).toContainEqual({ file: "site.yaml", field: "contactEmail" });
+    expect(placeholders).toContainEqual({ file: "site.yaml", field: "submissionUrl" });
   });
   it("the populated fixture passes every rule", () => {
     expect(checkContent("tests/fixtures/content-populated").issues).toEqual([]);
@@ -140,9 +140,9 @@ describe("sentences for people and search engines", () => {
       "EDBT/ICDT 2027 runs 6–9 April 2027 in Lille, France. Workshop date: to be announced.",
     );
   });
-  it("gives the workshop date once it is known", () => {
-    expect(hostDatesSentence({ ...site, workshopDate: "2027-04-07" })).toContain(
-      "Workshop date: 7 April 2027.",
+  it("gives the workshop date alone once it is known, as the organizers asked", () => {
+    expect(hostDatesSentence({ ...site, workshopDate: "2027-04-07" })).toBe(
+      "Workshop date: 7 April 2027, in Lille, France.",
     );
   });
   it("identifies the workshop and host in the home and page descriptions", () => {

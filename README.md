@@ -8,7 +8,7 @@ with EDBT/ICDT 2027 in Lille, France.
 
 **Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
-![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the four-line title and the date, then the key facts](docs/screenshot.png)
+![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the four-line title and the date, then About](docs/screenshot.png)
 
 ## The site
 
@@ -18,12 +18,14 @@ with nothing to open.
 - **Home** opens with a banner over ribbons of navy and teal, the logo's two directions (data quality
   for AI, AI for data quality). It reads, one line each: "Second International Workshop on", "Data
   Quality for Artificial Intelligence (DQ4AI 2027),", "co-located with EDBT/ICDT 2027, Lille, France"
-  and "(April 6, 2027)". Below it are one button, three key facts (next deadline, workshop date,
-  keynote), the full "About the DQ4AI Workshop", every topic as a heading over its bullet points, and
-  the latest news in one line.
+  and "(April 6, 2027)". Below it come the full "About the DQ4AI Workshop", every topic as a heading
+  over its bullet points, and the latest news in one line.
 - **Menu:** Home, Call for Papers, Dates, Program, Organization and Attend. Accepted Papers joins
   once papers are published.
-- **Footer:** one line, the workshop's name, with no menu. Every page ends on "Go to top ↑".
+- **Footer:** one line, "© DQ4AI 2027 — All rights reserved", with no menu. Every page ends on "Go to
+  top ↑".
+- **Dates** lists the deadlines and the workshop's day only. There is no deadline bar and no theme
+  button; the site follows the system's light or dark theme.
 - **Call for Papers** gives the full scope, the topics as headings over bullet points, and the paper
   categories as one bullet each. Facts not yet known are named in one sentence rather than a row each.
 

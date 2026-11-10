@@ -1,28 +1,22 @@
-/** Inline theme bootstrap and the Content-Security-Policy that allows exactly that script. */
+/** The inline bootstrap and the Content-Security-Policy that allows exactly that script. */
 import { createHash } from "node:crypto";
 
 /**
- * Runs before first paint so a saved theme never flashes. Must stay inline: an external file
- * would load after the page starts to render. Its hash goes in the policy below.
+ * Runs before first paint. Must stay inline: an external file would load after the page starts to
+ * render. Its hash goes in the policy below. The site follows the system's light or dark theme; the
+ * organizers asked for no theme button.
  *
- * It also answers clicks on the menu and theme buttons. The `js` class hides the navigation behind
- * the menu button at once, so the button has to work before, or without, any bundled script.
+ * It answers clicks on the menu button. The `js` class hides the navigation behind that button at
+ * once, so the button has to work before, or without, any bundled script.
  */
 export const THEME_INIT_SCRIPT = [
   `var d=document,r=d.documentElement;r.classList.add("js");`,
   // iOS Safari only applies :active on a page that listens for touches.
   `d.addEventListener("touchstart",function(){},{passive:true});`,
-  `try{var t=localStorage.getItem("theme");if(t==="light"||t==="dark")r.dataset.theme=t}catch(e){}`,
   `d.addEventListener("click",function(e){`,
-  `var c=e.target.closest(".nav-toggle,.theme-toggle");if(!c)return;`,
-  `if(c.classList.contains("nav-toggle")){`,
+  `var c=e.target.closest(".nav-toggle");if(!c)return;`,
   `var o=c.getAttribute("aria-expanded")!=="true";c.setAttribute("aria-expanded",o);`,
-  `c.textContent=o?"Close":"Menu";d.getElementById("site-nav").toggleAttribute("data-open",o);return}`,
-  `var s=matchMedia("(prefers-color-scheme: dark)").matches,`,
-  `n=!(r.dataset.theme?r.dataset.theme==="dark":s);`,
-  `try{if(n===s){delete r.dataset.theme;localStorage.removeItem("theme")}`,
-  `else{r.dataset.theme=n?"dark":"light";localStorage.setItem("theme",r.dataset.theme)}}catch(x){}`,
-  `c.setAttribute("aria-pressed",n);d.dispatchEvent(new Event("themechange"))});`,
+  `c.textContent=o?"Close":"Menu";d.getElementById("site-nav").toggleAttribute("data-open",o)});`,
 ].join("");
 
 export function scriptHash(source: string): string {

@@ -174,7 +174,6 @@ export const proseSectionSchema = z.strictObject({
 export const cfpSchema = z.strictObject({
   scope: z.array(text).min(1),
   goal: text,
-  exchange: z.tuple([text, text]),
   topicsIntro: text,
   topics: z
     .array(

@@ -18,13 +18,11 @@
 
   .site-header,
   .site-footer,
-  .deadline-strip,
   .skip-link,
   .toolbar,
   .hero__actions,
   .hero-waves,
   .section-anchor,
-  .record__note a,
   .more-link,
   .go-top,
   a[download],
@@ -45,7 +43,6 @@
 
   .page-header,
   main > section:not(.session),
-  .hero__body,
   .session,
   .keynote,
   main > .entry {

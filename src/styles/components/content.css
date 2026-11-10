@@ -130,13 +130,6 @@
   content: ":";
 }
 
-/* The quieter of the home page's two ways in. */
-.hero__link {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 2.75rem;
-}
-
 /* What this is, for someone who arrives here rather than at the home page. */
 .page-context {
   margin-block-end: var(--space-2);
@@ -335,7 +328,7 @@ main > section:not(.session) > h2 {
   align-items: center;
 }
 
-/* On a phone the header already shows the logo, and the record needs the room. */
+/* On a phone the header already shows the logo, and the banner stays short. */
 .hero__mark {
   display: none;
 }
@@ -413,30 +406,6 @@ main > section:not(.session) > h2 {
   letter-spacing: -0.02em;
 }
 
-.hero__body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5);
-  align-items: start;
-  margin-block-start: var(--space-5);
-}
-
-.hero__body .lede {
-  margin-block-start: 0;
-}
-
-@media (width >= 60rem) {
-  .hero__body {
-    /* The record starts where values start in the rows below it. */
-    grid-template-columns: min(calc(var(--rail) + var(--rail-gap) + var(--label)), 55%) minmax(
-        0,
-        1fr
-      );
-    gap: var(--space-4);
-    margin-block-start: var(--space-5);
-  }
-}
-
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -488,48 +457,10 @@ main > section:not(.session) > h2 {
   color: var(--color-on-accent);
 }
 
-/* Two directions of one idea, said in type. */
-.exchange {
-  max-inline-size: none;
-  margin-block: 0 var(--space-3);
-  font-family: var(--font-serif);
-  font-size: var(--text-h3);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-}
-
-.exchange span {
-  display: block;
-  color: var(--color-brand-a);
-}
-
-.exchange span + span {
-  color: var(--color-brand-b);
-}
-
-/* Set apart by lines on screen. Read aloud, only this keeps them from running together. */
-.exchange span:first-child::after {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  content: ".";
-}
-
-.exchange + p {
-  margin-block-start: 0;
-}
-
 /* Rows of label and value: the site's main form. */
 .facts {
   max-inline-size: none;
   border-block-start: 1px solid var(--color-rule);
-}
-
-.record {
-  border-block-start: 1px solid var(--color-rule-strong);
 }
 
 .facts > div {
@@ -544,26 +475,9 @@ main > section:not(.session) > h2 {
   .facts > div {
     grid-template-columns: min(var(--label), 35%) minmax(0, 1fr);
   }
-
-  .record > div {
-    grid-template-columns: min(11rem, 40%) minmax(0, 1fr);
-  }
 }
 
 @media (width < 40rem) {
-  /* Room for the record on a phone's first screen, now that the statement opens the hero. */
-  .hero__body {
-    margin-block-start: var(--space-4);
-  }
-
-  .hero__body .exchange {
-    margin-block-end: var(--space-2);
-  }
-
-  .hero__actions {
-    margin-block-start: var(--space-3);
-  }
-
   /* One row shape on a phone, on every page: a small label above its value. */
   .facts dt {
     font-size: var(--text-sm);
@@ -682,12 +596,6 @@ main > section > .facts:last-child > div:last-child {
   .table .flag {
     display: inline-block;
   }
-}
-
-.record__note {
-  margin-block-start: var(--space-2);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
 }
 
 /* A section's own link sits in the margin before its heading, shown when pointed at or focused.

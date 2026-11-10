@@ -1,0 +1,70 @@
+---
+import { getDeadlines } from "../lib/content";
+import { stripPrefix } from "../lib/view";
+
+const deadlines = await getDeadlines();
+// Everything still ahead, so a page built earlier can move on when a deadline closes. The
+// organizers asked for no deadline bar, so nothing here is seen: the script below keeps statuses,
+// the flagged date and the submit button right between the daily rebuilds.
+const schedule = deadlines
+  .flatMap((deadline) => (deadline.due ? [{ ...deadline, due: deadline.due }] : []))
+  .filter((deadline) => deadline.status !== "passed")
+  .sort((a, b) => a.due.getTime() - b.due.getTime())
+  .map((deadline) => ({
+    due: deadline.due.toISOString(),
+    prefix: stripPrefix(deadline.kind),
+  }));
+---
+
+{schedule.length > 0 && <span hidden data-deadline-schedule={JSON.stringify(schedule)} />}
+
+<script>
+  import { deadlineStatus } from "../lib/dates";
+  import { STATUS_LABELS } from "../lib/view";
+
+  interface Entry {
+    due: string;
+    prefix: string;
+  }
+
+  const source = document.querySelector<HTMLElement>("[data-deadline-schedule]");
+  const schedule = JSON.parse(source?.dataset.deadlineSchedule ?? "[]") as Entry[];
+
+  const updateRows = (current: Entry | undefined, now: Date) => {
+    for (const status of document.querySelectorAll<HTMLElement>("[data-status-due]")) {
+      const value = deadlineStatus({ date: status.dataset.statusDue ?? "" }, now);
+      status.className = `status status--${value}`;
+      status.textContent = STATUS_LABELS[value];
+    }
+    for (const time of document.querySelectorAll<HTMLElement>("main time[data-due]")) {
+      const isNext = time.dataset.due === current?.due;
+      time.classList.toggle("flag", isNext);
+      const hidden = time.previousElementSibling;
+      if (isNext && !hidden?.classList.contains("next-label")) {
+        const moved = document.querySelector("main .next-label");
+        if (moved) time.before(moved);
+      }
+    }
+    const nextLabel = document.querySelector("main .next-label");
+    if (nextLabel) {
+      if (current) nextLabel.textContent = current.prefix;
+      else nextLabel.remove();
+    }
+  };
+
+  const updateOffers = (now: Date) => {
+    for (const offer of document.querySelectorAll<HTMLElement>("[data-closes]")) {
+      offer.hidden = now > new Date(offer.dataset.closes ?? "");
+    }
+  };
+
+  const tick = () => {
+    const now = new Date();
+    const current = schedule.find((entry) => new Date(entry.due) >= now);
+    updateRows(current, now);
+    updateOffers(now);
+    // Just after the next minute begins, so a deadline's status changes on the minute it passes.
+    setTimeout(tick, 60_000 - (now.getTime() % 60_000) + 50);
+  };
+  tick();
+</script>

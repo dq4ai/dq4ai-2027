@@ -63,8 +63,9 @@ test.describe("what moves", () => {
 
   test("a pressed button gives way under the pointer", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
+    await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("");
-    const button = page.locator(".hero__actions .button").first();
+    const button = page.locator(".nav-toggle");
     await button.hover();
     await page.mouse.down();
     await expect
@@ -75,22 +76,6 @@ test.describe("what moves", () => {
 });
 
 test.describe("what stays still", () => {
-  test("a theme switch changes everything in the same moment", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light", reducedMotion: "no-preference" });
-    await page.goto("");
-    // The logo's own moment on load is not part of the switch.
-    await page.evaluate(() => Promise.all(document.getAnimations().map((a) => a.finished)));
-    await page.locator(".theme-toggle").click();
-    const moving = await page.evaluate(
-      () =>
-        document
-          .getAnimations()
-          .map((a) => (a.effect as KeyframeEffect).target)
-          .filter((target) => !target?.closest(".theme-toggle")).length,
-    );
-    expect(moving).toBe(0);
-  });
-
   test("section links jump, without a long scroll", async ({ page }) => {
     await page.goto("");
     expect(
@@ -108,10 +93,9 @@ test.describe("what stays still", () => {
     expect(await running(page, "#site-nav")).toEqual([]);
     await expect(toggle).toHaveText("Close");
     await expect(page.locator("#site-nav a").first()).toBeVisible();
-    const button = page.locator(".hero__actions .button").first();
-    await button.hover();
+    await toggle.hover();
     await page.mouse.down();
-    expect(await button.evaluate((e) => getComputedStyle(e).transform)).toBe("none");
+    expect(await toggle.evaluate((e) => getComputedStyle(e).transform)).toBe("none");
     await page.mouse.up();
   });
 });
@@ -128,15 +112,6 @@ test.describe("every control shows its state", () => {
     const before = await colorOf(page, ".site-header .brand");
     await page.locator(".site-header .brand").hover();
     await expect.poll(() => colorOf(page, ".site-header .brand")).not.toBe(before);
-  });
-
-  test("the deadline bar responds to a pointer", async ({ page }, testInfo) => {
-    test.skip(testInfo.project.name !== "populated-content", "needs a dated deadline");
-    await page.goto("");
-    const link = page.locator(".deadline-strip a");
-    const before = await link.evaluate((e) => getComputedStyle(e).textDecorationLine);
-    await link.hover();
-    expect(await link.evaluate((e) => getComputedStyle(e).textDecorationLine)).not.toBe(before);
   });
 
   test("an abstract's control responds to a pointer", async ({ page }, testInfo) => {
@@ -208,20 +183,6 @@ test.describe("every control shows its state", () => {
     await page.keyboard.press("Enter");
     await expect(page.locator("main")).toBeFocused();
     await expect(page.locator("main")).toHaveCSS("outline-style", "none");
-  });
-
-  test("the time-zone button keeps its size, and says what it will do", async ({
-    page,
-  }, testInfo) => {
-    test.skip(testInfo.project.name !== "populated-content", "needs dated deadlines");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("dates/");
-    const toggle = page.locator(".tz-toggle");
-    const before = await toggle.boundingBox();
-    await expect(toggle).not.toHaveAttribute("aria-pressed");
-    await toggle.click();
-    await expect(toggle).toHaveText("Show in AoE");
-    expect((await toggle.boundingBox())?.width).toBe(before?.width);
   });
 });
 
