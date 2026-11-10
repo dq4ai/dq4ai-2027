@@ -23,6 +23,9 @@ export function wrapText(text: string, width = WIDTH, indent = ""): string {
 
 const known = (value: string) => (value === TBA ? PENDING : value);
 
+/** "    - text", with any wrapped lines lined up under the text rather than the dash. */
+const bulletLine = (item: string) => `    - ${wrapText(item, WIDTH, "      ").slice(6)}`;
+
 const heading = (title: string) => `${title.toUpperCase()}\n${"-".repeat(title.length)}`;
 
 const personLine = (person: Person) =>
@@ -63,7 +66,7 @@ export function buildCfpText({ site, cfp, deadlines, chairs, siteUrl }: CfpTextI
     wrapText(cfp.topicsIntro),
     "",
     cfp.topics
-      .map((topic) => `  * ${topic.title}\n${wrapText(topic.description, WIDTH, "    ")}`)
+      .map((topic) => `  * ${topic.title}\n${topic.items.map(bulletLine).join("\n")}`)
       .join("\n"),
     "",
     heading("Paper categories"),

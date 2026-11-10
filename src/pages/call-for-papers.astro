@@ -4,6 +4,7 @@ import ExternalLink from "../components/ExternalLink.astro";
 import Heading from "../components/Heading.astro";
 import PageHeader from "../components/PageHeader.astro";
 import PaperTemplate from "../components/PaperTemplate.astro";
+import TopicList from "../components/TopicList.astro";
 import Value from "../components/Value.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getDeadlines, getSite } from "../lib/content";
@@ -14,7 +15,6 @@ import {
   isKnown,
   pageLimitsUnknown,
   pendingSentence,
-  topicAnchor,
   workshopTitle,
 } from "../lib/view";
 
@@ -66,43 +66,30 @@ const policiesPending = pendingSentence(
 
   <section>
     <Heading id="scope">Scope</Heading>
-    <p>{cfp.goal}</p>
-    <details>
-      <summary>More on the scope</summary>
-      {cfp.scope.map((paragraph) => (
-        <p>{paragraph}</p>
-      ))}
-    </details>
+    {[...cfp.scope, cfp.goal].map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
   </section>
 
   <section>
     <Heading id="topics">Topics of interest</Heading>
     <p>{cfp.topicsIntro}</p>
-    <ul class="topics">
-      {cfp.topics.map((topic) => (
-        <li id={topicAnchor(topic.title)}>
-          <strong class="topic-title">{topic.title}</strong> <span>{topic.description}</span>
-        </li>
-      ))}
-    </ul>
+    <TopicList topics={cfp.topics} />
   </section>
 
   <section>
     <Heading id="paper-categories">Paper categories</Heading>
+    {/* Read in place, as the previous edition listed them: no link or toggle to open. */}
     <ul class="paper-types">
       {cfp.paperTypes.map((type) => (
-        <li>
-          <details>
-            <summary>
-              <h3>{type.title}</h3>
-            </summary>
-            <p>{type.description}</p>
-            {!limitsUnknown && (
-              <p class="entry__fact">
-                <strong>Page limit:</strong> <Value of={type.pageLimit} />
-              </p>
-            )}
-          </details>
+        <li id={`paper-${type.id}`}>
+          <strong>{type.title}:</strong> {type.description}
+          {!limitsUnknown && (
+            <>
+              {" "}
+              Page limit: <Value of={type.pageLimit} />.
+            </>
+          )}
         </li>
       ))}
     </ul>

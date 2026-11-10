@@ -88,35 +88,36 @@ test.describe("logo", () => {
   });
 });
 
-// The organizers asked for the topics as titles only, without icons.
+// The organizers asked for the topics without icons, then as the previous edition listed them:
+// each topic a heading over its bullet points, shown in full on the home page and in the call.
 test.describe("topics", () => {
-  test("the home page's first section lists the eight topics by title, without icons", async ({
-    page,
-  }) => {
-    await page.goto("");
-    const first = page.locator("main > section").first();
-    await expect(first.getByRole("heading", { name: "Topics of interest" })).toBeVisible();
-    const titles = await first.locator(".topic-list > li").allTextContents();
-    expect(titles.map((title) => title.trim()).toSorted()).toEqual(TOPICS.toSorted());
-    await expect(first.locator("svg")).toHaveCount(0);
-  });
+  for (const path of ["", "call-for-papers/"]) {
+    test(`${path || "the home page"} lists the eight topics as headings over bullet points`, async ({
+      page,
+    }) => {
+      await page.goto(path);
+      const section = page.locator("main > section", { has: page.locator("#topics") });
+      const topics = section.locator(".topics");
+      const titles = await topics.locator("h3").allTextContents();
+      expect(titles.map((title) => title.trim()).toSorted()).toEqual(TOPICS.toSorted());
+      for (const heading of await topics.locator("h3").all()) {
+        const bullets = await heading.evaluate(
+          (h) => h.nextElementSibling?.matches("ul") && h.nextElementSibling.children.length,
+        );
+        expect(bullets, (await heading.textContent()) ?? "").toBeGreaterThan(0);
+      }
+      await expect(topics.locator("svg, a, details")).toHaveCount(0);
+    });
+  }
 
-  test("a topic title leads to its full description", async ({ page }) => {
-    await page.goto("");
-    await page.locator(".topic-list a", { hasText: "Knowledge graphs" }).click();
-    await expect(page).toHaveURL(/call-for-papers\/#topic-knowledge-graphs$/);
-    await expect(page.locator("#topic-knowledge-graphs")).toContainText("entity resolution");
-    await expect(page.locator("#topic-knowledge-graphs")).toBeInViewport();
-  });
-
-  test("the call for papers gives each topic its title and description, without icons", async ({
-    page,
-  }) => {
-    await page.goto("call-for-papers/");
-    const rows = page.locator(".topics > li");
-    await expect(rows).toHaveCount(TOPICS.length);
-    await expect(page.locator(".topics svg")).toHaveCount(0);
-    await expect(page.locator("#topic-data-quality-for-ai")).toContainText(
+  test("each topic keeps its address in the call for papers", async ({ page }) => {
+    await page.goto("call-for-papers/#topic-knowledge-graphs");
+    const heading = page.locator("#topic-knowledge-graphs");
+    await expect(heading).toBeInViewport();
+    await expect(page.locator("#topic-knowledge-graphs + ul")).toContainText(
+      "Entity resolution and ontology alignment",
+    );
+    await expect(page.locator("#topic-data-quality-for-ai + ul")).toContainText(
       "Quality of training and fine-tuning data",
     );
   });

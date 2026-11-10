@@ -107,10 +107,10 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   const exchange = page.locator(".hero .exchange");
   await expect(exchange).toContainText("Data quality for AI");
   await expect(exchange).toContainText("AI for data quality");
-  await expect(page.locator(".purpose")).toContainText(
+  await expect(page.locator(".about")).toContainText(
     "bring together researchers and practitioners",
   );
-  await expect(page.locator("main .topic-list")).toContainText("Multimodal data quality");
+  await expect(page.locator("main .topics")).toContainText("Multimodal data quality");
 });
 
 // The organizers asked for a home page that invites rather than tells everything: a short record,
@@ -130,13 +130,16 @@ test("the first screen states the essentials as a short record", async ({ page }
   await expect(record).toBeInViewport({ ratio: 1 });
 });
 
-test("the home page keeps the details for the pages that hold them", async ({ page }) => {
+// The organizers asked for the previous edition's home page: the whole scope and every topic read
+// in place, with nothing to click to open them.
+test("the home page shows the whole scope and every topic in place", async ({ page }) => {
   await page.goto("");
-  await expect(page.locator(".purpose > p:not(.more-link)")).toHaveCount(1);
-  await expect(
-    page.locator(".purpose").getByRole("link", { name: "Read the full scope" }),
-  ).toHaveAttribute("href", /call-for-papers\/#scope$/);
-  await expect(page.locator("main")).not.toContainText("two-way relationship");
+  const about = page.locator(".about");
+  await expect(about.getByRole("heading", { name: "About the DQ4AI Workshop" })).toBeVisible();
+  await expect(about.getByText("two-way relationship")).toBeVisible();
+  await expect(about.getByText("The goal of the workshop")).toBeVisible();
+  await expect(about.locator("a:not(.section-anchor)")).toHaveCount(0);
+  await expect(page.locator("main .topics a, main details")).toHaveCount(0);
   await expect(page.locator("#keynote, #latest-news")).toHaveCount(0);
   await expect(page.locator("main h2", { hasText: /keynote|news/i })).toHaveCount(0);
 });
@@ -219,7 +222,7 @@ test("the home statement does not depend on the order of the topics", async ({ p
   const sizes = await page.evaluate(() => {
     const size = (selector: string) =>
       parseFloat(getComputedStyle(document.querySelector(selector) as Element).fontSize);
-    return { statement: size(".exchange"), heading: size(".purpose h2") };
+    return { statement: size(".exchange"), heading: size(".about h2") };
   });
   expect(sizes.statement).toBeLessThan(sizes.heading);
   await expect(page.locator(".hero__body .exchange")).toHaveCount(1);
@@ -275,11 +278,38 @@ test("the photo does not reach the first screen of the home page", async ({ page
   await expect(page.locator("main img")).toHaveCount(0);
 });
 
-test("the footer's license notice leaves room for credited work", async ({ page }) => {
+// As the previous edition: the footer is the workshop's name on one line, with no menu, and each
+// page ends on a way back to the top.
+test("the footer is one line with the workshop's name and no menu", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
   await page.goto("");
-  await expect(page.locator(".site-footer__legal")).toContainText(
-    "Content under CC BY 4.0, except where a credit says otherwise.",
+  const footer = page.locator(".site-footer");
+  await expect(footer).toContainText(
+    "Second International Workshop on Data Quality for Artificial Intelligence (DQ4AI 2027)",
   );
+  await expect(footer.getByRole("link")).toHaveCount(1);
+  await expect(footer.locator("nav")).toHaveCount(0);
+  const box = (selector: string) =>
+    footer.locator(selector).evaluate((item) => item.getBoundingClientRect().toJSON() as DOMRect);
+  const [brand, title] = await Promise.all([box(".brand"), box(".site-footer__title")]);
+  const middle = (rect: DOMRect) => rect.top + rect.height / 2;
+  expect(Math.abs(middle(brand) - middle(title))).toBeLessThan(1);
+  const lineHeight = await footer
+    .locator(".site-footer__title")
+    .evaluate((p) => parseFloat(getComputedStyle(p).lineHeight));
+  expect(title.height).toBeLessThanOrEqual(lineHeight + 1);
+});
+
+test("every page ends on a way back to the top", async ({ page }) => {
+  for (const path of PAGES) {
+    await page.goto(path);
+    const link = page.locator("main > .go-top:last-child a");
+    await expect(link, path).toHaveText("Go to top ↑");
+    await expect(link, path).toHaveAttribute("href", "#top");
+  }
+  await page.goto("call-for-papers/");
+  await page.locator(".go-top a").click();
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 });
 
 test("a past edition's unknown details are not promised as coming", async ({ page }, testInfo) => {
@@ -312,14 +342,9 @@ test("a section heading is plain text with its link beside it", async ({ page })
   await expect(anchor).toBeHidden();
 });
 
-test("the footer offers the calendar only once deadlines have dates", async ({
-  page,
-}, testInfo) => {
-  await page.goto("");
-  await expect(
-    page.locator(".site-footer").getByRole("link", { name: "Deadlines calendar" }),
-  ).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
+test("the dates page offers the calendar once deadlines have dates", async ({ page }) => {
   await page.goto("dates/");
+  await expect(page.getByRole("link", { name: "Deadlines calendar (.ics)" })).toHaveCount(1);
   await expect(page.locator('meta[name="description"]')).not.toHaveAttribute("content", /calendar/);
 });
 
@@ -376,12 +401,9 @@ test("the deadlines calendar downloads and parses", async ({ request, baseURL },
   const summaries = calendar
     .getAllSubcomponents("vevent")
     .map((component) => new ICAL.Event(component).summary);
-  expect(summaries).toContain(
-    populated(testInfo.project.name)
-      ? "EDBT/ICDT 2027 (host conference)"
-      : "EDBT/ICDT 2027 (host conference; DQ4AI date TBA)",
-  );
-  expect(summaries).toHaveLength(populated(testInfo.project.name) ? 6 : 1);
+  expect(summaries).toContain("EDBT/ICDT 2027 (host conference)");
+  expect(summaries).toContain("DQ4AI 2027 workshop");
+  expect(summaries).toHaveLength(populated(testInfo.project.name) ? 6 : 5);
 });
 
 test("organizers are listed once and the committee is sorted as configured", async ({
@@ -493,28 +515,22 @@ test.describe("states that depend on content", () => {
     expect(Math.round(height / lineHeight)).toBeLessThanOrEqual(2);
   });
 
-  test("the dates table does not repeat itself", async ({ page }, testInfo) => {
+  // Both content sets have dated deadlines now; the undated table is no longer built anywhere.
+  test("the dates table shows each deadline's status once dates are set", async ({ page }) => {
     await page.goto("dates/");
-    const statusHeader = page.locator("thead").getByText("Status");
-    if (populated(testInfo.project.name)) {
-      await expect(statusHeader).toBeVisible();
-      return;
-    }
-    await expect(statusHeader).toHaveCount(0);
+    await expect(page.locator("thead").getByText("Status")).toBeVisible();
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
-    await expect(row.getByText("To be announced")).toHaveCount(1);
+    await expect(row.getByText("To be announced")).toHaveCount(0);
   });
 
-  test("only the next deadline is flagged, and tools need dates to act on", async ({
+  test("only the next deadline is flagged, and the dates page offers its tools", async ({
     page,
-  }, testInfo) => {
+  }) => {
     for (const path of ["", "dates/"]) {
       await page.goto(path);
-      await expect(page.locator("main .flag")).toHaveCount(
-        populated(testInfo.project.name) ? 1 : 0,
-      );
+      await expect(page.locator("main .flag")).toHaveCount(1);
     }
-    await expect(page.locator(".toolbar")).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
+    await expect(page.locator(".toolbar")).toHaveCount(1);
   });
 
   test("a section link is not hidden by the deadline bar on a phone", async ({
@@ -535,7 +551,7 @@ test.describe("states that depend on content", () => {
   test("the conference's dates are not given as the workshop's", async ({ page }, testInfo) => {
     const expected = populated(testInfo.project.name)
       ? "Workshop date: 7 April 2027."
-      : "Workshop date: to be announced.";
+      : "Workshop date: 6 April 2027.";
     for (const path of ["call-for-papers/", "attend/"]) {
       await page.goto(path);
       await expect(page.locator(".page-header, main").first()).toContainText(expected);

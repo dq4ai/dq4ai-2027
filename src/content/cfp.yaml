@@ -31,39 +31,45 @@ topicsIntro: >-
   not limited to:
 topics:
   - title: Data quality for AI
-    description: >-
-      Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and
-      AI agents, including bias, reliability and robustness.
+    items:
+      - Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and AI agents
+      - Bias, reliability and robustness
   - title: AI for data quality
-    description: >-
-      LLMs and other AI techniques for data profiling, cleaning, error detection, data repair,
-      quality assessment, and monitoring.
+    items:
+      - LLMs and other AI techniques for data profiling and cleaning
+      - Error detection and data repair
+      - Quality assessment and monitoring
   - title: Knowledge graphs
-    description: >-
-      Quality in KG construction, enrichment, and maintenance, including schema validation,
-      constraint checking, entity resolution, ontology alignment, consistency, completeness,
-      provenance, and evolution.
+    items:
+      - Quality in KG construction, enrichment, and maintenance
+      - Schema validation and constraint checking
+      - Entity resolution and ontology alignment
+      - Consistency, completeness, provenance, and evolution
   - title: Quality in LLMs, NLP, and generative AI
-    description: >-
-      Hallucinations, factual errors, bias, uncertainty, and evaluation of language models and NLP
-      systems.
+    items:
+      - Hallucinations and factual errors
+      - Bias and uncertainty
+      - Evaluation of language models and NLP systems
   - title: Data management and governance for AI
-    description: >-
-      Quality-aware data management, data preparation and integration, lineage, traceability,
-      versioning, reproducibility, privacy, fairness, transparency, and trustworthy AI across the AI
-      lifecycle.
+    items:
+      - Quality-aware data management
+      - Data preparation and integration
+      - Lineage, traceability, versioning, and reproducibility
+      - Privacy, fairness, transparency, and trustworthy AI across the AI lifecycle
   - title: Multimodal data quality
-    description: >-
-      Quality across text, images, audio, video, structured, and sensor data, including cross-modal
-      alignment, consistency, and integration.
+    items:
+      - Quality across text, images, audio, video, structured, and sensor data
+      - Cross-modal alignment, consistency, and integration
   - title: Evaluation and benchmarks
-    description: >-
-      Metrics, benchmarks, evaluation frameworks, human-in-the-loop approaches, and methods for
-      assessing data quality and its impact on AI systems.
+    items:
+      - Metrics, benchmarks, and evaluation frameworks
+      - Human-in-the-loop approaches
+      - Methods for assessing data quality and its impact on AI systems
   - title: Applications and case studies
-    description: >-
-      Real-world and industrial deployments, technology transfer, and lessons learned from
-      maintaining data quality at scale.
+    items:
+      - Real-world and industrial deployments
+      - Technology transfer
+      - Lessons learned from maintaining data quality at scale
 paperTypes:
   - id: research
     title: Research papers

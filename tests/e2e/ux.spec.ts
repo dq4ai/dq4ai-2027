@@ -26,10 +26,13 @@ test.describe("contact", () => {
     });
   }
 
-  test("the footer says a contact is coming until there is one", async ({ page }, testInfo) => {
-    await page.goto("");
-    await expect(page.locator(".site-footer")).toContainText(
-      populated(testInfo.project.name) ? "Contact: chairs@example.org" : "Contact: to be announced",
+  // The footer is now the workshop's name alone; the contact lives on the Organization page.
+  test("the organization page says a contact is coming until there is one", async ({
+    page,
+  }, testInfo) => {
+    await page.goto("organization/");
+    await expect(page.locator(".contact")).toContainText(
+      populated(testInfo.project.name) ? "chairs@example.org" : "To be announced",
     );
   });
 });
@@ -302,7 +305,7 @@ test.describe("arriving on an inner page", () => {
       await expect(context).toContainText("EDBT/ICDT 2027");
       await expect(context).toContainText("Lille, France");
       await expect(context).toContainText(
-        populated(testInfo.project.name) ? "7 April 2027" : "6–9 April 2027",
+        populated(testInfo.project.name) ? "7 April 2027" : "6 April 2027",
       );
       await expect(context).toBeInViewport({ ratio: 1 });
     });
@@ -822,7 +825,7 @@ test.describe("one name for one thing", () => {
 // that leads with what matters and folds away the rest.
 test.describe("less at once", () => {
   // Home is in the menu at every width: the organizers want the way back always named.
-  test("the menu keeps Home and five pages, and the footer links the rest", async ({
+  test("the menu keeps Home and five pages, and the pages link the rest", async ({
     page,
   }, testInfo) => {
     await page.setViewportSize({ width: 1440, height: 900 });
@@ -831,29 +834,36 @@ test.describe("less at once", () => {
     const expected = ["Home", "Call for Papers", "Dates", "Program", "Organization", "Attend"];
     if (populated(testInfo.project.name)) expected.splice(4, 0, "Accepted Papers");
     await expect(menu).toHaveText(expected);
-    const footer = page.locator(".site-footer__links");
-    for (const name of ["Submission", "Keynotes", "News", "Policies", "Previous Editions"]) {
-      await expect(footer.getByRole("link", { name, exact: true })).toBeVisible();
-    }
+    // The footer no longer has a menu, so the pages it linked are reached from where they matter.
+    await expect(page.locator(".site-footer nav")).toHaveCount(0);
+    await expect(page.locator(".news-line a")).toHaveAttribute("href", /\/news\/#news-/);
+    await expect(page.locator(".record a", { hasText: /Abedjan|Doe/ }).first()).toHaveAttribute(
+      "href",
+      /\/keynotes\/#/,
+    );
+    await page.goto("call-for-papers/");
+    await expect(page.locator('main a[href$="/submission/"]')).toHaveCount(1);
+    await expect(page.locator('main a[href$="/policies/"]')).toHaveCount(1);
   });
 
-  test("the call's scope opens on its goal, with the rest one click away", async ({ page }) => {
+  // Later, the organizers asked for the previous edition's way: everything read in place.
+  test("the call's scope is read in full, with nothing to open", async ({ page }) => {
     await page.goto("call-for-papers/");
     const scope = page.locator("section", { has: page.locator("#scope") });
-    await expect(scope.locator("> p").first()).toContainText("The goal of the workshop");
-    const more = scope.locator("details");
-    await expect(more.getByText("two-way relationship")).toBeHidden();
-    await more.locator("summary").click();
-    await expect(more.getByText("two-way relationship")).toBeVisible();
+    await expect(scope.getByText("two-way relationship")).toBeVisible();
+    await expect(scope.getByText("The goal of the workshop")).toBeVisible();
+    await expect(scope.locator("details")).toHaveCount(0);
   });
 
-  test("paper categories open onto their descriptions", async ({ page }) => {
+  test("paper categories are read in place, one bullet each", async ({ page }) => {
     await page.goto("call-for-papers/");
-    const research = page.locator(".paper-types details", { hasText: "Research papers" });
-    await expect(research.getByRole("heading", { name: "Research papers" })).toBeVisible();
-    await expect(research.getByText("Original research contributions")).toBeHidden();
-    await research.locator("summary").click();
+    const research = page.locator(".paper-types li", { hasText: "Research papers" });
+    await expect(research.locator("strong")).toHaveText("Research papers:");
     await expect(research.getByText("Original research contributions")).toBeVisible();
+    await expect(page.locator(".paper-types details, .paper-types a")).toHaveCount(0);
+    expect(
+      await research.evaluate((li) => getComputedStyle(li.parentElement as Element).listStyleType),
+    ).toBe("disc");
   });
 
   test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {
@@ -919,14 +929,6 @@ test.describe("on a phone", () => {
       .toBeGreaterThan(0);
   });
 
-  test("footer links never break in two", async ({ page }) => {
-    await page.goto("");
-    for (const link of await page.locator(".site-footer__links a").all()) {
-      const lines = await link.evaluate((a) => a.getClientRects().length);
-      expect(lines, (await link.textContent()) ?? "").toBe(1);
-    }
-  });
-
   test("a list that ends its section does not draw a second rule", async ({ page }) => {
     for (const path of ["call-for-papers/", "submission/", "attend/"]) {
       await page.goto(path);
@@ -942,12 +944,10 @@ test.describe("on a phone", () => {
     }
   });
 
-  test("the topics share rows", async ({ page }) => {
+  test("the banner's host stays whole on its line", async ({ page }) => {
     await page.goto("");
-    const tops = await page
-      .locator(".topic-list a")
-      .evaluateAll((links) => links.map((a) => Math.round(a.getBoundingClientRect().top)));
-    expect(new Set(tops).size).toBeLessThan(tops.length);
+    const host = page.locator(".hero__where a");
+    expect(await host.evaluate((a) => a.getClientRects().length)).toBe(1);
   });
 });
 

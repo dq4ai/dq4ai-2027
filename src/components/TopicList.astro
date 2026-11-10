@@ -1,0 +1,23 @@
+---
+import type { Cfp } from "../lib/schemas";
+import { topicAnchor } from "../lib/view";
+
+interface Props {
+  topics: Cfp["topics"];
+}
+const { topics } = Astro.props;
+// Shown whole, as the previous edition listed them: each topic a heading over its bullet points.
+---
+
+<div class="topics">
+  {topics.map((topic) => (
+    <>
+      <h3 id={topicAnchor(topic.title)}>{topic.title}</h3>
+      <ul>
+        {topic.items.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    </>
+  ))}
+</div>

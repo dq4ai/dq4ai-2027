@@ -1,57 +1,18 @@
 ---
-import { getDeadlines, getSite } from "../lib/content";
-import { TBA } from "../lib/dates";
-import { secondaryRoutes } from "../lib/nav";
-import { url } from "../lib/paths";
+import { getSite } from "../lib/content";
 import { workshopTitle } from "../lib/view";
-import ExternalLink from "./ExternalLink.astro";
 import Wordmark from "./Wordmark.astro";
 
-const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
-const moreLinks = secondaryRoutes();
+const site = await getSite();
+// One line, as the previous edition's footer: the workshop's name and nothing to navigate. The
+// pages that used to be linked here are reached from the pages that need them.
 ---
 
 <footer class="site-footer">
   <div class="site-footer__inner">
-    <div>
-      <Wordmark />
-    </div>
-    <div>
-      <p>
-        {workshopTitle(site)}, co-located with{" "}
-        <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>.
-        {site.contactEmail === TBA ? (
-          " Contact: to be announced."
-        ) : (
-          <>
-            {" "}
-            Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
-          </>
-        )}
-      </p>
-      <nav aria-label="More">
-        <ul class="site-footer__links">
-          {moreLinks.map((route) => (
-            <li>
-              <a href={url(route.path)}>{route.title}</a>
-            </li>
-          ))}
-          <li>
-            <a href={url("/cfp.txt")}>Call for papers as plain text</a>
-          </li>
-          {deadlines.some((deadline) => deadline.due) && (
-            <li>
-              <a href={url("/calendar/deadlines.ics")}>Deadlines calendar</a>
-            </li>
-          )}
-          <li>
-            <a href={url("/rss.xml")}>News feed</a>
-          </li>
-        </ul>
-      </nav>
-      <p class="site-footer__legal">
-        Content under CC BY 4.0, except where a credit says otherwise. No cookies, no tracking.
-      </p>
-    </div>
+    <Wordmark />
+    <p class="site-footer__title">
+      {workshopTitle(site)} ({site.acronym} {site.year})
+    </p>
   </div>
 </footer>

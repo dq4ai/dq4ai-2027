@@ -111,52 +111,6 @@
   stroke: var(--color-surface);
 }
 
-/* The topics, as a row of soft tags: a glance, with each one a door into the call. */
-.topic-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  max-inline-size: none;
-  padding: 0;
-  list-style: none;
-}
-
-.topic-list a {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 2.75rem;
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--color-rule);
-  border-radius: 999px;
-  background: var(--color-surface-raised);
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-@media (hover: hover) {
-  .topic-list a:hover {
-    border-color: var(--color-brand-b);
-    color: var(--color-accent);
-  }
-}
-
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  /* Only while pointed at, so a theme switch stays instant. */
-  .topic-list a:hover {
-    transition:
-      border-color var(--dur-fast) var(--ease-out),
-      color var(--dur-fast) var(--ease-out);
-  }
-}
-
-/* On a phone the tags shrink to the size of the text around them, so several share a row. */
-@media (width < 40rem) {
-  .topic-list a {
-    padding-inline: var(--space-2);
-    font-size: var(--text-sm);
-  }
-}
-
 /* The latest news, said in one line rather than given a section. */
 .news-line {
   margin-block: 0 var(--space-5);
@@ -386,17 +340,20 @@ main > section:not(.session) > h2 {
   display: none;
 }
 
-.hero__edition {
-  max-inline-size: none;
-  margin: var(--space-2) 0 0;
-  font-size: var(--text-h3);
-  font-weight: 600;
+.hero__where a {
+  white-space: nowrap;
+}
+
+.hero__date {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-style: italic;
 }
 
 .hero__where {
-  max-inline-size: 36em;
-  margin: var(--space-1) 0 0;
-  color: var(--color-text-muted);
+  max-inline-size: none;
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-lg);
   text-wrap: balance;
 }
 
@@ -429,13 +386,31 @@ main > section:not(.session) > h2 {
   }
 }
 
+/* The title on the lines the organizers set: the edition, the name, then where and when. */
 .hero h1 {
-  max-inline-size: 13em;
+  max-inline-size: none;
   margin: 0;
-  font-size: var(--text-hero);
   text-wrap: balance;
-  line-height: 1.03;
-  letter-spacing: -0.028em;
+}
+
+.hero__lead,
+.hero__name {
+  display: block;
+}
+
+.hero__lead {
+  font-size: var(--text-h3);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: normal;
+}
+
+/* Sized so the name and acronym stay on one line from a laptop up; a phone wraps it. */
+.hero__name {
+  margin-block-start: var(--space-1);
+  font-size: clamp(1.75rem, 1rem + 1.6vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 .hero__body {
@@ -743,24 +718,31 @@ main > section > .facts:last-child > div:last-child {
   }
 }
 
+/* Each topic a heading over its bullet points, as the previous edition listed them. */
 .topics {
-  max-inline-size: none;
+  max-inline-size: var(--measure);
 }
 
-.topics li {
-  display: grid;
-  gap: 0 var(--space-4);
-  padding-block: var(--space-2);
-}
-
-@media (width >= 40rem) {
-  .topics li {
-    grid-template-columns: var(--label) minmax(0, 1fr);
-  }
-}
-
-.topics strong {
+.topics h3 {
+  margin-block: var(--space-4) var(--space-2);
+  color: var(--color-accent);
+  font-size: var(--text-h3);
   font-weight: 600;
+}
+
+.topics h3:first-child {
+  margin-block-start: var(--space-3);
+}
+
+.topics ul,
+.paper-types {
+  padding-inline-start: 1.25em;
+  list-style: disc;
+}
+
+.topics li + li,
+.paper-types li + li {
+  margin-block-start: var(--space-1);
 }
 
 .visually-hidden {
@@ -823,8 +805,15 @@ main > section > .facts:last-child > div:last-child {
   margin-block-start: var(--space-1);
 }
 
-.person__name {
+/* Names in colour and affiliations in the text colour, as the previous edition showed them. */
+.person__name,
+.person__name a {
+  color: var(--color-person);
   font-weight: 600;
+}
+
+.person {
+  color: var(--color-text);
 }
 
 /* The padding keeps a focus ring from being cut off, the margin keeps the table on its column. */
@@ -1155,11 +1144,10 @@ details p {
 }
 
 /* Inside a section the section's own rule starts the list, so it needs no second one. */
-main > section > :is(.facts, .topics) {
+main > section > .facts {
   border-block-start: 0;
 }
 
-main > section > .topics li:first-child,
 main > section > .steps li:first-child {
   padding-block-start: 0;
   border-block-start: 0;
@@ -1196,30 +1184,28 @@ main > section > .toolbar:first-of-type {
   margin-block-start: 0;
 }
 
-/* Paper categories: titles first, each opening onto its description. */
+/* Paper categories: one bullet each, the name in bold before its description. */
 .paper-types {
   max-inline-size: var(--measure);
-  padding: 0;
-  list-style: none;
-  border-block-start: 1px solid var(--color-rule);
 }
 
-.paper-types li {
-  border-block-end: 1px solid var(--color-rule);
+/* At the end of every page instead of a menu in the footer, as the previous edition had. */
+.go-top {
+  max-inline-size: none;
+  margin-block: var(--space-5) 0;
+  text-align: end;
 }
 
-.paper-types details {
-  margin-block: 0;
-  padding-block: var(--space-2);
-}
-
-.paper-types summary {
-  font-size: inherit;
-}
-
-.paper-types summary h3 {
-  display: inline;
-  margin: 0;
-  font-size: var(--text-base, 1rem);
+.go-top a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.75rem;
   font-weight: 600;
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .go-top a:hover {
+    text-decoration: underline;
+  }
 }

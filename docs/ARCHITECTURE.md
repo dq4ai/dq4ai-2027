@@ -21,8 +21,15 @@ contradicts itself.
 
 **The logo first.** The palette comes from logo D: navy for data quality for AI, teal for AI for
 data quality. `src/lib/brand.ts` draws it once, for the page, the favicon's shape and the social
-images. Amber is only ever the next deadline. The home page opens with the logo, then the eight
-topics as a plain list of titles.
+images. Amber is only ever the next deadline.
+
+**Like the previous edition's site.** The organizers asked for the layout of QuaLLM-KG 2026
+(<https://quallmkg2026.github.io/>): the banner title on four set lines, the full "About" and the
+topics on the home page, each topic a heading over bullet points (`items` in `cfp.yaml`), paper
+categories as one bullet each, names in red with affiliations in the text colour, and a one-line
+footer with no menu. Nothing folds away and topics link nowhere. Each page ends on "Go to top ↑"
+instead; the pages the footer used to list are linked from where they matter (Submission and
+Policies from the call, Keynotes from the home record, News from the latest-news line).
 
 **Warm and plain, like an academic page.** The organizers found the first design too "industrial" and
 pointed to classic workshop sites. So: a warm paper background, serif type throughout (Source Serif

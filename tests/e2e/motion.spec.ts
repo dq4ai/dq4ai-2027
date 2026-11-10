@@ -157,7 +157,7 @@ test.describe("every control shows its state", () => {
     });
     const page = await context.newPage();
     await page.goto("");
-    const link = page.locator(".more-link a");
+    const link = page.locator(".news-line a");
     await link.evaluate((a) => {
       a.addEventListener("click", (event) => {
         event.preventDefault();
@@ -179,7 +179,7 @@ test.describe("every control shows its state", () => {
     });
     const page = await context.newPage();
     await page.goto("call-for-papers/");
-    for (const selector of [".site-footer__links a"]) {
+    for (const selector of [".go-top a"]) {
       const box = await page.locator(selector).first().boundingBox();
       expect(box?.height ?? 0, selector).toBeGreaterThanOrEqual(44);
     }

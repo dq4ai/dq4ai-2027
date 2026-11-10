@@ -8,22 +8,24 @@ with EDBT/ICDT 2027 in Lille, France.
 
 **Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
-![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the title, then the key facts](docs/screenshot.png)
+![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the four-line title and the date, then the key facts](docs/screenshot.png)
 
 ## The site
 
-The site shows a little at a time, so a first visit invites rather than overwhelms.
+The site follows the layout of the previous edition's site: the scope and topics are read in place,
+with nothing to open.
 
-- **Home** opens with a banner: the title, the edition and where it meets, over ribbons of navy and
-  teal that are the logo's two directions (data quality for AI, AI for data quality). Below it are one
-  button, three key facts (next deadline, workshop date, keynote), the topics as tags, one paragraph on
-  the goal, and the latest news in one line.
+- **Home** opens with a banner over ribbons of navy and teal, the logo's two directions (data quality
+  for AI, AI for data quality). It reads, one line each: "Second International Workshop on", "Data
+  Quality for Artificial Intelligence (DQ4AI 2027),", "co-located with EDBT/ICDT 2027, Lille, France"
+  and "(April 6, 2027)". Below it are one button, three key facts (next deadline, workshop date,
+  keynote), the full "About the DQ4AI Workshop", every topic as a heading over its bullet points, and
+  the latest news in one line.
 - **Menu:** Home, Call for Papers, Dates, Program, Organization and Attend. Accepted Papers joins
   once papers are published.
-- **Footer:** Submission, Keynotes, News, Policies, Previous Editions, the call as plain text, the
-  deadlines calendar and the news feed.
-- **Call for Papers** leads with the goal and the topics. The full scope and each paper category open
-  on a click, and facts not yet known are named in one sentence rather than a row each.
+- **Footer:** one line, the workshop's name, with no menu. Every page ends on "Go to top ↑".
+- **Call for Papers** gives the full scope, the topics as headings over bullet points, and the paper
+  categories as one bullet each. Facts not yet known are named in one sentence rather than a row each.
 
 ## Update the content
 

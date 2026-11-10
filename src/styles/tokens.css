@@ -62,6 +62,8 @@
   --color-status-today: light-dark(#7a4f00, #e8be6a);
   --color-status-passed: var(--color-text-muted);
   --color-focus: light-dark(#0b57a4, #8cc4ff);
+  /* People's names, in the previous edition's red: 7:1 on the paper in both themes. */
+  --color-person: light-dark(#a51d1d, #ff9d92);
 
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   /* Small interface labels only; reading text is serif. Nothing to download. */
