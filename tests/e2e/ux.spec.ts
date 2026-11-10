@@ -2,7 +2,7 @@
 import { chromium, expect, test, type Browser, type Page } from "@playwright/test";
 import ICAL from "ical.js";
 import { readFileSync } from "node:fs";
-import { PAGES } from "./pages";
+import { datesTable, PAGES, section } from "./pages";
 
 const populated = (name: string) => name === "populated-content";
 const PHONE = { width: 390, height: 844 };
@@ -10,8 +10,8 @@ const overflow = (page: Page) =>
   page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
 
 test.describe("contact", () => {
-  for (const path of ["organization/", "attend/"]) {
-    test(`${path} says how to reach the organizers`, async ({ page }, testInfo) => {
+  for (const path of [""]) {
+    test("the page says how to reach the organizers", async ({ page }, testInfo) => {
       await page.goto(path);
       const contact = page.locator(".contact");
       await expect(contact.getByRole("heading", { name: "Contact" })).toBeVisible();
@@ -21,20 +21,13 @@ test.describe("contact", () => {
           "mailto:chairs@example.org",
         );
       } else {
-        await expect(contact).toContainText("To be announced");
+        await expect(contact.locator('a[href^="mailto:"]')).toHaveAttribute(
+          "href",
+          "mailto:soror.sahri@u-pariscite.fr",
+        );
       }
     });
   }
-
-  // The footer is now the workshop's name alone; the contact lives on the Organization page.
-  test("the organization page says a contact is coming until there is one", async ({
-    page,
-  }, testInfo) => {
-    await page.goto("organization/");
-    await expect(page.locator(".contact")).toContainText(
-      populated(testInfo.project.name) ? "chairs@example.org" : "To be announced",
-    );
-  });
 });
 
 test.describe("deadlines as they pass", () => {
@@ -49,10 +42,7 @@ test.describe("deadlines as they pass", () => {
 
   test("a closed deadline stops being next everywhere on the page", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
-    await page.goto("dates/");
-    const strip = page.locator(".deadline-strip");
-    await expect(strip).toContainText("Author notification");
-    await expect(strip).not.toContainText("Paper submission");
+    await page.goto("");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.locator(".status--passed:visible")).toHaveText("Passed");
     await expect(row.locator(".flag")).toHaveCount(0);
@@ -62,7 +52,7 @@ test.describe("deadlines as they pass", () => {
 
   test("a deadline's own day reads Today", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-18T13:00:00Z") });
-    await page.goto("dates/");
+    await page.goto("");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.locator(".status--today:visible")).toHaveText("Today");
   });
@@ -71,40 +61,31 @@ test.describe("deadlines as they pass", () => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
     await page.goto("");
     await expect(page.getByRole("link", { name: "Submit a paper" })).toBeHidden();
-    await page.goto("submission/");
+    await page.goto("");
     await expect(page.getByRole("link", { name: "Submit a paper" })).toBeHidden();
   });
 
-  test("the strip does not call an announcement a deadline", async ({ page }) => {
+  test("an announcement is not called a deadline", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
     await page.goto("");
-    await expect(page.locator("[data-deadline-prefix]")).toHaveText("Next date:");
+    await expect(page.locator("main .next-label")).toHaveText("Next date:");
   });
 
-  test("the strip goes once nothing is left to wait for", async ({ page }) => {
+  test("nothing is flagged once nothing is left to wait for", async ({ page }) => {
     await page.clock.install({ time: new Date("2027-03-01T12:00:00Z") });
     await page.goto("");
-    await expect(page.locator(".deadline-strip")).toBeHidden();
+    await expect(page.locator("main .flag")).toHaveCount(0);
   });
 
-  test("the countdown ticks on the minute", async ({ page }) => {
+  test("a deadline passes on the minute, without a rebuild", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T11:57:30Z") });
     await page.goto("");
-    const countdown = page.locator("[data-countdown]");
-    await expect(countdown).toHaveText("0 hours 1 minute left");
-    await page.clock.runFor(31_000);
-    await expect(countdown).toHaveText("Less than a minute left");
-    await page.clock.runFor(60_000);
-    await expect(page.locator(".deadline-strip")).toContainText("Author notification");
-  });
-
-  test("without JavaScript no countdown goes stale", async ({ browser, baseURL }) => {
-    const context = await browser.newContext({ javaScriptEnabled: false });
-    const page = await context.newPage();
-    await page.goto(baseURL ?? "");
-    await expect(page.locator(".deadline-strip")).toBeVisible();
-    await expect(page.locator("[data-countdown]")).toBeHidden();
-    await context.close();
+    const submission = page.locator("tbody tr", { hasText: "Paper submission" });
+    const notification = page.locator("tbody tr", { hasText: "Author notification" });
+    await expect(submission.locator(".flag")).toHaveCount(1);
+    await page.clock.runFor(150_000);
+    await expect(submission.locator(".flag")).toHaveCount(0);
+    await expect(notification.locator(".flag")).toHaveCount(1);
   });
 });
 
@@ -134,7 +115,7 @@ test.describe("phone menu", () => {
   });
 
   test("it leads back to the home page", async ({ page }) => {
-    await page.goto("dates/");
+    await page.goto("");
     await page.locator(".nav-toggle").tap();
     await expect(page.locator("#site-nav").getByRole("link", { name: "Home" })).toBeVisible();
   });
@@ -183,53 +164,40 @@ test.describe("phone menu", () => {
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 
-  test("menu and theme work when the script bundles never arrive", async ({ page }) => {
+  test("the menu works when the script bundles never arrive", async ({ page }) => {
     await page.route("**/_astro/*.js", (route) => route.abort());
     await page.goto("");
     await page.locator(".nav-toggle").tap();
     await expect(page.locator("#site-nav a").first()).toBeVisible();
-    await page.locator(".theme-toggle").tap();
-    await expect(page.locator(".theme-toggle")).toHaveAttribute("aria-pressed", "true");
   });
 
   test("the time-zone button holds its place before its script runs", async ({
     page,
   }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
+    test.skip(!populated(testInfo.project.name), "needs a program");
     await page.route("**/_astro/*.js", (route) => route.abort());
-    await page.goto("dates/");
+    await page.goto("");
     await expect(page.locator(".tz-toggle")).toBeVisible();
   });
 });
 
-test.describe("theme", () => {
-  test("the button's state follows the system theme", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light" });
-    await page.goto("");
-    const toggle = page.locator(".theme-toggle");
-    await expect(toggle).toHaveAttribute("aria-pressed", "false");
-    await page.emulateMedia({ colorScheme: "dark" });
-    await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  });
-
-  test("choosing the system's theme goes back to following the system", async ({ page }) => {
-    await page.emulateMedia({ colorScheme: "light" });
-    await page.goto("");
-    const toggle = page.locator(".theme-toggle");
-    await toggle.click();
-    await toggle.click();
-    expect(await page.evaluate(() => localStorage.getItem("theme"))).toBeNull();
-    await expect(page.locator("html")).not.toHaveAttribute("data-theme");
-    await page.emulateMedia({ colorScheme: "dark" });
-    await page.reload();
-    await expect(toggle).toHaveAttribute("aria-pressed", "true");
-  });
+// The organizers asked for no theme button: the site follows the system's light or dark theme.
+test("the site follows the system theme, with no button to change it", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "light" });
+  await page.goto("");
+  await expect(page.locator(".theme-toggle")).toHaveCount(0);
+  const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await page.emulateMedia({ colorScheme: "dark" });
+  await expect
+    .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
+    .not.toBe(light);
+  await expect(page.locator("html")).not.toHaveAttribute("data-theme");
 });
 
 test.describe("authors' tasks", () => {
   test("the template can be downloaded", async ({ page, request, baseURL }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a template");
-    for (const path of ["submission/", "call-for-papers/"]) {
+    for (const path of [""]) {
       await page.goto(path);
       const row = page.locator(".facts > div", { hasText: "Template" });
       await expect(row.getByRole("link", { name: "Example template" })).toHaveAttribute(
@@ -243,14 +211,14 @@ test.describe("authors' tasks", () => {
 
   test("an unknown link points on to the host's workshops page", async ({ page }, testInfo) => {
     test.skip(populated(testInfo.project.name), "needs an unknown submission link");
-    await page.goto("submission/");
+    await page.goto("");
     await expect(
       page.getByRole("link", { name: "workshops page", exact: false }).first(),
     ).toHaveAttribute("href", /contents=workshops/);
   });
 
   test("the organizers' status note appears once they write one", async ({ page }, testInfo) => {
-    for (const path of ["", "submission/", "dates/"]) {
+    for (const path of [""]) {
       await page.goto(path);
       await expect(page.locator(".status-note")).toHaveCount(
         populated(testInfo.project.name) ? 1 : 0,
@@ -259,34 +227,24 @@ test.describe("authors' tasks", () => {
   });
 
   test("the checklist links to what each step needs", async ({ page }) => {
-    await page.goto("submission/");
+    await page.goto("");
     const steps = page.locator(".steps li");
-    await expect(steps.nth(0).getByRole("link")).toHaveAttribute(
-      "href",
-      /call-for-papers\/#topics/,
-    );
-    await expect(steps.nth(2).getByRole("link")).toHaveAttribute(
-      "href",
-      /call-for-papers\/#policies/,
-    );
-    await expect(steps.nth(3).getByRole("link")).toHaveAttribute("href", /dates\/$/);
+    await expect(steps.nth(0).locator("a")).toHaveAttribute("href", /\/#topics$/);
+    await expect(steps.nth(2).locator("a")).toHaveAttribute("href", /\/#policies$/);
+    await expect(steps.nth(3).locator("a")).toHaveAttribute("href", /\/#dates$/);
   });
 
-  test("the two kinds of policy point to each other", async ({ page }) => {
-    await page.goto("call-for-papers/");
-    const section = page.locator("section", { has: page.locator("#policies") });
-    await expect(section.getByRole("heading", { name: "Submission policies" })).toBeVisible();
-    await expect(section.getByRole("link", { name: "Policies page" })).toBeVisible();
-    await page.goto("policies/");
-    await expect(
-      page.locator("main").getByRole("link", { name: "Call for Papers" }),
-    ).toHaveAttribute("href", /call-for-papers\/#policies/);
+  test("both kinds of policy share one section", async ({ page }) => {
+    await page.goto("");
+    const policies = section(page, "policies");
+    await expect(policies).toContainText(/Dual submission/);
+    await expect(policies.getByRole("heading", { name: "Code of conduct" })).toBeVisible();
   });
 
   // The organizers asked for the call to read straight through, without the links bar or the
   // related-venues section.
   test("the call for papers reads straight through", async ({ page }) => {
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await expect(page.locator("#contents, .toc, .to-contents")).toHaveCount(0);
     await expect(page.locator("#related-venues")).toHaveCount(0);
     await expect(page.locator("main")).not.toContainText("QDB");
@@ -295,36 +253,19 @@ test.describe("authors' tasks", () => {
   });
 });
 
-test.describe("arriving on an inner page", () => {
-  for (const path of ["organization/", "submission/", "policies/"]) {
-    test(`${path} says what this is on a phone's first screen`, async ({ page }, testInfo) => {
-      await page.setViewportSize(PHONE);
-      await page.goto(path);
-      const context = page.locator(".page-context");
-      await expect(context).toContainText("DQ4AI 2027");
-      await expect(context).toContainText("EDBT/ICDT 2027");
-      await expect(context).toContainText("Lille, France");
-      await expect(context).toContainText(
-        populated(testInfo.project.name) ? "7 April 2027" : "6 April 2027",
-      );
-      await expect(context).toBeInViewport({ ratio: 1 });
-    });
-  }
-});
-
 test.describe("values not yet known", () => {
   test("program and papers use the same empty cell as other pages", async ({ page }, testInfo) => {
     test.skip(populated(testInfo.project.name), "needs an empty program");
-    await page.goto("program/");
-    await expect(page.locator(".facts .tba")).toHaveText("To be announced");
-    await page.goto("accepted-papers/");
-    await expect(page.locator(".facts .tba")).toHaveText("Listed after notification");
+    await page.goto("");
+    await expect(section(page, "program").locator(".facts .tba")).toHaveText("To be announced");
+    // Accepted papers have no section until there are papers to list.
+    await expect(page.locator("#accepted-papers")).toHaveCount(0);
   });
 
   test("an unnamed keynote says who is missing, in the body type", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an unknown speaker");
-    await page.goto("keynotes/");
-    const chip = page.locator("h2 .tba");
+    await page.goto("");
+    const chip = page.locator(".keynote h3 .tba");
     await expect(chip).toHaveText("Speaker to be announced");
     const type = await chip.evaluate((e) => {
       const style = getComputedStyle(e);
@@ -339,9 +280,9 @@ test.describe("values not yet known", () => {
   // stacked, so one list mixed two shapes. Now every row on a phone has one shape.
   test("on a phone every row puts its label above its value, known or not", async ({ page }) => {
     await page.setViewportSize(PHONE);
-    for (const path of ["", "submission/", "call-for-papers/"]) {
+    for (const path of [""]) {
       await page.goto(path);
-      for (const row of await page.locator(".facts > div").all()) {
+      for (const row of await page.locator(".facts > div:visible").all()) {
         const [label, value] = await Promise.all([
           row.locator("dt").boundingBox(),
           row.locator("dd").boundingBox(),
@@ -403,9 +344,8 @@ test.describe("large text", () => {
     for (const [width, path] of [
       [1280, ""],
       [1040, ""],
-      [1280, "call-for-papers/"],
-      [1024, "call-for-papers/"],
-      [768, "call-for-papers/"],
+      [1024, ""],
+      [768, ""],
     ] as const) {
       await page.setViewportSize({ width, height: 800 });
       await page.goto(path);
@@ -426,7 +366,7 @@ test.describe("large text", () => {
       viewport: { width: 768, height: 800 },
     });
     const page = await context.newPage();
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await page.addStyleTag({
       content: "html { font-size: 200% !important; scroll-behavior: auto !important; }",
     });
@@ -434,16 +374,9 @@ test.describe("large text", () => {
       heading.scrollIntoView();
     });
     const heading = await page.locator("#topics").boundingBox();
-    const bar = await page.locator(".deadline-strip").boundingBox();
+    const bar = await page.locator(".site-header").boundingBox();
     expect(heading?.y ?? 0).toBeGreaterThanOrEqual((bar?.y ?? 0) + (bar?.height ?? 0));
     await context.close();
-  });
-
-  test("the deadline bar does not stick on a short screen", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 844, height: 390 });
-    await page.goto("");
-    await expect(page.locator(".deadline-strip")).toHaveCSS("position", "static");
   });
 
   test("a word too long for its line wraps", async ({ page }) => {
@@ -464,7 +397,7 @@ test.describe("time zones", () => {
   test("a session on another local day says which day", async ({ browser, baseURL }) => {
     const context = await browser.newContext({ baseURL, timezoneId: "Pacific/Honolulu" });
     const page = await context.newPage();
-    await page.goto("program/");
+    await page.goto("");
     const toggle = page.locator(".tz-toggle");
     await toggle.click();
     await expect(page.locator(".session__time").first()).toContainText("21:00 (6 April)");
@@ -478,11 +411,10 @@ test.describe("time zones", () => {
   test("the choice carries to the next page", async ({ browser, baseURL }) => {
     const context = await browser.newContext({ baseURL, timezoneId: "Asia/Tokyo" });
     const page = await context.newPage();
-    await page.goto("dates/");
-    const toggle = page.locator(".tz-toggle");
-    await toggle.click();
-    await expect(toggle).toHaveText("Show in AoE");
-    await page.goto("program/");
+    await page.goto("");
+    await page.locator(".tz-toggle").click();
+    await page.goto("");
+    await page.goto("");
     await expect(page.locator(".tz-toggle")).toHaveText("Show venue time");
     await expect(page.locator("[data-zone-note]")).toContainText("Asia/Tokyo");
     await context.close();
@@ -492,32 +424,18 @@ test.describe("time zones", () => {
 test.describe("rows and tables line up", () => {
   test("the dates table starts its dates where other pages start values", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("attend/");
+    await page.goto("");
     const edge = await page
       .locator("dl.facts dd")
       .first()
       .evaluate((dd) => dd.getBoundingClientRect().left);
-    for (const path of ["dates/", "previous-editions/"]) {
-      await page.goto(path);
-      const left = await page
+    for (const table of [datesTable(page), section(page, "previous-editions")]) {
+      const left = await table
         .locator("thead th")
         .nth(1)
         .evaluate((th) => th.getBoundingClientRect().left);
-      expect(left, path).toBeCloseTo(edge, 0);
+      expect(left).toBeCloseTo(edge, 0);
     }
-  });
-
-  test("the time-zone button does not move the columns", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("dates/");
-    const columns = () =>
-      page
-        .locator("thead th")
-        .evaluateAll((all) => all.map((th) => th.getBoundingClientRect().left));
-    const before = await columns();
-    await page.locator(".tz-toggle").click();
-    expect(await columns()).toEqual(before);
   });
 
   test("an extended date starts on the column, with Now still read aloud", async ({
@@ -525,7 +443,7 @@ test.describe("rows and tables line up", () => {
   }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an extended deadline");
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("dates/");
+    await page.goto("");
     const now = page.locator("tbody tr", { hasText: "Author notification" }).locator(".now-label");
     await expect(now).toHaveText("Now");
     await expect(now).toHaveClass(/visually-hidden/);
@@ -539,34 +457,36 @@ test.describe("rows and tables line up", () => {
 
   test("the editions table fits a 390px phone", async ({ page }) => {
     await page.setViewportSize(PHONE);
-    await page.goto("previous-editions/");
-    const wrap = page.locator(".table-wrap");
+    await page.goto("");
+    const wrap = section(page, "previous-editions").locator(".table-wrap");
     const excess = await wrap.evaluate((e) => e.scrollWidth - e.clientWidth);
     expect(excess).toBeLessThanOrEqual(0);
   });
 
   test("a table cut off on a narrow phone shows it scrolls", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
-    await page.goto("previous-editions/");
+    await page.goto("");
     const attachment = await page
       .locator(".table-wrap")
+      .first()
       .evaluate((e) => getComputedStyle(e).backgroundAttachment);
     expect(attachment).toContain("local");
   });
 
   test("a focus ring inside a table is not clipped", async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 800 });
-    await page.goto("previous-editions/");
+    await page.goto("");
     const padding = await page
       .locator(".table-wrap")
+      .first()
       .evaluate((e) => parseFloat(getComputedStyle(e).paddingInlineStart));
     expect(padding).toBeGreaterThanOrEqual(5);
   });
 
   test("phone toolbars stack evenly", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs dated deadlines");
+    test.skip(!populated(testInfo.project.name), "needs a program");
     await page.setViewportSize(PHONE);
-    await page.goto("dates/");
+    await page.goto("");
     const widths = await page
       .locator(".toolbar > :visible")
       .evaluateAll((all) => all.map((e) => e.getBoundingClientRect().width));
@@ -574,25 +494,18 @@ test.describe("rows and tables line up", () => {
   });
 
   test("a section's list does not add to the space below it", async ({ page }) => {
-    await page.goto("submission/");
+    await page.goto("");
     const margin = await page
-      .locator("main > section > .steps")
+      .locator(".subsection > .steps")
       .evaluate((list) => parseFloat(getComputedStyle(list).marginBlockEnd));
     expect(margin).toBeLessThan(0);
-  });
-
-  test("a lede does not end on one word", async ({ page }) => {
-    await page.goto("program/");
-    expect(await page.locator(".lede").evaluate((e) => getComputedStyle(e).textWrap)).toContain(
-      "pretty",
-    );
   });
 });
 
 test.describe("printing", () => {
   test("a printed program keeps its abstracts", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a talk with an abstract");
-    await page.goto("program/");
+    await page.goto("");
     await page.emulateMedia({ media: "print" });
     await expect(page.locator("details p").first()).toBeVisible();
     await expect(page.locator("details summary").first()).toHaveCSS("list-style-type", "none");
@@ -602,11 +515,11 @@ test.describe("printing", () => {
     page,
   }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a program");
-    await page.goto("program/");
+    await page.goto("");
     await page.emulateMedia({ media: "print" });
     await expect(page.locator(".session__time").first()).toHaveCSS("break-after", "avoid");
-    await expect(page.locator(".page-context")).toBeVisible();
-    await expect(page.locator(".page-context")).toContainText("DQ4AI 2027");
+    await expect(page.locator(".hero h1")).toBeVisible();
+    await expect(page.locator(".hero h1")).toContainText("DQ4AI 2027");
   });
 
   test("links that print as nothing useful are left out", async ({ page }, testInfo) => {
@@ -614,14 +527,14 @@ test.describe("printing", () => {
     await page.emulateMedia({ media: "print" });
     await expect(page.locator(".record__note a")).toBeHidden();
     if (populated(testInfo.project.name)) {
-      await page.goto("program/");
+      await page.goto("");
       await expect(page.locator(".session__meta a[download]").first()).toBeHidden();
     }
   });
 
   test("a link whose text is its address prints it once", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a submission link");
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await page.emulateMedia({ media: "print" });
     const after = await page
       .locator(".facts a.link-is-address")
@@ -647,7 +560,7 @@ test.describe("calendar files", () => {
       expect(event.summary).toMatch(/^DQ4AI 2027: /);
     }
     expect(text).toContain("URL:");
-    expect(text.replaceAll("\r\n ", "")).toContain("/program/");
+    expect(text.replaceAll("\r\n ", "")).toContain("/#program");
   });
 
   test("the deadlines calendar includes the workshop day", async ({ request, baseURL }) => {
@@ -666,16 +579,15 @@ test.describe("fonts and images", () => {
     expect(new Set(displays)).toEqual(new Set(["optional"]));
   });
 
-  test("the Attend photo is not lazy, since it can be the largest thing on screen", async ({
-    page,
-  }) => {
-    await page.goto("attend/");
-    await expect(page.locator(".city-photo img")).toHaveAttribute("loading", "eager");
+  // Since the site became one page, the Attend photo is far down it, so it waits to be scrolled to.
+  test("the Attend photo is lazy, since it is far below the first screen", async ({ page }) => {
+    await page.goto("");
+    await expect(page.locator(".city-photo img")).toHaveAttribute("loading", "lazy");
   });
 
   test("other images stay lazy", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a keynote photo");
-    await page.goto("keynotes/");
+    await page.goto("");
     await expect(page.locator(".keynote img").first()).toHaveAttribute("loading", "lazy");
   });
 });
@@ -683,36 +595,29 @@ test.describe("fonts and images", () => {
 test.describe("reading without seeing the layout", () => {
   test("repeated links name what they lead to", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs profile links");
-    await page.goto("organization/");
+    await page.goto("");
     // A name is itself the link to the person's profile, so the link reads as who it is about.
     await expect(page.getByRole("link", { name: "Jane Doe" }).first()).toHaveAttribute(
       "href",
       "https://dblp.org/pid/00/0000.html",
     );
-    await page.goto("");
-    await expect(page.locator(".record").getByRole("link", { name: "Jane Doe" })).toHaveAttribute(
-      "href",
-      /keynotes\/#/,
-    );
   });
 
   test("the current edition does not link to itself", async ({ page }) => {
-    await page.goto("previous-editions/");
+    await page.goto("");
     const row = page.locator("tbody tr", { hasText: "this edition" });
     await expect(row.getByRole("link")).toHaveCount(0);
-    await expect(page.locator("h1")).toHaveText("Previous editions");
+    await expect(page.locator("#previous-editions")).toHaveText("Previous editions");
   });
 
   test("the next deadline is named, not only colored", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a flagged date");
-    for (const path of ["", "dates/"]) {
-      await page.goto(path);
-      await expect(page.locator("main .next-label")).toHaveText("Next deadline:");
-    }
+    await page.goto("");
+    await expect(page.locator("main .next-label")).toHaveText("Next deadline:");
   });
 
   test("a name and an affiliation do not run together", async ({ page }) => {
-    await page.goto("organization/");
+    await page.goto("");
     const text = await page.locator(".person").first().textContent();
     expect(text?.trim()).toMatch(/\S\s+\S/);
     const raw = await page
@@ -720,15 +625,6 @@ test.describe("reading without seeing the layout", () => {
       .first()
       .evaluate((person) => person.querySelector(".person__name")?.nextSibling?.textContent);
     expect(raw).toMatch(/\s/);
-  });
-
-  test("the statement's two lines read as two sentences", async ({ page }) => {
-    await page.goto("");
-    const pause = await page
-      .locator(".exchange span")
-      .first()
-      .evaluate((span) => getComputedStyle(span, "::after").content);
-    expect(pause).toContain(".");
   });
 });
 
@@ -741,7 +637,7 @@ test.describe("touch and target sizes", () => {
       viewport: { width: 820, height: 1180 },
     });
     const page = await context.newPage();
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await expect(page.locator(".section-anchor").first()).toBeHidden();
     await context.close();
   });
@@ -786,37 +682,23 @@ test.describe("touch and target sizes", () => {
     });
   }
 
-  test("the deadline bar's link is at least 44px tall", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.goto("");
-    const box = await page.locator(".deadline-strip a").boundingBox();
-    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
-  });
-
   test("an abstract's control is at least 24px tall", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs an abstract");
-    await page.goto("program/");
+    await page.goto("");
     const box = await page.locator("summary").first().boundingBox();
     expect(box?.height ?? 0).toBeGreaterThanOrEqual(24);
   });
 });
 
 test.describe("one name for one thing", () => {
-  test("terms match across pages", async ({ page }, testInfo) => {
-    await page.goto("dates/");
-    await expect(page.getByRole("heading", { name: "All dates" })).toBeVisible();
-    await expect(page.locator("thead")).not.toContainText("Milestone");
-    await expect(page.locator("tbody")).toContainText("Workshop date");
-    await page.goto("call-for-papers/");
-    await expect(page.locator("#important-dates ~ dl").first()).toContainText("Workshop date");
-    await expect(page.getByRole("heading", { name: "Submission details" })).toBeVisible();
-    await page.goto("news/");
-    await expect(page.locator("main").getByRole("link", { name: "News feed" })).toBeVisible();
-    await page.goto("accepted-papers/");
-    await expect(page.locator("h1")).toHaveText("Accepted Papers");
+  test("terms match across the page", async ({ page }, testInfo) => {
+    await page.goto("");
+    await expect(page.getByRole("heading", { name: "Important dates", exact: true })).toBeVisible();
+    await expect(datesTable(page).locator("thead")).not.toContainText("Milestone");
+    await expect(datesTable(page).locator("tbody")).toContainText("Workshop date");
+    await expect(page.getByRole("heading", { name: "Submission", exact: true })).toBeVisible();
     if (populated(testInfo.project.name)) {
-      await page.goto("dates/");
-      await expect(page.locator(".toolbar a")).toHaveText("Deadlines calendar (.ics)");
+      await expect(page.locator("#accepted-papers")).toHaveText("Accepted papers");
     }
   });
 });
@@ -824,68 +706,90 @@ test.describe("one name for one thing", () => {
 // The organizers asked for a site that does not overwhelm: a short menu, and a call for papers
 // that leads with what matters and folds away the rest.
 test.describe("less at once", () => {
-  // Home is in the menu at every width: the organizers want the way back always named.
-  test("the menu keeps Home and five pages, and the pages link the rest", async ({
-    page,
-  }, testInfo) => {
+  // The organizers asked for the menu to reflect the page: Home, then one link per section, in
+  // the page's order.
+  test("the menu has a link for every section of the page", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
     const menu = page.locator("#site-nav a");
-    const expected = ["Home", "Call for Papers", "Dates", "Program", "Organization", "Attend"];
-    if (populated(testInfo.project.name)) expected.splice(4, 0, "Accepted Papers");
-    await expect(menu).toHaveText(expected);
-    // The footer no longer has a menu, so the pages it linked are reached from where they matter.
-    await expect(page.locator(".site-footer nav")).toHaveCount(0);
-    await expect(page.locator(".news-line a")).toHaveAttribute("href", /\/news\/#news-/);
-    await expect(page.locator(".record a", { hasText: /Abedjan|Doe/ }).first()).toHaveAttribute(
-      "href",
-      /\/keynotes\/#/,
+    await expect(menu.first()).toHaveText("Home");
+    const targets = await menu.evaluateAll((links) =>
+      links.slice(1).map((link) => new URL((link as HTMLAnchorElement).href).hash.slice(1)),
     );
-    await page.goto("call-for-papers/");
-    await expect(page.locator('main a[href$="/submission/"]')).toHaveCount(1);
-    await expect(page.locator('main a[href$="/policies/"]')).toHaveCount(1);
+    const sections = await page
+      .locator("main > section > h2")
+      .evaluateAll((headings) => headings.map((h) => h.id).filter((id) => id !== "sponsors"));
+    expect(targets).toEqual(sections);
+    await expect(page.locator(".site-footer nav")).toHaveCount(0);
   });
 
-  // Later, the organizers asked for the previous edition's way: everything read in place.
-  test("the call's scope is read in full, with nothing to open", async ({ page }) => {
-    await page.goto("call-for-papers/");
-    const scope = page.locator("section", { has: page.locator("#scope") });
-    await expect(scope.getByText("two-way relationship")).toBeVisible();
-    await expect(scope.getByText("The goal of the workshop")).toBeVisible();
-    await expect(scope.locator("details")).toHaveCount(0);
+  test("the menu takes its own row under the logo on a wide screen", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.goto("");
+    const [brand, nav] = await Promise.all([
+      page.locator(".site-header .brand").boundingBox(),
+      page.locator("#site-nav").boundingBox(),
+    ]);
+    expect(nav?.y ?? 0).toBeGreaterThanOrEqual((brand?.y ?? 0) + (brand?.height ?? 0));
   });
 
-  test("paper categories are read in place, one bullet each", async ({ page }) => {
-    await page.goto("call-for-papers/");
-    const research = page.locator(".paper-types li", { hasText: "Research papers" });
-    await expect(research.locator("strong")).toHaveText("Research papers:");
+  // Redesigned at the organizers' request: a card per category, compared at a glance, with its
+  // page limit at the foot, and still nothing to open.
+  test("paper categories are cards, side by side, each closing on its page limit", async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.goto("");
+    const cards = page.locator(".paper-type");
+    await expect(cards).toHaveCount(3);
+    const research = cards.filter({ hasText: "Research papers" });
+    await expect(research.getByRole("heading", { level: 4 })).toHaveText("Research papers");
     await expect(research.getByText("Original research contributions")).toBeVisible();
     await expect(page.locator(".paper-types details, .paper-types a")).toHaveCount(0);
-    expect(
-      await research.evaluate((li) => getComputedStyle(li.parentElement as Element).listStyleType),
-    ).toBe("disc");
+    const tops = await cards.evaluateAll((all) =>
+      all.map((card) => card.getBoundingClientRect().top),
+    );
+    expect(new Set(tops).size, "one row on a wide screen").toBe(1);
+    if (!populated(testInfo.project.name)) {
+      await expect(research.locator(".paper-type__limit")).toHaveText(
+        /Page limit\s*6 pages, including references/,
+      );
+      const limits = await page
+        .locator(".paper-type__limit")
+        .evaluateAll((all) => all.map((limit) => Math.round(limit.getBoundingClientRect().top)));
+      expect(new Set(limits).size, "the limits line up across the cards").toBe(1);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    const narrow = await cards.evaluateAll((all) =>
+      all.map((card) => card.getBoundingClientRect().top),
+    );
+    expect(new Set(narrow).size, "stacked on a phone").toBe(3);
+  });
+
+  test("Submission opens on where things stand, set apart", async ({ page }) => {
+    await page.goto("");
+    const first = section(page, "submission").locator("> :not(a, h2)").first();
+    await expect(first).toHaveClass(/callout/);
   });
 
   test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {
-    await page.goto("call-for-papers/");
+    await page.goto("");
     const details = page.locator("section", { has: page.locator("#submission") });
     const policies = page.locator("section", { has: page.locator("#policies") });
     if (populated(testInfo.project.name)) {
       await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(1);
-      await expect(details).not.toContainText("to be announced");
+      // The fixture leaves only these two unknown.
+      await expect(details).toContainText("Formatting and anonymization: to be announced.");
       return;
     }
     await expect(details).toContainText(
-      "Submission system, template and review model: to be announced.",
+      "Submission system, template, review model, formatting and anonymization: to be announced.",
     );
     await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(0);
     await expect(policies).toContainText(
       "Dual submission and use of generative AI: to be announced.",
     );
-    await expect(policies.locator(".facts")).toHaveCount(0);
-    await expect(
-      details.getByRole("link", { name: "How to prepare and submit a paper" }),
-    ).toHaveAttribute("href", /submission\/$/);
+    await expect(policies.locator("> .facts")).toHaveCount(0);
   });
 });
 
@@ -895,31 +799,8 @@ test.describe("on a phone", () => {
     await page.setViewportSize(PHONE);
   });
 
-  // The organizers chose a photo card over a navy panel or a strip, and gave the call its own
-  // phone budget in lighthouserc.json for it.
-  test("the call opens on a photo of Lille, with its words on paper below", async ({ page }) => {
-    await page.goto("call-for-papers/");
-    const photo = page.locator(".page-header__photo");
-    await expect(photo).toBeVisible();
-    await expect
-      .poll(() => photo.evaluate((img: HTMLImageElement) => img.naturalWidth))
-      .toBeGreaterThan(0);
-    const box = await photo.boundingBox();
-    expect((box?.width ?? 0) / (box?.height ?? 1)).toBeCloseTo(16 / 9, 1);
-    const heading = await page.locator(".page-header h1").boundingBox();
-    expect(heading?.y ?? 0).toBeGreaterThan((box?.y ?? 0) + (box?.height ?? 0));
-    const title = await page
-      .locator(".page-header--photo h1")
-      .evaluate((e) => getComputedStyle(e).color);
-    expect(title).toBe(await page.evaluate(() => getComputedStyle(document.body).color));
-    await expect(page.locator(".page-header--photo")).toHaveCSS(
-      "background-color",
-      "rgba(0, 0, 0, 0)",
-    );
-  });
-
   test("the host city photo is a photo, not a sliver", async ({ page }) => {
-    await page.goto("attend/");
+    await page.goto("");
     const photo = page.locator(".city-photo img");
     await photo.scrollIntoViewIfNeeded();
     const box = await photo.boundingBox();
@@ -930,13 +811,15 @@ test.describe("on a phone", () => {
   });
 
   test("a list that ends its section does not draw a second rule", async ({ page }) => {
-    for (const path of ["call-for-papers/", "submission/", "attend/"]) {
+    for (const path of [""]) {
       await page.goto(path);
+      // A section ends on its way back to the top, so the list is the one before it.
       const widths = await page.locator("main > section").evaluateAll((sections) =>
         sections
-          .filter((section) => section.lastElementChild?.matches(".facts"))
-          .map((section) => {
-            const row = section.lastElementChild?.lastElementChild;
+          .map((section) => section.lastElementChild?.previousElementSibling)
+          .filter((list) => list?.matches(".facts"))
+          .map((list) => {
+            const row = list?.lastElementChild;
             return row ? getComputedStyle(row).borderBottomWidth : "";
           }),
       );
@@ -953,7 +836,7 @@ test.describe("on a phone", () => {
 
 test("a break in the program is set in the page's type", async ({ page }, testInfo) => {
   test.skip(!populated(testInfo.project.name), "needs a break");
-  await page.goto("program/");
-  const brief = page.locator(".session--brief h2").first();
+  await page.goto("");
+  const brief = page.locator(".session--brief h3").first();
   expect(await brief.evaluate((e) => getComputedStyle(e).fontFamily)).toContain("Source Serif 4");
 });

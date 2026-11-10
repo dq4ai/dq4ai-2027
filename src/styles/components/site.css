@@ -79,7 +79,7 @@
   padding-block: var(--space-1);
 }
 
-/* Logo, name, menu and theme have to share the narrowest phones. */
+/* Logo, name and menu have to share the narrowest phones. */
 @media (width < 25rem) {
   .site-header__inner {
     --header-gap: var(--space-2);
@@ -146,40 +146,10 @@
   }
 }
 
-.nav-toggle,
-.theme-toggle {
-  display: none;
-}
-
 /* Wide enough for both of its labels, so its text changing does not move it. */
 .nav-toggle {
+  display: none;
   min-inline-size: 4rem;
-}
-
-.js .theme-toggle {
-  display: inline-flex;
-}
-
-.theme-toggle__dark {
-  display: none;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .theme-toggle__dark {
-    display: block;
-  }
-
-  :root:not([data-theme="light"]) .theme-toggle__light {
-    display: none;
-  }
-}
-
-:root[data-theme="dark"] .theme-toggle__dark {
-  display: block;
-}
-
-:root[data-theme="dark"] .theme-toggle__light {
-  display: none;
 }
 
 .site-nav {
@@ -238,38 +208,27 @@
   .site-nav a {
     inline-size: fit-content;
   }
-
-  /* The toggle follows the links in the keyboard order, so it follows them on screen too. */
-  .site-header__inner:has(.site-nav[data-open]) .theme-toggle {
-    order: 4;
-  }
-
-  /* The theme button moves below the links; this holds the menu button where the finger left it. */
-  .site-header__inner:has(.site-nav[data-open]) .nav-toggle {
-    margin-inline-end: calc(2.75rem + var(--header-gap, var(--space-4)));
-  }
 }
 
+/* A link for every section of the page, as the organizers asked: too many to share the logo's line,
+   so they take a row of their own under it. */
 @media (width >= 65rem) {
-  .brand {
-    margin-inline-end: 0;
+  .site-header__inner {
+    row-gap: 0;
+    padding-block: var(--space-2) 0;
   }
 
   .site-nav {
-    flex: 1;
-    inline-size: auto;
-    min-inline-size: 0;
-    order: 0;
+    border-block-start: 1px solid var(--color-rule);
   }
 
   .site-nav ul {
     flex-direction: row;
     flex-wrap: wrap;
     gap: 0 1.25rem;
-    justify-content: flex-end;
   }
 
-  /* Tight until the page reaches its full width: the logo needs the room. */
+  /* Tight until the page reaches its full width. */
   @media (width < 72rem) {
     .site-nav ul {
       gap: 0 0.75rem;
@@ -281,66 +240,13 @@
   }
 }
 
-.deadline-strip {
-  z-index: 5;
-  background: var(--color-surface-raised);
-  border-block-end: 1px solid var(--color-rule);
-  font-size: var(--text-sm);
-}
-
-.deadline-strip a {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-3);
-  inline-size: min(100% - 2 * var(--space-4), var(--page-width));
-  align-content: center;
-  min-block-size: 2.75rem;
-  margin-inline: auto;
-  padding-block: var(--space-2);
-  color: var(--color-text);
-  text-decoration: none;
-}
-
-@media (hover: hover) {
-  .deadline-strip a:hover {
-    color: var(--color-accent-hover);
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-  }
-}
-
-.deadline-strip a:active {
-  color: var(--color-accent-hover);
-}
-
-.deadline-strip[hidden] {
-  display: none;
-}
-
-/* Only a script can keep a countdown true between builds. */
-:root:not(.js) .deadline-strip__countdown {
-  display: none;
-}
-
-.deadline-strip strong {
-  font-weight: 600;
-}
-
-.deadline-strip__countdown {
-  padding-inline: var(--space-2);
-  background: var(--color-flag);
-  color: var(--color-on-flag);
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-}
-
 .site-footer {
   border-block-start: 1px solid var(--color-rule-strong);
   color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
 
-/* One line, as the previous edition's footer: the wordmark, then the workshop's name. */
+/* One line, as the previous edition's footer: the wordmark, then the copyright. */
 .site-footer__inner {
   display: flex;
   flex-wrap: wrap;
@@ -362,8 +268,7 @@
 
 /* Opening the menu moves most of the screen. The fade tells new links from displaced content. */
 @media (width < 65rem) and (prefers-reduced-motion: no-preference) {
-  .js .site-nav[data-open],
-  .site-header__inner:has(.site-nav[data-open]) .theme-toggle {
+  .js .site-nav[data-open] {
     animation: reveal var(--dur-fast) var(--ease-out);
   }
 }

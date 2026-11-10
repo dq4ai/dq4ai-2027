@@ -13,7 +13,7 @@ export const GET: APIRoute = async ({ site: astroSite }) => {
       title: item.data.title,
       description: item.data.summary,
       pubDate: new Date(`${item.data.date}T00:00:00Z`),
-      link: absoluteUrl(`/news/#news-${item.id}`, astroSite),
+      link: absoluteUrl("/", astroSite),
     })),
   });
 };

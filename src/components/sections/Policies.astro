@@ -1,0 +1,35 @@
+---
+import { getCfp, getPolicies } from "../../lib/content";
+import { isKnown, pendingSentence } from "../../lib/view";
+import PageSection from "../PageSection.astro";
+import ProseSections from "../ProseSections.astro";
+
+const [cfp, sections] = await Promise.all([getCfp(), getPolicies()]);
+const pending = pendingSentence(
+  [
+    !isKnown(cfp.dualSubmission) && "Dual submission",
+    !isKnown(cfp.generativeAi) && "Use of generative AI",
+  ].filter((label) => typeof label === "string"),
+);
+---
+
+<PageSection id="policies">
+  {pending && <p class="note">{pending}</p>}
+  {(isKnown(cfp.dualSubmission) || isKnown(cfp.generativeAi)) && (
+    <dl class="facts">
+      {isKnown(cfp.dualSubmission) && (
+        <div>
+          <dt>Dual submission</dt>
+          <dd>{cfp.dualSubmission}</dd>
+        </div>
+      )}
+      {isKnown(cfp.generativeAi) && (
+        <div>
+          <dt>Use of generative AI</dt>
+          <dd>{cfp.generativeAi}</dd>
+        </div>
+      )}
+    </dl>
+  )}
+  <ProseSections {sections} pendingId="policies-to-come" />
+</PageSection>

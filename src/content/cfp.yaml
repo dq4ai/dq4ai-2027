@@ -22,10 +22,6 @@ goal: >-
   management, data quality, and AI communities to discuss methods, systems, benchmarks, evaluation
   frameworks, and applications addressing these challenges. It aims to foster cross-disciplinary
   exchange at the intersection of data quality, AI, and trustworthy data management.
-# The two directions of the workshop, set as a statement at the top of the home page.
-exchange:
-  - Data quality for AI
-  - AI for data quality
 topicsIntro: >-
   The workshop welcomes contributions addressing all aspects of data quality for AI, including but
   not limited to:
@@ -76,20 +72,20 @@ paperTypes:
     description: >-
       Original research contributions addressing challenges in data quality for AI, including new
       methods, algorithms, frameworks, models, or theoretical approaches.
-    pageLimit: TBA
+    pageLimit: 6 pages, including references
   - id: system-application
     title: System and application papers
     description: >-
       The implementation or application of data quality research in real-world settings, including
       industrial deployments, domain-specific applications, and practical experiences.
-    pageLimit: TBA
+    pageLimit: 4 pages, including references
   - id: vision
     title: Vision papers
     description: >-
       Perspectives on emerging challenges, open problems, or research opportunities in data quality
       for AI. They may highlight gaps in existing approaches, present challenging use cases, and
       propose directions for future research.
-    pageLimit: TBA
+    pageLimit: 4 pages, including references
 proceedingsNote: >-
   Accepted papers will be published in the CEUR Workshop Proceedings, subject to the applicable
   publication policies.

@@ -58,15 +58,6 @@ test.describe("logo", () => {
     expect((await mark.boundingBox())?.width ?? 0).toBeGreaterThanOrEqual(96);
   });
 
-  test("the page's rule carries the logo's two colors", async ({ page }) => {
-    await page.goto("dates/");
-    const image = await page
-      .locator(".page-header")
-      .evaluate((e) => getComputedStyle(e).borderImageSource);
-    expect(image).toContain("rgb(30, 58, 138)");
-    expect(image).toContain("rgb(15, 127, 114)");
-  });
-
   test("the favicon is the logo, in the logo's colors", () => {
     const favicon = readFileSync("public/favicon.svg", "utf8");
     expect(favicon.toLowerCase()).toContain("#1e3a8a");
@@ -89,12 +80,10 @@ test.describe("logo", () => {
 });
 
 // The organizers asked for the topics without icons, then as the previous edition listed them:
-// each topic a heading over its bullet points, shown in full on the home page and in the call.
+// each topic a heading over its bullet points, shown in full on the one page.
 test.describe("topics", () => {
-  for (const path of ["", "call-for-papers/"]) {
-    test(`${path || "the home page"} lists the eight topics as headings over bullet points`, async ({
-      page,
-    }) => {
+  for (const path of [""]) {
+    test("the page lists the eight topics as headings over bullet points", async ({ page }) => {
       await page.goto(path);
       const section = page.locator("main > section", { has: page.locator("#topics") });
       const topics = section.locator(".topics");
@@ -110,8 +99,8 @@ test.describe("topics", () => {
     });
   }
 
-  test("each topic keeps its address in the call for papers", async ({ page }) => {
-    await page.goto("call-for-papers/#topic-knowledge-graphs");
+  test("each topic has its own address", async ({ page }) => {
+    await page.goto("#topic-knowledge-graphs");
     const heading = page.locator("#topic-knowledge-graphs");
     await expect(heading).toBeInViewport();
     await expect(page.locator("#topic-knowledge-graphs + ul")).toContainText(
@@ -131,11 +120,5 @@ test.describe("topics", () => {
       );
       expect(overflow, `${width}px`).toBe(0);
     }
-  });
-
-  test("the two-way statement is said in type alone", async ({ page }) => {
-    await page.goto("");
-    await expect(page.locator(".exchange span")).toHaveCount(2);
-    await expect(page.locator(".exchange svg")).toHaveCount(0);
   });
 });

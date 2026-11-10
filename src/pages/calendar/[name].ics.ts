@@ -40,7 +40,7 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
   const locationName = hostLocation(site);
   const domain = new URL(absoluteUrl("/", astroSite)).hostname;
   const name = params.name ?? "";
-  const programUrl = absoluteUrl("/program/", astroSite);
+  const programUrl = absoluteUrl("/#program", astroSite);
 
   let events: CalendarEvent[];
   let title: string;
@@ -54,7 +54,7 @@ export const GET: APIRoute = async ({ params, site: astroSite }) => {
                 id: `deadline-${deadline.id}`,
                 summary: `${label}: ${deadline.label} (AoE)`,
                 start: { instant: deadline.due },
-                url: absoluteUrl("/dates/", astroSite),
+                url: absoluteUrl("/#dates", astroSite),
               },
             ]
           : [],

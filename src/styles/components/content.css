@@ -1,91 +1,4 @@
 /* Every page shares one axis: a rail on the left for names and times, the content beside it. */
-/* The rule under a page's title carries the logo's two directions. */
-.page-header {
-  padding-block: var(--space-6) var(--space-5);
-  border-block-end: 2px solid var(--color-brand-a);
-  border-image: linear-gradient(90deg, var(--color-brand-a) 0 50%, var(--color-brand-b) 50% 100%) 1;
-}
-
-/* On a phone the photo is a card of its own above a plain header, as on every other page: a 16:9
-   crop on the belfry and the Vieille Bourse (see PageHeader.astro), with the words on paper. */
-.page-header__photo {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-  aspect-ratio: 16 / 9;
-  margin-block-end: var(--space-5);
-  border-radius: var(--radius-large);
-  object-fit: cover;
-  object-position: 55% 40%;
-}
-
-@media (width < 40rem) {
-  .page-header--photo {
-    padding-block-start: var(--space-4);
-  }
-}
-
-/* From a tablet up, a title over the photo. The scrim is there from the first paint, so the text
-   never waits for the image, and it holds AA over the lightest pixel a photo could have. */
-@media (width >= 40rem) {
-  .page-header--photo {
-    position: relative;
-    isolation: isolate;
-    margin-block-start: var(--space-4);
-    padding: var(--space-6) var(--space-4);
-    overflow: clip;
-    border: 0;
-    border-image: none;
-    border-radius: var(--radius-large);
-    background: var(--color-photo-base);
-  }
-
-  .page-header--photo::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: linear-gradient(90deg, var(--color-scrim) 0%, var(--color-scrim) 100%);
-    content: "";
-  }
-
-  .page-header__photo {
-    position: absolute;
-    z-index: -2;
-    inset: 0;
-    block-size: 100%;
-    aspect-ratio: auto;
-    margin: 0;
-    border-radius: 0;
-    object-position: 75% center;
-    /* The dusk photo, lifted so the square reads clearly. */
-    filter: brightness(1.15) saturate(1.1);
-  }
-
-  .page-header--photo :is(h1, .lede, .page-context) {
-    color: var(--color-on-photo);
-  }
-}
-
-/* From here the text keeps to the left, so the photo can show on the right. */
-@media (width >= 60rem) {
-  .page-header--photo {
-    padding-inline: var(--space-5);
-  }
-
-  .page-header--photo::before {
-    background: linear-gradient(
-      90deg,
-      var(--color-scrim-text) 0%,
-      var(--color-scrim-text) 52%,
-      var(--color-scrim-clear) 85%
-    );
-  }
-
-  .page-header--photo .page-header__text {
-    max-inline-size: 54%;
-  }
-}
-
 /* The logo, in its own colors wherever it is drawn. */
 .mark {
   flex: none;
@@ -111,44 +24,6 @@
   stroke: var(--color-surface);
 }
 
-/* The latest news, said in one line rather than given a section. */
-.news-line {
-  margin-block: 0 var(--space-5);
-  color: var(--color-text-muted);
-}
-
-.news-line time {
-  white-space: nowrap;
-}
-
-.news-line__label {
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.news-line__label::after {
-  content: ":";
-}
-
-/* The quieter of the home page's two ways in. */
-.hero__link {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 2.75rem;
-}
-
-/* What this is, for someone who arrives here rather than at the home page. */
-.page-context {
-  margin-block-end: var(--space-2);
-  max-inline-size: none;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
-.page-header + p {
-  padding-block: var(--space-3);
-}
-
 .lede {
   margin-block-start: var(--space-3);
   font-size: var(--text-lg);
@@ -165,16 +40,12 @@
 }
 
 main > section:not(.session) {
-  padding-block: var(--space-5) var(--space-6);
+  padding-block: var(--space-5) var(--space-3);
   border-block-start: 1px solid var(--color-rule);
 }
 
 main > section:not(.session) > h2 {
   margin-block: 0 var(--space-3);
-}
-
-.page-header + section:not(.session) {
-  border-block-start: 0;
 }
 
 @media (width >= 60rem) {
@@ -335,7 +206,7 @@ main > section:not(.session) > h2 {
   align-items: center;
 }
 
-/* On a phone the header already shows the logo, and the record needs the room. */
+/* On a phone the header already shows the logo, and the banner stays short. */
 .hero__mark {
   display: none;
 }
@@ -413,30 +284,6 @@ main > section:not(.session) > h2 {
   letter-spacing: -0.02em;
 }
 
-.hero__body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5);
-  align-items: start;
-  margin-block-start: var(--space-5);
-}
-
-.hero__body .lede {
-  margin-block-start: 0;
-}
-
-@media (width >= 60rem) {
-  .hero__body {
-    /* The record starts where values start in the rows below it. */
-    grid-template-columns: min(calc(var(--rail) + var(--rail-gap) + var(--label)), 55%) minmax(
-        0,
-        1fr
-      );
-    gap: var(--space-4);
-    margin-block-start: var(--space-5);
-  }
-}
-
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
@@ -488,48 +335,10 @@ main > section:not(.session) > h2 {
   color: var(--color-on-accent);
 }
 
-/* Two directions of one idea, said in type. */
-.exchange {
-  max-inline-size: none;
-  margin-block: 0 var(--space-3);
-  font-family: var(--font-serif);
-  font-size: var(--text-h3);
-  font-weight: 500;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-}
-
-.exchange span {
-  display: block;
-  color: var(--color-brand-a);
-}
-
-.exchange span + span {
-  color: var(--color-brand-b);
-}
-
-/* Set apart by lines on screen. Read aloud, only this keeps them from running together. */
-.exchange span:first-child::after {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  content: ".";
-}
-
-.exchange + p {
-  margin-block-start: 0;
-}
-
 /* Rows of label and value: the site's main form. */
 .facts {
   max-inline-size: none;
   border-block-start: 1px solid var(--color-rule);
-}
-
-.record {
-  border-block-start: 1px solid var(--color-rule-strong);
 }
 
 .facts > div {
@@ -544,26 +353,9 @@ main > section:not(.session) > h2 {
   .facts > div {
     grid-template-columns: min(var(--label), 35%) minmax(0, 1fr);
   }
-
-  .record > div {
-    grid-template-columns: min(11rem, 40%) minmax(0, 1fr);
-  }
 }
 
 @media (width < 40rem) {
-  /* Room for the record on a phone's first screen, now that the statement opens the hero. */
-  .hero__body {
-    margin-block-start: var(--space-4);
-  }
-
-  .hero__body .exchange {
-    margin-block-end: var(--space-2);
-  }
-
-  .hero__actions {
-    margin-block-start: var(--space-3);
-  }
-
   /* One row shape on a phone, on every page: a small label above its value. */
   .facts dt {
     font-size: var(--text-sm);
@@ -589,7 +381,7 @@ main > section:not(.session) > h2 {
 }
 
 /* The next section's rule closes a list that ends its section; a second line would double it. */
-main > section > .facts:last-child > div:last-child {
+main > section > .facts:has(+ .go-top) > div:last-child {
   border-block-end: 0;
 }
 
@@ -684,12 +476,6 @@ main > section > .facts:last-child > div:last-child {
   }
 }
 
-.record__note {
-  margin-block-start: var(--space-2);
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
 /* A section's own link sits in the margin before its heading, shown when pointed at or focused.
    Phones have no margin to spare, and touch screens no pointer to reveal it, so they do without. */
 .section-anchor {
@@ -734,14 +520,12 @@ main > section > .facts:last-child > div:last-child {
   margin-block-start: var(--space-3);
 }
 
-.topics ul,
-.paper-types {
+.topics ul {
   padding-inline-start: 1.25em;
   list-style: disc;
 }
 
-.topics li + li,
-.paper-types li + li {
+.topics li + li {
   margin-block-start: var(--space-1);
 }
 
@@ -763,8 +547,8 @@ main > section > .facts:last-child > div:last-child {
   border-block-end: 1px solid var(--color-rule);
 }
 
-.entry h2,
-.entry h3 {
+.entry h3,
+.entry h4 {
   margin-block: 0 var(--space-1);
 }
 
@@ -776,24 +560,6 @@ main > section > .facts:last-child > div:last-child {
 
 .entry__fact {
   margin-block-start: var(--space-2);
-}
-
-/* News items at page level put their date in the rail. */
-@media (width >= 60rem) {
-  main > .entry {
-    display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    column-gap: var(--rail-gap);
-  }
-
-  main > .entry > * {
-    grid-column: 2;
-  }
-
-  main > .entry > .entry__meta {
-    grid-row: 1 / span 10;
-    grid-column: 1;
-  }
 }
 
 /* Officers as conference sites list them: one person per line, "Name, Affiliation, Country". */
@@ -1014,7 +780,7 @@ details p {
   font-weight: 600;
 }
 
-.session h2 {
+.session h3 {
   margin-block: 0 var(--space-1);
 }
 
@@ -1022,7 +788,7 @@ details p {
   padding-block: var(--space-2);
 }
 
-.session--brief h2 {
+.session--brief h3 {
   line-height: 1.6;
   color: var(--color-text-muted);
   font-family: var(--font-serif);
@@ -1047,7 +813,7 @@ details p {
   padding-block: var(--space-3) 0;
 }
 
-.talk h3 {
+.talk h4 {
   margin-block: 0 var(--space-1);
 }
 
@@ -1067,7 +833,7 @@ details p {
   }
 }
 
-.keynote h2 {
+.keynote h3 {
   margin-block: 0 var(--space-1);
 }
 
@@ -1144,16 +910,18 @@ details p {
 }
 
 /* Inside a section the section's own rule starts the list, so it needs no second one. */
-main > section > .facts {
+main > section > .facts,
+.subsection > .facts {
   border-block-start: 0;
 }
 
-main > section > .steps li:first-child {
+.subsection > .steps li:first-child {
   padding-block-start: 0;
   border-block-start: 0;
 }
 
-main > section > .facts > div:first-child {
+main > section > .facts > div:first-child,
+.subsection > .facts > div:first-child {
   padding-block-start: 0;
 }
 
@@ -1161,7 +929,7 @@ main > section > .entry:first-of-type {
   padding-block-start: 0;
 }
 
-main > section > .entry:last-child {
+.entry:last-of-type {
   padding-block-end: 0;
   border-block-end: 0;
 }
@@ -1171,12 +939,12 @@ main > section > .entry:last-child {
   font-size: var(--text-sm);
 }
 
-main > section > .page-limits > div:first-child {
+.page-limits > div:first-child {
   padding-block-start: var(--space-2);
 }
 
 /* These lists end in their own padding, which would add to the section's. */
-main > section > .steps {
+.subsection > .steps {
   margin-block-end: calc(-1 * var(--space-3));
 }
 
@@ -1184,22 +952,161 @@ main > section > .toolbar:first-of-type {
   margin-block-start: 0;
 }
 
-/* Paper categories: one bullet each, the name in bold before its description. */
+/* Paper categories: a card each, side by side from a tablet up, the page limit at the foot. */
 .paper-types {
-  max-inline-size: var(--measure);
+  display: grid;
+  gap: var(--space-3);
+  max-inline-size: none;
+  margin-block-start: var(--space-3);
+  padding: 0;
+  list-style: none;
 }
 
-/* At the end of every page instead of a menu in the footer, as the previous edition had. */
+@media (width >= 48rem) {
+  .paper-types {
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+
+  .paper-type {
+    padding: var(--space-4);
+  }
+}
+
+.paper-type {
+  display: flex;
+  flex-direction: column;
+  /* A long word in a very large font breaks rather than pushing the card off the screen. */
+  min-inline-size: 0;
+  padding: var(--space-3);
+  overflow-wrap: break-word;
+  hyphens: auto;
+  border: 1px solid var(--color-rule);
+  border-block-start: 3px solid var(--color-brand-a);
+  border-radius: var(--radius-large);
+  background: var(--color-surface-raised);
+}
+
+.paper-type:nth-child(2) {
+  border-block-start-color: var(--color-brand-b);
+}
+
+.paper-type h4 {
+  margin-block: 0 var(--space-2);
+  line-height: 1.3;
+  text-wrap: balance;
+  font-size: var(--text-h3);
+  font-weight: 600;
+}
+
+.paper-type p {
+  margin: 0;
+}
+
+/* Pushed to the foot, so the three limits line up across the cards. */
+.paper-type .paper-type__limit {
+  display: flex;
+  flex-direction: column;
+  margin-block-start: auto;
+  padding-block-start: var(--space-3);
+  font-weight: 600;
+}
+
+.paper-type__label {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  font-weight: 400;
+}
+
+/* Where submission stands, set apart at the top of its section. */
+.callout {
+  padding: var(--space-3) var(--space-4);
+  border-inline-start: 4px solid var(--color-brand-a);
+  border-radius: var(--radius);
+  background: var(--color-surface-raised);
+}
+
+.callout > p {
+  margin: 0;
+}
+
+.callout > .page-action {
+  margin: 0;
+}
+
+/* Under a section's heading, the parts it holds (committees, policies, the checklist), each with
+   a smaller heading of its own. */
+/* Lets a wide table scroll inside its own frame rather than widen the column. */
+.subsection {
+  min-inline-size: 0;
+}
+
+.subsection > h3:first-child {
+  margin-block-start: 0;
+}
+
+:not(h2) + .subsection {
+  margin-block-start: var(--space-5);
+}
+
+/* The rest of a long section, behind "Read more", so the one page stays short to scroll. */
+.read-more {
+  max-inline-size: none;
+  margin-block-start: var(--space-3);
+}
+
+.read-more > summary {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-items: center;
+  min-block-size: 2.75rem;
+  font-size: var(--text-base);
+  font-weight: 600;
+  list-style: none;
+}
+
+.read-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.read-more > summary::after {
+  content: "↓" / "";
+}
+
+.read-more[open] > summary::after {
+  content: "↑" / "";
+}
+
+.read-more[open] .read-more__open,
+.read-more:not([open]) .read-more__close {
+  display: none;
+}
+
+.read-more__body > p {
+  margin-block-start: var(--space-3);
+}
+
+.read-more__body > :first-child {
+  margin-block-start: var(--space-2);
+}
+
+.read-more__body > .subsection:first-child {
+  margin-block-start: var(--space-3);
+}
+
+/* At the end of every section of the one page, as the organizers asked. */
+/* At the far right of the page, as the organizers asked, wherever the text ends. */
 .go-top {
   max-inline-size: none;
-  margin-block: var(--space-5) 0;
+  margin-block: var(--space-3) 0;
   text-align: end;
 }
 
 .go-top a {
   display: inline-flex;
+  gap: var(--space-1);
   align-items: center;
   min-block-size: 2.75rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
 }

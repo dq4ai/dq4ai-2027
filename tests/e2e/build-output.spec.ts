@@ -17,6 +17,9 @@ function filesIn(directory: string): string[] {
 }
 
 const htmlFiles = (directory: string) => filesIn(directory).filter((f) => f.endsWith(".html"));
+const isRedirect = (file: string) => readFileSync(file, "utf8").includes('http-equiv="refresh"');
+/** The site's real pages: the one page and the 404, not the stubs left at the old addresses. */
+const pageFiles = (directory: string) => htmlFiles(directory).filter((f) => !isRedirect(f));
 const attributeValues = (html: string, attribute: string) =>
   [...html.matchAll(new RegExp(`\\s${attribute}="([^"]*)"`, "g"))].map((match) => match[1] ?? "");
 
@@ -50,7 +53,7 @@ test.describe("build output", () => {
 
   test("the only executable inline script is the hashed theme bootstrap", ({}, testInfo) => {
     const hash = scriptHash(THEME_INIT_SCRIPT);
-    for (const file of htmlFiles(directoryFor(testInfo.project.name))) {
+    for (const file of pageFiles(directoryFor(testInfo.project.name))) {
       const html = readFileSync(file, "utf8");
       expect(html, file).toContain(`'${hash}'`);
       expect(html, file).not.toContain("unsafe-inline");
@@ -110,25 +113,33 @@ test.describe("build output", () => {
     }
   });
 
-  test("the sitemap lists only pages that exist", ({}, testInfo) => {
+  test("the sitemap lists the one page", ({}, testInfo) => {
     const dist = directoryFor(testInfo.project.name);
     const xml = readFileSync(join(dist, "sitemap.xml"), "utf8");
     const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1] ?? "").pathname);
-    expect(urls.length).toBeGreaterThanOrEqual(10);
-    for (const pathname of urls) {
-      expect(existsSync(join(dist, pathname.slice(BASE.length), "index.html")), pathname).toBe(
-        true,
-      );
+    expect(urls).toEqual([BASE]);
+  });
+
+  test("each old page address is a stub that sends the browser to its section", ({}, testInfo) => {
+    const dist = directoryFor(testInfo.project.name);
+    const stubs = htmlFiles(dist).filter(isRedirect);
+    expect(stubs.length).toBeGreaterThanOrEqual(10);
+    for (const file of stubs) {
+      const html = readFileSync(file, "utf8");
+      expect(html, file).toMatch(new RegExp(`content="0; url=${BASE}#[a-z-]+"`));
+      expect(html, file).toContain('name="robots" content="noindex"');
+      expect(html, file).toContain('rel="canonical"');
+      expect(html, file).not.toContain("<script");
     }
-    expect(urls.includes(`${BASE}accepted-papers/`)).toBe(
-      testInfo.project.name === "populated-content",
-    );
-    expect(urls.includes(`${BASE}program/`)).toBe(testInfo.project.name === "populated-content");
+    const programStub = readFileSync(join(dist, "accepted-papers", "index.html"), "utf8");
+    const papersAnchor =
+      testInfo.project.name === "populated-content" ? "accepted-papers" : "program";
+    expect(programStub).toContain(`url=${BASE}#${papersAnchor}"`);
   });
 
   test("every page description names the workshop and its host", ({}, testInfo) => {
     const dist = directoryFor(testInfo.project.name);
-    for (const file of htmlFiles(dist).filter((path) => !path.endsWith("404.html"))) {
+    for (const file of pageFiles(dist).filter((path) => !path.endsWith("404.html"))) {
       const description = /name="description" content="([^"]*)"/.exec(
         readFileSync(file, "utf8"),
       )?.[1];
@@ -142,7 +153,7 @@ test.describe("build output", () => {
     expect(readFileSync(join(dist, "rss.xml"), "utf8")).toContain("<rss");
     expect(readFileSync(join(dist, "robots.txt"), "utf8")).toContain("Sitemap: https://");
     expect(readFileSync(join(dist, "humans.txt"), "utf8")).toContain("Workshop Chairs");
-    for (const file of htmlFiles(dist)) {
+    for (const file of pageFiles(dist)) {
       const html = readFileSync(file, "utf8");
       const image = /property="og:image" content="([^"]+)"/.exec(html)?.[1];
       expect(image, file).toBeTruthy();

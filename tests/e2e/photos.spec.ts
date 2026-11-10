@@ -1,19 +1,8 @@
-/** The header stays within reach, and photos of Lille never cost the text its contrast. */
+/** The header stays within reach, and the photo of Lille is credited and fills its column. */
 import { expect, test } from "@playwright/test";
 import { PAGES } from "./pages";
 
 const populated = (name: string) => name === "populated-content";
-
-/** WCAG contrast of white text over the lightest possible pixel behind a scrim of this color. */
-const contrastOverWhite = ([r, g, b, a]: number[]) => {
-  const over = [r, g, b].map((channel) => (channel ?? 0) * (a ?? 0) + 255 * (1 - (a ?? 0)));
-  const [lr, lg, lb] = over.map((value) => {
-    const c = value / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  });
-  const luminance = 0.2126 * (lr ?? 0) + 0.7152 * (lg ?? 0) + 0.0722 * (lb ?? 0);
-  return 1.05 / (luminance + 0.05);
-};
 
 test.describe("the header stays within reach", () => {
   for (const [width, height] of [
@@ -24,7 +13,7 @@ test.describe("the header stays within reach", () => {
   ] as const) {
     test(`at ${width}x${height} it stays at the top while scrolling`, async ({ page }) => {
       await page.setViewportSize({ width, height });
-      await page.goto("call-for-papers/");
+      await page.goto("");
       await page.evaluate(() => {
         scrollTo(0, 1500);
       });
@@ -39,12 +28,13 @@ test.describe("the header stays within reach", () => {
 
   test("a link in the header still goes anywhere after scrolling", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await page.evaluate(() => {
       scrollTo(0, 2000);
     });
-    await page.locator("#site-nav").getByRole("link", { name: "Dates" }).click();
-    await expect(page).toHaveURL(/dates\/$/);
+    await page.locator("#site-nav").getByRole("link", { name: "Organization" }).click();
+    await expect(page).toHaveURL(/\/#organization$/);
+    await expect(page.locator("#organization")).toBeInViewport();
   });
 
   test("a section link does not land under it", async ({ page }) => {
@@ -53,7 +43,7 @@ test.describe("the header stays within reach", () => {
       [390, 844],
     ] as const) {
       await page.setViewportSize({ width, height });
-      await page.goto("call-for-papers/#policies");
+      await page.goto("#policies");
       await expect
         .poll(async () => {
           const header = await page.locator(".site-header").boundingBox();
@@ -66,7 +56,7 @@ test.describe("the header stays within reach", () => {
 
   test("keyboard focus never hides under it", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 720 });
-    await page.goto("call-for-papers/");
+    await page.goto("");
     await page.evaluate(() => {
       scrollTo(0, document.body.scrollHeight);
     });
@@ -105,15 +95,6 @@ test.describe("the header stays within reach", () => {
     await large.close();
   });
 
-  test("the deadline bar scrolls away rather than stacking under it", async ({
-    page,
-  }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a dated deadline");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("");
-    await expect(page.locator(".deadline-strip")).toHaveCSS("position", "static");
-  });
-
   test("it is not printed", async ({ page }) => {
     await page.goto("");
     await page.emulateMedia({ media: "print" });
@@ -134,7 +115,7 @@ test.describe("the header stays within reach", () => {
 
 test.describe("the host city", () => {
   test("the photo leads to a description of Lille", async ({ page }, testInfo) => {
-    await page.goto("attend/");
+    await page.goto("");
     const expected = populated(testInfo.project.name)
       ? "https://example.org/city"
       : "https://fr.wikipedia.org/wiki/Lille";
@@ -148,7 +129,7 @@ test.describe("the host city", () => {
     page,
   }, testInfo) => {
     test.skip(populated(testInfo.project.name), "the fixture has its own images");
-    await page.goto("attend/");
+    await page.goto("");
     const caption = page.locator(".city-photo figcaption");
     await expect(caption).toContainText("Velvet");
     await expect(caption.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
@@ -164,115 +145,9 @@ test.describe("the host city", () => {
   test("the panorama fills its column", async ({ page }, testInfo) => {
     test.skip(populated(testInfo.project.name), "the fixture has its own images");
     await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("attend/");
+    await page.goto("");
     const image = page.locator(".city-photo img");
     await image.scrollIntoViewIfNeeded();
     expect((await image.boundingBox())?.width ?? 0).toBeGreaterThan(700);
-  });
-});
-
-test.describe("the call for papers banner", () => {
-  test("the panorama sits behind the title and leaves it readable", async ({ page }, testInfo) => {
-    test.skip(populated(testInfo.project.name), "the fixture has its own images");
-    await page.setViewportSize({ width: 1440, height: 900 });
-    await page.goto("call-for-papers/");
-    const header = page.locator(".page-header--photo");
-    const image = header.locator("img");
-    await expect(image).toBeVisible();
-    await expect
-      .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
-      .toBeGreaterThan(0);
-    const [imageBox, titleBox] = await Promise.all([
-      image.boundingBox(),
-      header.locator("h1").boundingBox(),
-    ]);
-    expect(imageBox?.y ?? Infinity).toBeLessThanOrEqual(titleBox?.y ?? 0);
-    expect(await header.locator("h1").evaluate((e) => getComputedStyle(e).color)).toBe(
-      "rgb(255, 255, 255)",
-    );
-  });
-
-  for (const [width, height] of [
-    [1440, 900],
-    [820, 1180],
-    [390, 844],
-  ] as const) {
-    test(`white text holds AA over any photo at ${width}px`, async ({ page }) => {
-      await page.setViewportSize({ width, height });
-      await page.goto("call-for-papers/");
-      if (width < 640) {
-        // On a phone the photo is a card above the words, which sit on the page's own paper.
-        const photo = await page.locator(".page-header__photo").boundingBox();
-        const text = await page.locator(".page-header .page-context").boundingBox();
-        expect(text?.y ?? 0).toBeGreaterThanOrEqual((photo?.y ?? 0) + (photo?.height ?? 0));
-        return;
-      }
-      const samples = await page.locator(".page-header--photo").evaluate((header) => {
-        const box = header.getBoundingClientRect();
-        const text = [...header.querySelectorAll(".page-context, h1, .lede")].map((e) => {
-          const range = document.createRange();
-          range.selectNodeContents(e);
-          return range.getBoundingClientRect();
-        });
-        const right = Math.max(...text.map((rect) => rect.right));
-        return {
-          share: (right - box.left) / box.width,
-          stops: getComputedStyle(header, "::before").backgroundImage,
-        };
-      });
-      const stops = [...samples.stops.matchAll(/rgba?\(([^)]+)\)\s*([\d.]+)%?/g)].map((match) => ({
-        color: (match[1] ?? "").split(",").map(Number),
-        at: Number(match[2]) / 100,
-      }));
-      const covering = stops.filter((stop) => stop.at <= samples.share || stop === stops.at(-1));
-      const first = stops.find((stop) => stop.at >= samples.share) ?? stops.at(-1);
-      for (const stop of [...covering.slice(0, -1), first]) {
-        if (stop) expect(contrastOverWhite(stop.color)).toBeGreaterThanOrEqual(4.5);
-      }
-    });
-  }
-
-  test("the panorama shows no credit line on the site", async ({ page }) => {
-    for (const path of ["call-for-papers/", "attend/"]) {
-      await page.goto(path);
-      await expect(page.locator(".photo-credit")).toHaveCount(0);
-      await expect(page.locator("main")).not.toContainText("banner");
-    }
-  });
-
-  test("it prints as plain text, without the photo", async ({ page }) => {
-    await page.goto("call-for-papers/");
-    await page.emulateMedia({ media: "print" });
-    await expect(page.locator(".page-header--photo img")).toBeHidden();
-    expect(
-      await page.locator(".page-header--photo h1").evaluate((e) => getComputedStyle(e).color),
-    ).toBe("rgb(0, 0, 0)");
-  });
-
-  // Replaced after the phone review: the organizers wanted Lille on a phone too, not a navy panel.
-  // The phone still downloads one small crop, never the panorama itself.
-  test("a phone downloads only a small crop of the photo", async ({ page }) => {
-    const images: { url: string; bytes: number }[] = [];
-    page.on("response", async (response) => {
-      if (response.request().resourceType() === "image") {
-        images.push({ url: response.url(), bytes: (await response.body()).length });
-      }
-    });
-    await page.setViewportSize({ width: 412, height: 823 });
-    await page.goto("call-for-papers/", { waitUntil: "networkidle" });
-    // Every framing of the photo shares its file's name, up to the build's hash.
-    const shown = await page
-      .locator(".page-header__photo")
-      .evaluate((img: HTMLImageElement) => img.currentSrc.split("/").pop()?.split(".")[0] ?? "");
-    const panorama = images.filter((image) => image.url.includes(`/${shown}.`));
-    expect(panorama).toHaveLength(1);
-    expect(panorama[0]?.bytes ?? Infinity).toBeLessThan(40_000);
-    await expect(page.locator(".page-header__photo")).toBeVisible();
-    await expect(page.locator(".page-header--photo h1")).toBeVisible();
-  });
-
-  test("other pages keep the plain header", async ({ page }) => {
-    await page.goto("dates/");
-    await expect(page.locator(".page-header--photo")).toHaveCount(0);
   });
 });

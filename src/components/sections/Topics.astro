@@ -1,0 +1,12 @@
+---
+import { getCfp } from "../../lib/content";
+import PageSection from "../PageSection.astro";
+import TopicList from "../TopicList.astro";
+
+const cfp = await getCfp();
+---
+
+<PageSection id="topics">
+  <p>{cfp.topicsIntro}</p>
+  <TopicList topics={cfp.topics} />
+</PageSection>

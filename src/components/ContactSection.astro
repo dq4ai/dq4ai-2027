@@ -1,21 +1,16 @@
 ---
 import { getSite } from "../lib/content";
 import { TBA } from "../lib/dates";
-import Heading from "./Heading.astro";
+import PageSection from "./PageSection.astro";
 import Value from "./Value.astro";
 
-interface Props {
-  label: string;
-}
-const { label } = Astro.props;
 const site = await getSite();
 ---
 
-<section class="contact">
-  <Heading id="contact">Contact</Heading>
+<PageSection id="contact" class="contact">
   <dl class="facts">
     <div>
-      <dt>{label}</dt>
+      <dt>Questions or corrections</dt>
       <dd>
         {site.contactEmail === TBA ? (
           <Value of={TBA} />
@@ -25,4 +20,4 @@ const site = await getSite();
       </dd>
     </div>
   </dl>
-</section>
+</PageSection>

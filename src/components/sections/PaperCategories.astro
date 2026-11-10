@@ -1,0 +1,40 @@
+---
+import { getCfp } from "../../lib/content";
+import { TBA } from "../../lib/dates";
+import { pageLimitsUnknown } from "../../lib/view";
+import Value from "../Value.astro";
+
+const cfp = await getCfp();
+const limitsUnknown = pageLimitsUnknown(cfp);
+// Part of the Submission section, as the organizers asked.
+---
+
+<div class="subsection paper-categories">
+  <h3 id="paper-categories">Paper categories</h3>
+  {/* One card each, side by side on a wide screen, so the three can be compared at a glance; the
+      page limit closes each card, set apart from the description. Read in place: nothing to open. */}
+  <ul class="paper-types">
+    {cfp.paperTypes.map((type) => (
+      <li class="paper-type" id={`paper-${type.id}`}>
+        <h4>{type.title}</h4>
+        <p>{type.description}</p>
+        {!limitsUnknown && (
+          <p class="paper-type__limit">
+            <span class="paper-type__label">Page limit</span>
+            <Value of={type.pageLimit} />
+          </p>
+        )}
+      </li>
+    ))}
+  </ul>
+  {limitsUnknown && (
+    <dl class="facts page-limits">
+      <div>
+        <dt>Page limits</dt>
+        <dd>
+          <Value of={TBA} />
+        </dd>
+      </div>
+    </dl>
+  )}
+</div>

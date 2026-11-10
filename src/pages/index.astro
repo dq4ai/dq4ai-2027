@@ -1,29 +1,31 @@
 ---
+import ContactSection from "../components/ContactSection.astro";
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import HeroWaves from "../components/HeroWaves.astro";
-import Heading from "../components/Heading.astro";
 import Mark from "../components/Mark.astro";
-import TopicList from "../components/TopicList.astro";
-import WorkshopRecord from "../components/WorkshopRecord.astro";
+import PageSection from "../components/PageSection.astro";
+import About from "../components/sections/About.astro";
+import AcceptedPapers from "../components/sections/AcceptedPapers.astro";
+import Attend from "../components/sections/Attend.astro";
+import Keynotes from "../components/sections/Keynotes.astro";
+import Organization from "../components/sections/Organization.astro";
+import Policies from "../components/sections/Policies.astro";
+import PreviousEditions from "../components/sections/PreviousEditions.astro";
+import Program from "../components/sections/Program.astro";
+import Submission from "../components/sections/Submission.astro";
+import Topics from "../components/sections/Topics.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getCfp, getCommittees, getDeadlines, getNews, getSite, getSponsors } from "../lib/content";
-import { formatHeadlineDay, formatIsoDay, TBA } from "../lib/dates";
-import { absoluteUrl, url } from "../lib/paths";
+import { getCommittees, getSite, getSponsors } from "../lib/content";
+import { formatHeadlineDay, TBA } from "../lib/dates";
+import { absoluteUrl } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation, submissionCloses, submissionOpen, titleLead } from "../lib/view";
+import { hostLocation, titleLead } from "../lib/view";
 
-const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
-  getSite(),
-  getCfp(),
-  getCommittees(),
-  getDeadlines(),
-  getNews(),
-  getSponsors(),
-]);
-const [dataForAi, aiForData] = cfp.exchange;
-// As the previous edition did: the whole scope and every topic are read here, without a click.
-const latest = news.at(0);
+const [site, committees, sponsors] = await Promise.all([getSite(), getCommittees(), getSponsors()]);
+// The whole site is this one page, as the organizers asked: the banner, then each section in the
+// order of lib/nav.ts, each ending in a link back to the top. Nothing sits between the banner and
+// About, as they asked before.
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
@@ -55,61 +57,23 @@ const jsonLd = serializeJsonLd(
         )}
       </div>
     </div>
-    <div class="hero__body">
-      <div>
-        <p class="exchange">
-          <span>{dataForAi}</span> <span>{aiForData}</span>
-        </p>
-        {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
-        <div class="hero__actions">
-          {submissionOpen(site, deadlines) ? (
-            <>
-              <ExternalLink
-                class="button button--primary"
-                href={site.submissionUrl}
-                data-closes={submissionCloses(deadlines)}
-              >
-                Submit a paper
-              </ExternalLink>
-              <a class="hero__link" href={url("/call-for-papers/")}>
-                Read the call for papers
-              </a>
-            </>
-          ) : (
-            <a class="button button--primary" href={url("/call-for-papers/")}>
-              Read the call for papers
-            </a>
-          )}
-        </div>
-      </div>
-      <WorkshopRecord />
-    </div>
   </div>
+  {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
 
-  <section class="about">
-    <Heading id="about">About the {site.acronym} Workshop</Heading>
-    {[...cfp.scope, cfp.goal].map((paragraph) => (
-      <p>{paragraph}</p>
-    ))}
-  </section>
-
-  <section>
-    <Heading id="topics">Topics of interest</Heading>
-    <p>{cfp.topicsIntro}</p>
-    <TopicList topics={cfp.topics} />
-  </section>
-
-  {latest && (
-    <p class="news-line">
-      <span class="news-line__label">Latest news</span>{" "}
-      <a href={url(`/news/#news-${latest.id}`)}>{latest.data.title}</a>,{" "}
-      <time datetime={latest.data.date}>{formatIsoDay(latest.data.date)}</time>
-    </p>
-  )}
+  <About />
+  <Topics />
+  <Submission />
+  <Policies />
+  <Program />
+  <Keynotes />
+  <AcceptedPapers />
+  <Organization />
+  <Attend />
+  <ContactSection />
+  <PreviousEditions />
 
   {sponsors.length > 0 && (
-    <section>
-      <Heading id="sponsors">Supported by</Heading>
+    <PageSection id="sponsors">
       <ul class="sponsors">
         {sponsors.map((sponsor) => (
           <li>
@@ -124,6 +88,6 @@ const jsonLd = serializeJsonLd(
           </li>
         ))}
       </ul>
-    </section>
+    </PageSection>
   )}
 </BaseLayout>

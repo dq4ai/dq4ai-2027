@@ -3,22 +3,22 @@ steps:
     detail: Confirm that your work fits the workshop topics and choose a paper category.
     link:
       label: Read the topics
-      path: /call-for-papers/#topics
+      path: /#topics
   - title: Prepare your paper
     detail: Follow the template and the page limit for your category.
     link:
       label: See the submission details
-      path: /submission/#details
+      path: /#submission
   - title: Review the policies
     detail: Read the review model, dual submission, and generative AI policies in the call for papers.
     link:
       label: Read the policies
-      path: /call-for-papers/#policies
+      path: /#policies
   - title: Submit before the deadline
     detail: Upload your paper through the submission system. All deadlines are Anywhere on Earth.
     link:
       label: See the dates
-      path: /dates/
+      path: /#dates
   - title: Plan to present
     detail: Accepted papers will be presented during the workshop.
 formatting: TBA

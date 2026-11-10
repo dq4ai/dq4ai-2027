@@ -1,0 +1,25 @@
+---
+import { getCommittees } from "../../lib/content";
+import PageSection from "../PageSection.astro";
+import PersonEntry from "../PersonEntry.astro";
+
+const committees = await getCommittees();
+---
+
+<PageSection id="organization">
+  {committees
+    .filter((committee) => committee.people.length > 0)
+    .map((committee) => (
+      <div class="subsection">
+        <h3 id={committee.id}>{committee.title}</h3>
+        {committee.note && <p class="note">{committee.note}</p>}
+        <ul class="people">
+          {committee.people.map((person) => (
+            <li class="person">
+              <PersonEntry {person} />
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+</PageSection>

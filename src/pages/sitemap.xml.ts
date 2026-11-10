@@ -1,13 +1,9 @@
 import type { APIRoute } from "astro";
-import { getPapers, getProgram } from "../lib/content";
-import { sitemapRoutes } from "../lib/nav";
+import { HOME } from "../lib/nav";
 import { absoluteUrl } from "../lib/paths";
 
-export const GET: APIRoute = async ({ site }) => {
-  const [papers, program] = await Promise.all([getPapers(), getProgram()]);
-  const entries = sitemapRoutes(papers.length > 0, program.length > 0)
-    .map((route) => `  <url><loc>${absoluteUrl(route.path, site)}</loc></url>`)
-    .join("\n");
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries}\n</urlset>\n`;
+// The site is one page; the old page addresses only redirect, so they are left out.
+export const GET: APIRoute = ({ site }) => {
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url><loc>${absoluteUrl(HOME.path, site)}</loc></url>\n</urlset>\n`;
   return new Response(xml, { headers: { "Content-Type": "application/xml" } });
 };

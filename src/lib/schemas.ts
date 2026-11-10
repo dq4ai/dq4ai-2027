@@ -66,7 +66,6 @@ export const siteSchema = z.strictObject({
   statusNote: text.optional(),
   reviewModel: text,
   hostPhoto: creditedPhotoSchema.optional(),
-  cfpPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
     githubOwner: text,
     repoName: text,
@@ -174,7 +173,6 @@ export const proseSectionSchema = z.strictObject({
 export const cfpSchema = z.strictObject({
   scope: z.array(text).min(1),
   goal: text,
-  exchange: z.tuple([text, text]),
   topicsIntro: text,
   topics: z
     .array(

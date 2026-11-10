@@ -1,0 +1,20 @@
+---
+import { getCfp, getSite } from "../../lib/content";
+import PageSection from "../PageSection.astro";
+import ReadMore from "../ReadMore.astro";
+
+const [site, cfp] = await Promise.all([getSite(), getCfp()]);
+// The opening paragraph, then the rest of the scope and the goal behind "Read more".
+const [first, ...rest] = [...cfp.scope, cfp.goal];
+---
+
+<PageSection id="about" title={`About the ${site.acronym} Workshop`} class="about">
+  <p>{first}</p>
+  {rest.length > 0 && (
+    <ReadMore>
+      {rest.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </ReadMore>
+  )}
+</PageSection>

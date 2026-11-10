@@ -1,0 +1,50 @@
+---
+import { getEditions } from "../../lib/content";
+import { TBA } from "../../lib/dates";
+import ExternalLink from "../ExternalLink.astro";
+import PageSection from "../PageSection.astro";
+import Value from "../Value.astro";
+
+const editions = await getEditions();
+---
+
+<PageSection id="previous-editions">
+  <section class="table-wrap" tabindex="0" aria-label="Editions of the workshop">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Edition</th>
+          <th scope="col">Year</th>
+          <th scope="col">Co-located with</th>
+          <th scope="col">Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        {editions.map((edition) => (
+          <tr>
+            <th scope="row">
+              {edition.url === TBA || edition.current ? (
+                edition.edition
+              ) : (
+                <ExternalLink href={edition.url}>
+                  {edition.edition}
+                  <span class="visually-hidden"> edition</span>
+                </ExternalLink>
+              )}
+              {edition.current && <span class="note"> (this edition)</span>}
+            </th>
+            <td class="tabular">
+              <Value of={edition.year} unknown="Not recorded" />
+            </td>
+            <td>
+              <Value of={edition.host} unknown="Not recorded" />
+            </td>
+            <td>
+              <Value of={edition.city} unknown="Not recorded" />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </section>
+</PageSection>

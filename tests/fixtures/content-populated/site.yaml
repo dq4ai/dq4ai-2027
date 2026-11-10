@@ -37,15 +37,6 @@ hostPhoto:
   licenseUrl: https://example.org/license
   source: Example Archive
   sourceUrl: https://example.org/photo
-cfpPhoto:
-  file: example-portrait.png
-  alt: Grey placeholder used in test builds
-  subject: An example banner of the host city
-  author: Example Photographer
-  license: Example License
-  licenseUrl: https://example.org/license
-  source: Example Archive
-  sourceUrl: https://example.org/photo
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

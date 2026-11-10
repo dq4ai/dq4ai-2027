@@ -4,7 +4,6 @@ import type { APIContext } from "astro";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { parse } from "yaml";
 import { siteSchema } from "../../src/lib/schemas";
-import { workshopTitle } from "../../src/lib/view";
 import { GET } from "../../src/pages/og/[slug].png";
 
 const site = siteSchema.parse(parse(readFileSync("src/content/site.yaml", "utf8")));
@@ -30,11 +29,5 @@ describe("social image text", () => {
     expect(input.pageTitle).toBe(site.title);
     expect(input.workshopName).toBe(`${site.edition} International Workshop`);
     expect(input.workshopName).not.toContain(site.title);
-  });
-
-  it("keeps the full workshop name under other pages' titles", async () => {
-    const [input] = await drawnFor("program", "Program");
-    expect(input.pageTitle).toBe("Program");
-    expect(input.workshopName).toBe(workshopTitle(site));
   });
 });

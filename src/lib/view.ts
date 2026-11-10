@@ -120,10 +120,15 @@ export function hostLocation(site: Site): string {
   return `${site.host.city}, ${site.host.country}`;
 }
 
-/** States the host conference's dates apart from the workshop's, which may fall on one day of them. */
+/**
+ * When the workshop is. Once its day is known that day is the only date given: the organizers asked
+ * to leave out the host conference's. Until then, the host's dates, kept apart from the workshop's.
+ */
 export function hostDatesSentence(site: Site): string {
-  const workshop = site.workshopDate === TBA ? "to be announced" : formatIsoDay(site.workshopDate);
-  return `${site.host.name} runs ${formatDayRange(site.host.startDate, site.host.endDate)} in ${hostLocation(site)}. Workshop date: ${workshop}.`;
+  if (site.workshopDate !== TBA) {
+    return `Workshop date: ${formatIsoDay(site.workshopDate)}, in ${hostLocation(site)}.`;
+  }
+  return `${site.host.name} runs ${formatDayRange(site.host.startDate, site.host.endDate)} in ${hostLocation(site)}. Workshop date: to be announced.`;
 }
 
 /** What this is, for someone who arrives on an inner page. Host dates are never the workshop's. */
@@ -137,11 +142,6 @@ export function pageContext(site: Site): string {
 /** A self-contained description of the workshop, for the home page's search result. */
 export function siteSummary(site: Site): string {
   return `${site.acronym} ${site.year}, the ${workshopTitle(site)}, co-located with ${site.host.name} in ${hostLocation(site)}.`;
-}
-
-/** Adds what a search result needs to identify the workshop to a page's own description. */
-export function pageDescription(site: Site, description: string): string {
-  return `${description} ${site.acronym} ${site.year}, workshop on ${site.title} at ${site.host.name}, ${hostLocation(site)}.`;
 }
 
 export function isKnown(value: string | number | undefined): boolean {

@@ -1,0 +1,153 @@
+---
+import { getCfp, getDeadlines, getSite, getSubmission } from "../../lib/content";
+import { TBA } from "../../lib/dates";
+import { url } from "../../lib/paths";
+import { isKnown, pendingSentence, submissionCloses, submissionOpen } from "../../lib/view";
+import ExternalLink from "../ExternalLink.astro";
+import Dates from "./Dates.astro";
+import PaperCategories from "./PaperCategories.astro";
+import PageSection from "../PageSection.astro";
+import PaperTemplate from "../PaperTemplate.astro";
+import ReadMore from "../ReadMore.astro";
+import Value from "../Value.astro";
+
+const [site, submission, cfp, deadlines] = await Promise.all([
+  getSite(),
+  getSubmission(),
+  getCfp(),
+  getDeadlines(),
+]);
+// Facts not yet known share one sentence instead of each taking a row of "To be announced".
+const templateKnown =
+  isKnown(site.paperTemplate) ||
+  (site.paperTemplateUrl !== undefined && isKnown(site.paperTemplateUrl));
+const systemKnown = isKnown(site.submissionSystem) || isKnown(site.submissionUrl);
+const pending = pendingSentence(
+  [
+    !systemKnown && "Submission system",
+    !templateKnown && "Template",
+    !isKnown(site.reviewModel) && "Review model",
+    !isKnown(submission.formatting) && "Formatting",
+    !isKnown(submission.anonymization) && "Anonymization",
+  ].filter((label) => typeof label === "string"),
+);
+---
+
+<PageSection id="submission">
+  {/* Where things stand, first and set apart: the one thing an author looks for. */}
+  <div class="callout">
+    {site.submissionUrl === TBA ? (
+      <p>
+        {/* The dates are just below, so only the host's page is linked. */}
+        <strong>The submission link will be announced here.</strong>
+        {site.host.workshopsUrl && (
+          <>
+            {" "}
+            See the{" "}
+            <ExternalLink href={site.host.workshopsUrl}>
+              {site.host.name} workshops page
+            </ExternalLink>
+            .
+          </>
+        )}
+      </p>
+    ) : submissionOpen(site, deadlines) ? (
+      <p class="page-action">
+        <ExternalLink
+          class="button button--primary"
+          href={site.submissionUrl}
+          data-closes={submissionCloses(deadlines)}
+        >
+          Submit a paper
+        </ExternalLink>
+      </p>
+    ) : (
+      <p>
+        <strong>Submission has closed.</strong>
+      </p>
+    )}
+  </div>
+  <Dates />
+  <PaperCategories />
+  <div class="subsection">
+    <h3 id="submission-details">Submission details</h3>
+    <dl class="facts">
+      {systemKnown && (
+        <div>
+          <dt>Submission system</dt>
+          <dd>
+            {site.submissionUrl === TBA ? (
+              <Value of={site.submissionSystem} />
+            ) : (
+              <ExternalLink
+                href={site.submissionUrl}
+                class={site.submissionSystem === TBA ? "link-is-address" : undefined}
+              >
+                {site.submissionSystem === TBA ? site.submissionUrl : site.submissionSystem}
+              </ExternalLink>
+            )}
+          </dd>
+        </div>
+      )}
+      {templateKnown && (
+        <div>
+          <dt>Template</dt>
+          <dd>
+            <PaperTemplate />
+          </dd>
+        </div>
+      )}
+      {isKnown(site.reviewModel) && (
+        <div>
+          <dt>Review model</dt>
+          <dd>{site.reviewModel}</dd>
+        </div>
+      )}
+      {isKnown(submission.formatting) && (
+        <div>
+          <dt>Formatting</dt>
+          <dd>{submission.formatting}</dd>
+        </div>
+      )}
+      {isKnown(submission.anonymization) && (
+        <div>
+          <dt>Anonymization</dt>
+          <dd>{submission.anonymization}</dd>
+        </div>
+      )}
+      <div>
+        <dt>Proceedings</dt>
+        <dd>{cfp.proceedingsNote}</dd>
+      </div>
+      <div>
+        <dt>Presentation</dt>
+        <dd>{cfp.presentation}</dd>
+      </div>
+    </dl>
+    {pending && <p class="note">{pending}</p>}
+  </div>
+  <ReadMore label="Checklist and frequently asked questions">
+    <div class="subsection">
+      <h3 id="checklist">Checklist</h3>
+      <ol class="steps">
+        {submission.steps.map((step) => (
+          <li>
+            <strong>{step.title}</strong> {step.detail}{" "}
+            {step.link && <a href={url(step.link.path)}>{step.link.label}</a>}
+          </li>
+        ))}
+      </ol>
+    </div>
+    {submission.faq.length > 0 && (
+      <div class="subsection">
+        <h3 id="faq">Frequently asked questions</h3>
+        {submission.faq.map((item) => (
+          <div class="entry">
+            <h4>{item.question}</h4>
+            <p>{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </ReadMore>
+</PageSection>
