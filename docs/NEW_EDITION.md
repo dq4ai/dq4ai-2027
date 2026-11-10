@@ -17,3 +17,6 @@
 6. **Review the wording** of `cfp.yaml`, `attend.yaml` and `policies.yaml`.
 7. **Commit to `main`.** Actions builds and deploys. Check the placeholder list in the build log.
    The previous edition stays live at its own address.
+8. **Move the root address.** In the `dq4ai/dq4ai.github.io` repository, replace `dq4ai-2027` with
+   the new edition in `index.html` and `404.html`, so <https://dq4ai.github.io/> opens it. Keep
+   `org-root/` in this repository in step. See `org-root/README.md`.
