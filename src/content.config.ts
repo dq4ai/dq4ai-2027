@@ -7,12 +7,10 @@ import {
   cfpSchema,
   committeesSchema,
   datesSchema,
-  editionsSchema,
   keynotesSchema,
   newsSchema,
   papersSchema,
   peopleSchema,
-  proseSectionSchema,
   sessionsSchema,
   siteSchema,
   sponsorsSchema,
@@ -61,21 +59,9 @@ export const collections = {
   }),
   talks: defineCollection({ loader: listLoader("talks"), schema: talksSchema.extend(position) }),
   papers: defineCollection({ loader: listLoader("papers"), schema: papersSchema.extend(position) }),
-  editions: defineCollection({
-    loader: listLoader("editions"),
-    schema: editionsSchema.extend(position),
-  }),
   sponsors: defineCollection({
     loader: listLoader("sponsors"),
     schema: sponsorsSchema.extend(position),
-  }),
-  attend: defineCollection({
-    loader: listLoader("attend"),
-    schema: proseSectionSchema.extend(position),
-  }),
-  policies: defineCollection({
-    loader: listLoader("policies"),
-    schema: proseSectionSchema.extend(position),
   }),
   news: defineCollection({
     loader: glob({ pattern: "*.md", base: `${contentDir}/news` }),

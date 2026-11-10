@@ -8,26 +8,25 @@ with EDBT/ICDT 2027 in Lille, France.
 
 **Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
-![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind the four-line title and the date, then About](docs/screenshot.png)
+![Home page of the DQ4AI 2027 website: a soft banner of navy and teal ribbons behind "DQ4AI 2027", the full title and the date, then About](docs/screenshot.png)
 
 ## The site
 
-The site follows the layout of the previous edition's site: the scope and topics are read in place,
-with nothing to open.
+The site is one page, laid out like the previous edition's site,
+[QuaLLM-KG 2026](https://quallmkg2026.github.io/), with this edition's content. Nothing folds away,
+and the site is always light.
 
-- **Home** opens with a banner over ribbons of navy and teal, the logo's two directions (data quality
-  for AI, AI for data quality). It reads, one line each: "Second International Workshop on", "Data
-  Quality for Artificial Intelligence (DQ4AI 2027),", "co-located with EDBT/ICDT 2027, Lille, France"
-  and "(April 6, 2027)". Below it come the full "About the DQ4AI Workshop", every topic as a heading
-  over its bullet points, and the latest news in one line.
-- **Menu:** Home, Call for Papers, Dates, Program, Organization and Attend. Accepted Papers joins
-  once papers are published.
-- **Footer:** one line, "© DQ4AI 2027 — All rights reserved", with no menu. Every page ends on "Go to
-  top ↑".
-- **Dates** lists the deadlines and the workshop's day only. There is no deadline bar and no theme
-  button; the site follows the system's light or dark theme.
-- **Call for Papers** gives the full scope, the topics as headings over bullet points, and the paper
-  categories as one bullet each. Facts not yet known are named in one sentence rather than a row each.
+- **Banner:** "DQ4AI 2027" in large type, then "Second International Workshop on Data Quality for
+  Artificial Intelligence", "co-located with EDBT/ICDT 2027, Lille, France" and "(April 6, 2027)".
+- **Sections**, each with its title above it and ending on "Go to top ↑": About the DQ4AI Workshop,
+  Topics of Interest (each topic a heading over bullet points), Submission (paper categories,
+  important dates, submission details), Program, Keynote Speakers, Organizers (with the contact) and
+  Program Committee.
+- **Menu:** Home, About, Submission, Program, Keynote Speakers, Organizers and Program Committee.
+- **Footer:** one line, "© DQ4AI 2027 — All rights reserved".
+
+The old page addresses (`/call-for-papers/`, `/attend/` and so on) send visitors to the matching
+section.
 
 ## Update the content
 
@@ -61,5 +60,4 @@ pnpm i && pnpm dev
 
 ## License
 
-Code under MIT, content under CC BY 4.0, except two photos of Lille under CC BY-SA (4.0 and 3.0) and
-the fonts under the SIL Open Font License. See [LICENSE](LICENSE).
+Code under MIT, content under CC BY 4.0, and the fonts under the SIL Open Font License. See [LICENSE](LICENSE).

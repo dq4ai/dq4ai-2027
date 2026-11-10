@@ -28,15 +28,6 @@ export const imageSchema = z.strictObject({
 });
 
 /** A photo of someone else's work: everything its license asks the page to say is required. */
-const creditedPhotoSchema = imageSchema.extend({
-  subject: text,
-  author: text,
-  license: text,
-  licenseUrl: httpUrl,
-  source: text,
-  sourceUrl: httpUrl,
-});
-
 export const siteSchema = z.strictObject({
   acronym: text,
   title: text,
@@ -52,7 +43,6 @@ export const siteSchema = z.strictObject({
     endDate: isoDay,
     city: text,
     country: text,
-    cityUrl: httpUrl.optional(),
   }),
   venueTimezone: z.string().refine(isValidTimeZone, "must be an IANA time zone, e.g. Europe/Paris"),
   workshopDate: dayOrTba,
@@ -65,7 +55,6 @@ export const siteSchema = z.strictObject({
   /** Optional: when the organizers expect to announce what is still unknown. */
   statusNote: text.optional(),
   reviewModel: text,
-  hostPhoto: creditedPhotoSchema.optional(),
   deployment: z.strictObject({
     githubOwner: text,
     repoName: text,
@@ -144,30 +133,11 @@ export const newsSchema = z.strictObject({
   summary: text,
 });
 
-export const editionsSchema = z.strictObject({
-  id,
-  edition: text,
-  year: z.union([tba, z.number().int()]),
-  host: text,
-  city: text,
-  url: urlOrTba,
-  current: z.boolean().default(false),
-});
-
 export const sponsorsSchema = z.strictObject({
   id,
   name: text,
   url: httpUrl,
   logo: imageSchema,
-});
-
-const linkSchema = z.strictObject({ label: text, url: urlOrTba });
-
-export const proseSectionSchema = z.strictObject({
-  id,
-  heading: text,
-  body: text,
-  links: z.array(linkSchema).optional(),
 });
 
 export const cfpSchema = z.strictObject({
@@ -188,28 +158,11 @@ export const cfpSchema = z.strictObject({
     .min(1),
   proceedingsNote: text,
   presentation: text,
-  dualSubmission: text,
-  generativeAi: text,
 });
 
 export const submissionSchema = z.strictObject({
-  steps: z
-    .array(
-      z.strictObject({
-        title: text,
-        detail: text,
-        link: z
-          .strictObject({
-            label: text,
-            path: z.string().regex(/^\/.*/, "must be a path inside the site, starting with /"),
-          })
-          .optional(),
-      }),
-    )
-    .min(1),
   formatting: text,
   anonymization: text,
-  faq: z.array(z.strictObject({ question: text, answer: text })),
 });
 
 export type Site = z.infer<typeof siteSchema>;
@@ -220,8 +173,6 @@ export type Keynote = z.infer<typeof keynotesSchema>;
 export type Session = z.infer<typeof sessionsSchema>;
 export type Talk = z.infer<typeof talksSchema>;
 export type Paper = z.infer<typeof papersSchema>;
-export type Edition = z.infer<typeof editionsSchema>;
 export type Sponsor = z.infer<typeof sponsorsSchema>;
 export type Cfp = z.infer<typeof cfpSchema>;
 export type Submission = z.infer<typeof submissionSchema>;
-export type ProseSection = z.infer<typeof proseSectionSchema>;

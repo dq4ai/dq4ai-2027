@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+The previous edition's site exactly, with this edition's content, as the organizers asked. The
+banner reads "DQ4AI 2027" in large type over the full title, where and when. The sections and menu
+are those of QuaLLM-KG 2026: About the DQ4AI Workshop, Topics of Interest, Submission, Program,
+Keynote Speakers, Organizers and Program Committee, each with its title above its content and
+ending on "Go to top". Nothing folds away behind "Read more". Submission lists the paper categories
+as bullets, then the dates, then the details. The Attend, Policies, Previous editions and Contact
+sections are gone, with their content files (`attend.yaml`, `policies.yaml`, `editions.yaml`), the
+two photos of Lille, `hostPhoto`, `host.cityUrl`, the policy fields in `cfp.yaml` and the checklist
+and FAQ in `submission.yaml`; the contact now closes Organizers, and their old addresses lead to the
+nearest section. Accepted papers appear in the program. The topic "Knowledge graphs" is now
+"Quality in KGs". The site is always light. The Program Committee no longer lists Fabian M. Suchanek,
+Jesualdo Fernandez Breis, Mourad Ouzzani and Nathalie Aussenac, and adds Cinzia Cappiello
+(Politecnico di Milano).
+
 One page, as the organizers asked. The whole site is now the home page, in sections: About, Topics
 of interest, Submission (with the important dates, paper categories and submission details),
 Policies, Program, Keynotes, Accepted papers (once there are papers), Organization, Attend, Contact

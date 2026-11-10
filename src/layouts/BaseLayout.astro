@@ -60,8 +60,7 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
       title={`${label} news`}
       href={url("/rss.xml")}
     />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#fbf9f4" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#141820" />
+    <meta name="theme-color" content="#fbf9f4" />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={label} />
     <meta property="og:title" content={title} />

@@ -10,8 +10,6 @@ export interface Section {
   menu: string;
   /** The address this section had when it was a page of its own: it now redirects here. */
   oldPath?: string;
-  /** Left out of the page and the menu until papers are accepted. */
-  onlyWithPapers?: boolean;
   /** Left out of the page and the menu until there is a keynote. */
   onlyWithKeynotes?: boolean;
   /** On the page when there is one, but not in the menu. */
@@ -25,35 +23,22 @@ export const HOME = {
   description: "Workshop overview, call for papers, dates, program and organization.",
 } as const;
 
+// The sections of the previous edition's site (QuaLLM-KG 2026), in its order, with this edition's
+// content, as the organizers asked.
 export const SECTIONS: Section[] = [
   { id: "about", title: "About", menu: "About", oldPath: "/call-for-papers/" },
-  { id: "topics", title: "Topics of interest", menu: "Topics" },
+  { id: "topics", title: "Topics of Interest", menu: "Topics", notInMenu: true },
   { id: "submission", title: "Submission", menu: "Submission", oldPath: "/submission/" },
-  { id: "policies", title: "Policies", menu: "Policies", oldPath: "/policies/" },
   { id: "program", title: "Program", menu: "Program", oldPath: "/program/" },
   {
     id: "keynotes",
-    title: "Keynotes",
-    menu: "Keynotes",
+    title: "Keynote Speakers",
+    menu: "Keynote Speakers",
     oldPath: "/keynotes/",
     onlyWithKeynotes: true,
   },
-  {
-    id: "accepted-papers",
-    title: "Accepted papers",
-    menu: "Accepted Papers",
-    oldPath: "/accepted-papers/",
-    onlyWithPapers: true,
-  },
-  { id: "organization", title: "Organization", menu: "Organization", oldPath: "/organization/" },
-  { id: "attend", title: "Attend", menu: "Attend", oldPath: "/attend/" },
-  { id: "contact", title: "Contact", menu: "Contact" },
-  {
-    id: "previous-editions",
-    title: "Previous editions",
-    menu: "Previous editions",
-    oldPath: "/previous-editions/",
-  },
+  { id: "organizers", title: "Organizers", menu: "Organizers", oldPath: "/organization/" },
+  { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
 ];
 
@@ -64,25 +49,27 @@ export function sectionById(id: string): Section {
 }
 
 /** The menu: a link to each section on the page, in the page's order. */
-export function menuSections(has: { papers: boolean; keynotes: boolean }): Section[] {
+export function menuSections(has: { keynotes: boolean }): Section[] {
   return SECTIONS.filter(
-    (section) =>
-      !section.notInMenu &&
-      (!section.onlyWithPapers || has.papers) &&
-      (!section.onlyWithKeynotes || has.keynotes),
+    (section) => !section.notInMenu && (!section.onlyWithKeynotes || has.keynotes),
   );
 }
 
 /**
- * Old page addresses, each to its section. Accepted Papers points at the program until papers
- * exist, so a link shared early still lands somewhere useful.
+ * Old page addresses, each to its section. They may be in announcements already. Pages whose
+ * section the organizers removed lead to the nearest one that remains.
  */
-export function redirects(hasPapers: boolean): { path: string; to: string }[] {
-  const moved = SECTIONS.flatMap((section) => {
-    if (!section.oldPath) return [];
-    const id = section.onlyWithPapers && !hasPapers ? "program" : section.id;
-    return [{ path: section.oldPath, to: `/#${id}` }];
-  });
-  // The organizers asked for no News section, and for the dates inside Submission.
-  return [...moved, { path: "/dates/", to: "/#dates" }, { path: "/news/", to: "/#about" }];
+export function redirects(): { path: string; to: string }[] {
+  const moved = SECTIONS.flatMap((section) =>
+    section.oldPath ? [{ path: section.oldPath, to: `/#${section.id}` }] : [],
+  );
+  return [
+    ...moved,
+    { path: "/dates/", to: "/#dates" },
+    { path: "/news/", to: "/#about" },
+    { path: "/attend/", to: "/#about" },
+    { path: "/policies/", to: "/#submission" },
+    { path: "/previous-editions/", to: "/#about" },
+    { path: "/accepted-papers/", to: "/#program" },
+  ];
 }

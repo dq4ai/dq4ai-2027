@@ -202,22 +202,18 @@ test.describe("the home banner", () => {
     expect(count).toBe("1");
   });
 
-  test("its art is decoration, recoloured by the theme, and left off paper", async ({ page }) => {
+  test("its art is decoration, and left off paper", async ({ page }) => {
     await page.goto("");
     await expect(page.locator(".hero-waves")).toHaveCount(2);
     for (const svg of await page.locator(".hero-waves").all()) {
       await expect(svg).toHaveAttribute("aria-hidden", "true");
     }
-    const stop = page.locator(".wave-stop--a-deep").first();
-    await page.emulateMedia({ colorScheme: "light" });
-    const light = await stop.evaluate((e) => getComputedStyle(e).stopColor);
-    await page.emulateMedia({ colorScheme: "dark" });
-    expect(await stop.evaluate((e) => getComputedStyle(e).stopColor)).not.toBe(light);
     await page.emulateMedia({ media: "print" });
     await expect(page.locator(".hero-waves").first()).toBeHidden();
   });
 
   test("its words stay readable over the art", async ({ page }) => {
+    // Light only, but a dark system theme must not change what is read over the art.
     for (const scheme of ["light", "dark"] as const) {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto("");

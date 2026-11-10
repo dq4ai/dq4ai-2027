@@ -35,7 +35,7 @@ topics:
     items:
       - Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and AI agents
       - Bias, reliability and robustness
-  - title: Knowledge graphs
+  - title: Quality in KGs
     items:
       - Quality in KG construction, enrichment, and maintenance
       - Schema validation and constraint checking
@@ -90,5 +90,3 @@ proceedingsNote: >-
   Accepted papers will be published in the CEUR Workshop Proceedings, subject to the applicable
   publication policies.
 presentation: Accepted papers will be presented during the workshop.
-dualSubmission: TBA
-generativeAi: TBA

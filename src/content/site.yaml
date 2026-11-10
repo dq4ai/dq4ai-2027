@@ -15,7 +15,6 @@ host:
   endDate: "2027-04-09"
   city: Lille
   country: France
-  cityUrl: https://fr.wikipedia.org/wiki/Lille # A description of the host city
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-06"
 contactEmail: soror.sahri@u-pariscite.fr
@@ -27,19 +26,6 @@ proceedings:
 paperTemplate: TBA
 paperTemplateUrl: TBA # Address of the template file or page
 reviewModel: TBA # e.g. double-blind
-# Shown in the Attend section of the page. Keep every field: the license requires the credit.
-hostPhoto:
-  file: lille-grand-place-dusk.jpg
-  alt: >-
-    The Grand'Place of Lille at dusk: lit facades around the square, the column of the goddess at its
-    centre, and the Vieille Bourse with the Chamber of Commerce belfry on the right, under a deep blue
-    sky.
-  subject: The Grand'Place at dusk, Lille
-  author: Velvet
-  license: CC BY-SA 4.0
-  licenseUrl: https://creativecommons.org/licenses/by-sa/4.0/
-  source: Wikimedia Commons
-  sourceUrl: https://commons.wikimedia.org/wiki/File:Lille_gd_place_pano_ter.jpg
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

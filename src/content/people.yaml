@@ -15,31 +15,14 @@
 - id: ziawasch-abedjan
   name: Ziawasch Abedjan
   affiliation: Technische Universität Berlin
-- id: nathalie-aussenac
-  name: Nathalie Aussenac
-  affiliation: IRIT-CNRS
-  country: France
-- id: fabian-suchanek
-  name: Fabian M. Suchanek
-  affiliation: Institut Polytechnique de Paris
-  country: France
 - id: mohammad-sadoghi
   name: Mohammad Sadoghi
   affiliation: University of California
   country: USA
-- id: mourad-ouzzani
-  name: Mourad Ouzzani
-  affiliation: QCRI
-  country: Qatar
 - id: hazar-harmouch
   name: Hazar Harmouch
   affiliation: University of Amsterdam
   country: Netherlands
-- id: jesualdo-fernandez-breis
-  name: Jesualdo Fernandez Breis
-  surname: Fernandez Breis
-  affiliation: Universidad de Murcia, IMIB-Arrixaca
-  country: Spain
 - id: asma-abboura
   name: Asma Abboura
   affiliation: University of Hassiba Benbouali
@@ -54,3 +37,6 @@
 - id: jahid-hasan
   name: Jahid Hasan
   affiliation: Purdue University
+- id: cinzia-cappiello
+  name: Cinzia Cappiello
+  affiliation: Politecnico di Milano

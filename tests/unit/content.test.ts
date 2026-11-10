@@ -126,10 +126,8 @@ describe("plain-text CFP", () => {
     expect(text).toContain(hostDatesSentence(site));
   });
 
-  it("states the dual submission and generative AI policies, even while unknown", () => {
-    const text = plainText();
-    expect(text).toContain("Dual submission: To be announced");
-    expect(text).toContain("Use of generative AI: To be announced");
+  it("has no policies section, as the one page has none", () => {
+    expect(plainText()).not.toContain("POLICIES");
   });
 });
 

@@ -1,0 +1,34 @@
+---
+import { getCommittees, getSite } from "../../lib/content";
+import { isKnown } from "../../lib/view";
+import PageSection from "../PageSection.astro";
+import PersonEntry from "../PersonEntry.astro";
+
+const [committees, site] = await Promise.all([getCommittees(), getSite()]);
+// Every committee but the program committee, which has its own section, as on the previous
+// edition's site. The contact the organizers gave closes the section.
+const groups = committees.filter(
+  (committee) => committee.id !== "program-committee" && committee.people.length > 0,
+);
+---
+
+<PageSection id="organizers">
+  {groups.map((committee) => (
+    <div class="subsection">
+      <h3 id={committee.id}>{committee.title}</h3>
+      {committee.note && <p class="note">{committee.note}</p>}
+      <ul class="people">
+        {committee.people.map((person) => (
+          <li class="person">
+            <PersonEntry {person} />
+          </li>
+        ))}
+      </ul>
+    </div>
+  ))}
+  {isKnown(site.contactEmail) && (
+    <p class="contact">
+      Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+    </p>
+  )}
+</PageSection>

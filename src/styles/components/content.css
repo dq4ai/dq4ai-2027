@@ -44,32 +44,9 @@ main > section:not(.session) {
   border-block-start: 1px solid var(--color-rule);
 }
 
+/* Each section's title above its content, as on the previous edition's site. */
 main > section:not(.session) > h2 {
   margin-block: 0 var(--space-3);
-}
-
-@media (width >= 60rem) {
-  main > section:not(.session) {
-    display: grid;
-    grid-template-columns: min(var(--rail), 25%) minmax(0, 1fr);
-    column-gap: var(--rail-gap);
-  }
-
-  main > section:not(.session) > * {
-    grid-column: 2;
-  }
-
-  main > section:not(.session) > h2 {
-    grid-row: 1 / span 40;
-    grid-column: 1;
-    align-self: start;
-    margin: 0;
-  }
-
-  /* Loose content at the top level of a page lines up with the column beside the rail. */
-  main > :is(p, .toolbar, .table-wrap) {
-    margin-inline-start: calc(var(--rail) + var(--rail-gap));
-  }
 }
 
 /* The opening of the home page: a banner of the two directions meeting, then what is known. */
@@ -258,30 +235,21 @@ main > section:not(.session) > h2 {
 }
 
 /* The title on the lines the organizers set: the edition, the name, then where and when. */
+/* As the previous edition's banner: the short name large, then the full title, where and when. */
 .hero h1 {
   max-inline-size: none;
   margin: 0;
-  text-wrap: balance;
+  font-size: var(--text-hero);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
 }
 
-.hero__lead,
 .hero__name {
-  display: block;
-}
-
-.hero__lead {
+  max-inline-size: none;
+  margin: var(--space-1) 0 0;
   font-size: var(--text-h3);
   font-weight: 500;
-  line-height: 1.3;
-  letter-spacing: normal;
-}
-
-/* Sized so the name and acronym stay on one line from a laptop up; a phone wraps it. */
-.hero__name {
-  margin-block-start: var(--space-1);
-  font-size: clamp(1.75rem, 1rem + 1.6vw, 2.5rem);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 .hero__actions {
@@ -705,33 +673,6 @@ main > .lede {
   margin-block-start: var(--space-3);
 }
 
-.steps {
-  max-inline-size: none;
-  counter-reset: step;
-}
-
-.steps li {
-  position: relative;
-  padding-block: var(--space-3);
-  padding-inline-start: var(--space-5);
-  border-block-start: 1px solid var(--color-rule);
-  counter-increment: step;
-}
-
-.steps li::before {
-  position: absolute;
-  inset-inline-start: 0;
-  color: var(--color-text-muted);
-  font-variant-numeric: tabular-nums;
-  font-weight: 600;
-  content: counter(step);
-}
-
-.steps strong {
-  display: block;
-  font-weight: 600;
-}
-
 details {
   max-inline-size: var(--measure);
   margin-block-start: var(--space-2);
@@ -852,33 +793,6 @@ details p {
   padding-block-start: 0;
 }
 
-.city-photo {
-  margin: 0;
-}
-
-.city-photo a:has(img) {
-  display: block;
-  border-radius: var(--radius-large);
-}
-
-.city-photo img {
-  inline-size: 100%;
-  block-size: auto;
-  border-radius: var(--radius-large);
-}
-
-/* A phone shows a 3:2 crop of the panorama (see attend.astro), not a sliver of all of it. */
-@media (width < 40rem) {
-  .city-photo img {
-    aspect-ratio: 3 / 2;
-    object-fit: cover;
-  }
-}
-
-.city-photo figcaption {
-  margin-block-start: var(--space-2);
-}
-
 .sponsors {
   display: flex;
   flex-wrap: wrap;
@@ -915,11 +829,6 @@ main > section > .facts,
   border-block-start: 0;
 }
 
-.subsection > .steps li:first-child {
-  padding-block-start: 0;
-  border-block-start: 0;
-}
-
 main > section > .facts > div:first-child,
 .subsection > .facts > div:first-child {
   padding-block-start: 0;
@@ -943,78 +852,24 @@ main > section > .entry:first-of-type {
   padding-block-start: var(--space-2);
 }
 
-/* These lists end in their own padding, which would add to the section's. */
-.subsection > .steps {
-  margin-block-end: calc(-1 * var(--space-3));
-}
-
 main > section > .toolbar:first-of-type {
   margin-block-start: 0;
 }
 
-/* Paper categories: a card each, side by side from a tablet up, the page limit at the foot. */
+/* Paper categories: one bullet each, as the previous edition listed them. */
 .paper-types {
-  display: grid;
-  gap: var(--space-3);
   max-inline-size: none;
-  margin-block-start: var(--space-3);
-  padding: 0;
-  list-style: none;
+  padding-inline-start: 1.25em;
+  list-style: disc;
 }
 
-@media (width >= 48rem) {
-  .paper-types {
-    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  }
-
-  .paper-type {
-    padding: var(--space-4);
-  }
+.paper-types li + li {
+  margin-block-start: var(--space-1);
 }
 
-.paper-type {
-  display: flex;
-  flex-direction: column;
-  /* A long word in a very large font breaks rather than pushing the card off the screen. */
-  min-inline-size: 0;
-  padding: var(--space-3);
-  overflow-wrap: break-word;
-  hyphens: auto;
-  border: 1px solid var(--color-rule);
-  border-block-start: 3px solid var(--color-brand-a);
-  border-radius: var(--radius-large);
-  background: var(--color-surface-raised);
-}
-
-.paper-type:nth-child(2) {
-  border-block-start-color: var(--color-brand-b);
-}
-
-.paper-type h4 {
-  margin-block: 0 var(--space-2);
-  line-height: 1.3;
-  text-wrap: balance;
-  font-size: var(--text-h3);
-  font-weight: 600;
-}
-
-.paper-type p {
-  margin: 0;
-}
-
-/* Pushed to the foot, so the three limits line up across the cards. */
-.paper-type .paper-type__limit {
-  display: flex;
-  flex-direction: column;
-  margin-block-start: auto;
-  padding-block-start: var(--space-3);
-  font-weight: 600;
-}
-
-.paper-type__label {
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-  font-weight: 400;
+/* The contact closes the Organizers section, set apart from the last list. */
+.page-section > .contact {
+  margin-block-start: var(--space-4);
 }
 
 /* Where submission stands, set apart at the top of its section. */
@@ -1046,51 +901,6 @@ main > section > .toolbar:first-of-type {
 
 :not(h2) + .subsection {
   margin-block-start: var(--space-5);
-}
-
-/* The rest of a long section, behind "Read more", so the one page stays short to scroll. */
-.read-more {
-  max-inline-size: none;
-  margin-block-start: var(--space-3);
-}
-
-.read-more > summary {
-  display: inline-flex;
-  gap: var(--space-1);
-  align-items: center;
-  min-block-size: 2.75rem;
-  font-size: var(--text-base);
-  font-weight: 600;
-  list-style: none;
-}
-
-.read-more > summary::-webkit-details-marker {
-  display: none;
-}
-
-.read-more > summary::after {
-  content: "↓" / "";
-}
-
-.read-more[open] > summary::after {
-  content: "↑" / "";
-}
-
-.read-more[open] .read-more__open,
-.read-more:not([open]) .read-more__close {
-  display: none;
-}
-
-.read-more__body > p {
-  margin-block-start: var(--space-3);
-}
-
-.read-more__body > :first-child {
-  margin-block-start: var(--space-2);
-}
-
-.read-more__body > .subsection:first-child {
-  margin-block-start: var(--space-3);
 }
 
 /* At the end of every section of the one page, as the organizers asked. */

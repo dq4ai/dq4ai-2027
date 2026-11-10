@@ -11,12 +11,10 @@ import {
   cfpSchema,
   committeesSchema,
   datesSchema,
-  editionsSchema,
   keynotesSchema,
   newsSchema,
   papersSchema,
   peopleSchema,
-  proseSectionSchema,
   sessionsSchema,
   siteSchema,
   sponsorsSchema,
@@ -82,9 +80,6 @@ export function checkContent(directory: string): ContentCheck {
     papers: readList("papers.yaml", papersSchema),
     sponsors: readList("sponsors.yaml", sponsorsSchema),
   } satisfies Omit<ContentBundle, "site">;
-  readList("editions.yaml", editionsSchema);
-  readList("attend.yaml", proseSectionSchema);
-  readList("policies.yaml", proseSectionSchema);
   read("cfp.yaml", cfpSchema);
   read("submission.yaml", submissionSchema);
 

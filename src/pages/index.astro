@@ -1,18 +1,14 @@
 ---
-import ContactSection from "../components/ContactSection.astro";
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
 import HeroWaves from "../components/HeroWaves.astro";
 import Mark from "../components/Mark.astro";
 import PageSection from "../components/PageSection.astro";
 import About from "../components/sections/About.astro";
-import AcceptedPapers from "../components/sections/AcceptedPapers.astro";
-import Attend from "../components/sections/Attend.astro";
 import Keynotes from "../components/sections/Keynotes.astro";
-import Organization from "../components/sections/Organization.astro";
-import Policies from "../components/sections/Policies.astro";
-import PreviousEditions from "../components/sections/PreviousEditions.astro";
+import Organizers from "../components/sections/Organizers.astro";
 import Program from "../components/sections/Program.astro";
+import ProgramCommittee from "../components/sections/ProgramCommittee.astro";
 import Submission from "../components/sections/Submission.astro";
 import Topics from "../components/sections/Topics.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
@@ -20,12 +16,12 @@ import { getCommittees, getSite, getSponsors } from "../lib/content";
 import { formatHeadlineDay, TBA } from "../lib/dates";
 import { absoluteUrl } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation, titleLead } from "../lib/view";
+import { hostLocation, workshopTitle } from "../lib/view";
 
 const [site, committees, sponsors] = await Promise.all([getSite(), getCommittees(), getSponsors()]);
-// The whole site is this one page, as the organizers asked: the banner, then each section in the
-// order of lib/nav.ts, each ending in a link back to the top. Nothing sits between the banner and
-// About, as they asked before.
+// The whole site is this one page, laid out as the previous edition's (QuaLLM-KG 2026) with this
+// edition's content, as the organizers asked: the banner, then each section in the order of
+// lib/nav.ts, each ending in a link back to the top.
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
@@ -39,13 +35,11 @@ const jsonLd = serializeJsonLd(
       <HeroWaves />
       <div class="hero__title">
         <Mark class="hero__mark" />
-        {/* One line each, as the previous edition's banner set them. */}
+        {/* As the previous edition's banner: the short name large, the full title smaller below. */}
         <h1>
-          <span class="hero__lead">{titleLead(site)}</span>
-          <span class="hero__name">
-            {site.title} ({site.acronym} {site.year}),
-          </span>
+          {site.acronym} {site.year}
         </h1>
+        <p class="hero__name">{workshopTitle(site)}</p>
         <p class="hero__where">
           co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
           {hostLocation(site)}
@@ -63,14 +57,10 @@ const jsonLd = serializeJsonLd(
   <About />
   <Topics />
   <Submission />
-  <Policies />
   <Program />
   <Keynotes />
-  <AcceptedPapers />
-  <Organization />
-  <Attend />
-  <ContactSection />
-  <PreviousEditions />
+  <Organizers />
+  <ProgramCommittee />
 
   {sponsors.length > 0 && (
     <PageSection id="sponsors">
