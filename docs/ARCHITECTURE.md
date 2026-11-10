@@ -47,7 +47,8 @@ sticky header off, since it would pin half the screen.
 crop of the panorama as a card above a plain header, the words on paper. Any photo that is the
 largest paint lands at about 1.95 s in Lighthouse's phone run, whatever its weight (tried from 13 to
 71 KB), and both alternatives were worse: a navy panel, or a thin strip kept smaller than the lede.
-The organizers chose the photo, so `lighthouserc.json` gives this one page a performance score of
+The organizers chose the photo, so `lighthouserc.json` and `lighthouserc.production.json` (the
+audit of the live site after each deploy) give this one page a performance score of
 at least 0.99 and a largest paint under 2000 ms; every other page keeps 100 and 1200 ms.
 
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
