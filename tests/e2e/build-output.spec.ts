@@ -105,9 +105,8 @@ test.describe("build output", () => {
       expect(data.startDate).toBe("2027-04-07");
       expect(data.superEvent).toMatchObject({ startDate: "2027-04-06", endDate: "2027-04-09" });
     } else {
-      expect(data).not.toHaveProperty("startDate");
-      expect(data.superEvent).not.toHaveProperty("startDate");
-      expect(data.superEvent).not.toHaveProperty("endDate");
+      expect(data.startDate).toBe("2027-04-06");
+      expect(data.superEvent).toMatchObject({ startDate: "2027-04-06", endDate: "2027-04-09" });
     }
   });
 

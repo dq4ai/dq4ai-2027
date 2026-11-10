@@ -4,13 +4,14 @@ import ExternalLink from "../components/ExternalLink.astro";
 import HeroWaves from "../components/HeroWaves.astro";
 import Heading from "../components/Heading.astro";
 import Mark from "../components/Mark.astro";
+import TopicList from "../components/TopicList.astro";
 import WorkshopRecord from "../components/WorkshopRecord.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { getCfp, getCommittees, getDeadlines, getNews, getSite, getSponsors } from "../lib/content";
-import { formatDayRange, formatIsoDay } from "../lib/dates";
+import { formatHeadlineDay, formatIsoDay, TBA } from "../lib/dates";
 import { absoluteUrl, url } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation, submissionCloses, submissionOpen, topicAnchor } from "../lib/view";
+import { hostLocation, submissionCloses, submissionOpen, titleLead } from "../lib/view";
 
 const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
   getSite(),
@@ -21,7 +22,7 @@ const [site, cfp, committees, deadlines, news, sponsors] = await Promise.all([
   getSponsors(),
 ]);
 const [dataForAi, aiForData] = cfp.exchange;
-// The home page invites; the full scope, policies and dates wait one click away.
+// As the previous edition did: the whole scope and every topic are read here, without a click.
 const latest = news.at(0);
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
 const jsonLd = serializeJsonLd(
@@ -36,14 +37,22 @@ const jsonLd = serializeJsonLd(
       <HeroWaves />
       <div class="hero__title">
         <Mark class="hero__mark" />
-        <h1>{site.title}</h1>
-        <p class="hero__edition">
-          {site.acronym} {site.year}, the {site.edition.toLowerCase()} international workshop
-        </p>
+        {/* One line each, as the previous edition's banner set them. */}
+        <h1>
+          <span class="hero__lead">{titleLead(site)}</span>
+          <span class="hero__name">
+            {site.title} ({site.acronym} {site.year}),
+          </span>
+        </h1>
         <p class="hero__where">
-          Co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
-          {formatDayRange(site.host.startDate, site.host.endDate)}, {hostLocation(site)}.
+          co-located with <ExternalLink href={site.host.url}>{site.host.name}</ExternalLink>,{" "}
+          {hostLocation(site)}
         </p>
+        {site.workshopDate !== TBA && (
+          <p class="hero__date">
+            (<time datetime={site.workshopDate}>{formatHeadlineDay(site.workshopDate)}</time>)
+          </p>
+        )}
       </div>
     </div>
     <div class="hero__body">
@@ -77,23 +86,17 @@ const jsonLd = serializeJsonLd(
     </div>
   </div>
 
-  <section>
-    <Heading id="topics">Topics of interest</Heading>
-    <ul class="topic-list">
-      {cfp.topics.map((topic) => (
-        <li>
-          <a href={url(`/call-for-papers/#${topicAnchor(topic.title)}`)}>{topic.title}</a>
-        </li>
-      ))}
-    </ul>
+  <section class="about">
+    <Heading id="about">About the {site.acronym} Workshop</Heading>
+    {[...cfp.scope, cfp.goal].map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
   </section>
 
-  <section class="purpose">
-    <Heading id="about">Why data quality for AI</Heading>
-    <p>{cfp.goal}</p>
-    <p class="more-link">
-      <a href={url("/call-for-papers/#scope")}>Read the full scope</a>
-    </p>
+  <section>
+    <Heading id="topics">Topics of interest</Heading>
+    <p>{cfp.topicsIntro}</p>
+    <TopicList topics={cfp.topics} />
   </section>
 
   {latest && (

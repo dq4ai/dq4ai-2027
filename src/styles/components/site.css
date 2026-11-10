@@ -340,52 +340,24 @@
   font-size: var(--text-sm);
 }
 
+/* One line, as the previous edition's footer: the wordmark, then the workshop's name. */
 .site-footer__inner {
-  display: grid;
-  gap: var(--space-3) var(--rail-gap);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
   inline-size: min(100% - 2 * var(--space-4), var(--page-width));
   margin-inline: auto;
-  padding-block: var(--space-5);
-}
-
-@media (width >= 60rem) {
-  .site-footer__inner {
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-  }
+  padding-block: var(--space-4);
 }
 
 .site-footer .brand {
   font-size: var(--text-base);
 }
 
-.site-footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-1) var(--space-4);
+.site-footer__title {
   max-inline-size: none;
-  margin-block-start: var(--space-2);
-}
-
-/* On a phone too the links flow as words do, so each moves to the next row whole rather than
-   leaving half of itself behind. */
-
-.site-footer__legal {
-  margin-block-start: var(--space-3);
-}
-
-.site-footer a {
-  min-block-size: 1.5rem;
-}
-
-.site-footer a:not(.brand) {
-  display: inline-block;
-}
-
-@media (pointer: coarse) {
-  .site-footer__links a {
-    min-block-size: 2.75rem;
-    padding-block: calc((2.75rem - 1lh) / 2);
-  }
+  margin: 0;
 }
 
 /* Opening the menu moves most of the screen. The fade tells new links from displaced content. */

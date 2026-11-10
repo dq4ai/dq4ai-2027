@@ -143,6 +143,13 @@ export function formatIsoDay(day: string): string {
   return formatDayInZone(parseDay(day), "UTC");
 }
 
+/** "April 6, 2027": the banner writes the workshop's day month first, as the previous edition did. */
+export function formatHeadlineDay(day: string): string {
+  return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", dateStyle: "long" }).format(
+    parseDay(day),
+  );
+}
+
 /** "6–9 April 2027", collapsing the parts both ends share. */
 export function formatDayRange(startDay: string, endDay: string): string {
   return new Intl.DateTimeFormat(LOCALE, { timeZone: "UTC", dateStyle: "long" })

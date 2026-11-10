@@ -7,6 +7,7 @@ import {
   formatDayInZone,
   formatCountdown,
   formatDayRange,
+  formatHeadlineDay,
   formatLocalSessionTime,
   formatTimeInZone,
   isIsoWithZone,
@@ -44,6 +45,15 @@ describe("AoE formatting", () => {
     // 12:00 UTC on the 12th is exactly midnight starting the 12th in UTC-12.
     expect(formatAoE(parseIso("2026-12-12T12:00:00Z"))).toBe("12 December 2026, 00:00 AoE");
     expect(formatAoE(parseIso("2026-12-12T11:59:00Z"))).toBe("11 December 2026, 23:59 AoE");
+  });
+});
+
+describe("formatHeadlineDay", () => {
+  it("writes the month first, as the previous edition's banner did", () => {
+    expect(formatHeadlineDay("2027-04-06")).toBe("April 6, 2027");
+  });
+  it("keeps the calendar day whatever the time zone", () => {
+    expect(formatHeadlineDay("2027-01-01")).toBe("January 1, 2027");
   });
 });
 

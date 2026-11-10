@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+The layout of the previous edition's site, as the organizers asked. The home banner reads, one line
+each: "Second International Workshop on", "Data Quality for Artificial Intelligence (DQ4AI 2027),",
+"co-located with EDBT/ICDT 2027, Lille, France" and "(April 6, 2027)". The home page shows the full
+"About the DQ4AI Workshop" and every topic; topics are now a heading over bullet points, on the home
+page and in the call, and `cfp.yaml` gives each topic `items` instead of one `description` (the
+bullets keep the sentences' own words). The call shows the whole scope and lists paper categories as
+one bullet each, with nothing to click open. Names are in red and affiliations in the text colour.
+The footer is one line with the workshop's name and no menu; each page ends on "Go to top ↑". The
+workshop is on 6 April 2027; paper submission closes 15 January 2027, notification is 20 February
+and camera-ready papers are due 5 March, all AoE. Divesh Srivastava's affiliation is AT&T Labs
+Research, Bedminster, NJ, USA.
+
 A finished phone view. On a phone the Call for Papers opens on a photo card of the Grand'Place, the
 belfry and the Vieille Bourse, with the title and lede on paper below it like every other page,
 instead of a navy panel. The photo is a small 16:9 crop made at build time; as the page's largest

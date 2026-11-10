@@ -7,6 +7,7 @@ import {
   pendingSentence,
   stripPrefix,
   submissionOpen,
+  titleLead,
   topicAnchor,
   type DeadlineView,
 } from "../../src/lib/view";
@@ -144,15 +145,35 @@ describe("topicAnchor", () => {
   });
 });
 
+describe("titleLead", () => {
+  const base = {
+    edition: "Second",
+    title: "Data Quality for Artificial Intelligence",
+    fullName: "International Workshop on Data Quality for Artificial Intelligence",
+  };
+  it("is the words before the title, so the banner can set the title on its own line", () => {
+    expect(titleLead(base as Site)).toBe("Second International Workshop on");
+  });
+  it("falls back to the whole name when the name does not end with the title", () => {
+    expect(titleLead({ ...base, fullName: "Workshop on Something Else" } as Site)).toBe(
+      "Second Workshop on Something Else",
+    );
+  });
+});
+
 describe("topics in content", () => {
   const topicsOnly = cfpSchema.shape.topics;
-  it("a topic is a title and a description", () => {
-    expect(topicsOnly.safeParse([{ title: "t", description: "d" }]).success).toBe(true);
+  it("a topic is a title and its bullet points", () => {
+    expect(topicsOnly.safeParse([{ title: "t", items: ["a", "b"] }]).success).toBe(true);
+  });
+  it("a topic needs at least one bullet point", () => {
+    expect(topicsOnly.safeParse([{ title: "t", items: [] }]).success).toBe(false);
+  });
+  it("the old one-sentence description fails the build, so it is not silently dropped", () => {
+    expect(topicsOnly.safeParse([{ title: "t", description: "d" }]).success).toBe(false);
   });
   it("topics no longer take an icon, so a leftover icon field fails the build", () => {
-    const parsed = topicsOnly.safeParse([
-      { title: "t", description: "d", icon: "knowledge-graph" },
-    ]);
+    const parsed = topicsOnly.safeParse([{ title: "t", items: ["a"], icon: "knowledge-graph" }]);
     expect(parsed.success).toBe(false);
   });
 });

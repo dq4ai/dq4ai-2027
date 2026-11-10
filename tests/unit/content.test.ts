@@ -28,7 +28,7 @@ describe("the committed content", () => {
   it("passes every rule and reports its placeholders", () => {
     const { issues, placeholders } = checkContent("src/content");
     expect(issues).toEqual([]);
-    expect(placeholders).toContainEqual({ file: "site.yaml", field: "workshopDate" });
+    expect(placeholders).toContainEqual({ file: "site.yaml", field: "contactEmail" });
   });
   it("the populated fixture passes every rule", () => {
     expect(checkContent("tests/fixtures/content-populated").issues).toEqual([]);
@@ -169,13 +169,15 @@ describe("formatCountdown", () => {
 
 describe("JSON-LD", () => {
   const organizers = [{ id: "x", name: "Jane Doe", affiliation: "TBA" }];
+  // The real site has its date now; these two pin it back to TBA to keep checking that case.
+  const undated = { ...site, workshopDate: "TBA" };
   it("omits the start date while it is TBA", () => {
-    const data = buildEventJsonLd({ site, url: "https://example.org/", organizers });
+    const data = buildEventJsonLd({ site: undated, url: "https://example.org/", organizers });
     expect(data).not.toHaveProperty("startDate");
     expect(data.organizer[0]).not.toHaveProperty("affiliation");
   });
   it("leaves out the host's dates while the workshop date is TBA, so they cannot be misread", () => {
-    const data = buildEventJsonLd({ site, url: "https://example.org/", organizers });
+    const data = buildEventJsonLd({ site: undated, url: "https://example.org/", organizers });
     expect(data.superEvent.name).toBe("EDBT/ICDT 2027");
     expect(data.superEvent).not.toHaveProperty("startDate");
     expect(data.superEvent).not.toHaveProperty("endDate");

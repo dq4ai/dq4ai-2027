@@ -178,9 +178,10 @@ export const cfpSchema = z.strictObject({
   topicsIntro: text,
   topics: z
     .array(
+      // A heading and its bullet points, as the previous edition's call listed them.
       z.strictObject({
         title: text,
-        description: text,
+        items: z.array(text).min(1),
       }),
     )
     .min(1),

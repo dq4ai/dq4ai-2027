@@ -75,7 +75,7 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
     <meta name="twitter:card" content="summary_large_image" />
     <slot name="head" />
   </head>
-  <body>
+  <body id="top">
     <a class="skip-link" href="#main">
       Skip to content
     </a>
@@ -83,6 +83,9 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
     <NextDeadline />
     <main id="main" tabindex="-1">
       <slot />
+      <p class="go-top">
+        <a href="#top">Go to top ↑</a>
+      </p>
     </main>
     <Footer />
   </body>

@@ -4,12 +4,12 @@
 - id: submission
   label: Paper submission
   kind: submission
-  date: TBA
+  date: "2027-01-15T23:59:00-12:00"
 - id: notification
   label: Author notification
   kind: notification
-  date: TBA
+  date: "2027-02-20T23:59:00-12:00"
 - id: camera-ready
   label: Camera-ready papers
   kind: camera-ready
-  date: TBA
+  date: "2027-03-05T23:59:00-12:00"

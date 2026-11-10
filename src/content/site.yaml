@@ -17,7 +17,7 @@ host:
   country: France
   cityUrl: https://fr.wikipedia.org/wiki/Lille # A description of the host city
 venueTimezone: Europe/Paris
-workshopDate: TBA # Format: "2027-04-06"
+workshopDate: "2027-04-06"
 contactEmail: TBA
 submissionSystem: TBA # e.g. EasyChair, CMT, OpenReview, HotCRP
 submissionUrl: TBA
