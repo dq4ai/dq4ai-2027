@@ -1,11 +1,15 @@
 ---
 // The rest of a long section, folded until asked for. A native <details>: it needs no script, the
-// text stays in the page for search engines, and the browser's find opens it.
+// text stays in the page for search engines, and the browser's find opens it. A label says what is folded, where "Read more" would not.
+interface Props {
+  label?: string;
+}
+const { label = "Read more" } = Astro.props;
 ---
 
 <details class="read-more">
   <summary>
-    <span class="read-more__open">Read more</span>
+    <span class="read-more__open">{label}</span>
     <span class="read-more__close">Show less</span>
   </summary>
   <div class="read-more__body">

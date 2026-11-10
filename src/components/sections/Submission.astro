@@ -34,34 +34,39 @@ const pending = pendingSentence(
 ---
 
 <PageSection id="submission">
-  {site.submissionUrl === TBA ? (
-    <p>
-      {/* The dates are just below, so only the host's page is linked. */}
-      <strong>The submission link will be announced here.</strong>
-      {site.host.workshopsUrl && (
-        <>
-          {" "}
-          See the{" "}
-          <ExternalLink href={site.host.workshopsUrl}>{site.host.name} workshops page</ExternalLink>
-          .
-        </>
-      )}
-    </p>
-  ) : submissionOpen(site, deadlines) ? (
-    <p class="page-action">
-      <ExternalLink
-        class="button button--primary"
-        href={site.submissionUrl}
-        data-closes={submissionCloses(deadlines)}
-      >
-        Submit a paper
-      </ExternalLink>
-    </p>
-  ) : (
-    <p>
-      <strong>Submission has closed.</strong>
-    </p>
-  )}
+  {/* Where things stand, first and set apart: the one thing an author looks for. */}
+  <div class="callout">
+    {site.submissionUrl === TBA ? (
+      <p>
+        {/* The dates are just below, so only the host's page is linked. */}
+        <strong>The submission link will be announced here.</strong>
+        {site.host.workshopsUrl && (
+          <>
+            {" "}
+            See the{" "}
+            <ExternalLink href={site.host.workshopsUrl}>
+              {site.host.name} workshops page
+            </ExternalLink>
+            .
+          </>
+        )}
+      </p>
+    ) : submissionOpen(site, deadlines) ? (
+      <p class="page-action">
+        <ExternalLink
+          class="button button--primary"
+          href={site.submissionUrl}
+          data-closes={submissionCloses(deadlines)}
+        >
+          Submit a paper
+        </ExternalLink>
+      </p>
+    ) : (
+      <p>
+        <strong>Submission has closed.</strong>
+      </p>
+    )}
+  </div>
   <Dates />
   <PaperCategories />
   <div class="subsection">
@@ -121,7 +126,7 @@ const pending = pendingSentence(
     </dl>
     {pending && <p class="note">{pending}</p>}
   </div>
-  <ReadMore>
+  <ReadMore label="Checklist and frequently asked questions">
     <div class="subsection">
       <h3 id="checklist">Checklist</h3>
       <ol class="steps">

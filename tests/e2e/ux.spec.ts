@@ -733,15 +733,43 @@ test.describe("less at once", () => {
     expect(nav?.y ?? 0).toBeGreaterThanOrEqual((brand?.y ?? 0) + (brand?.height ?? 0));
   });
 
-  test("paper categories are read in place, one bullet each", async ({ page }) => {
+  // Redesigned at the organizers' request: a card per category, compared at a glance, with its
+  // page limit at the foot, and still nothing to open.
+  test("paper categories are cards, side by side, each closing on its page limit", async ({
+    page,
+  }, testInfo) => {
+    await page.setViewportSize({ width: 1366, height: 900 });
     await page.goto("");
-    const research = page.locator(".paper-types li", { hasText: "Research papers" });
-    await expect(research.locator("strong")).toHaveText("Research papers:");
+    const cards = page.locator(".paper-type");
+    await expect(cards).toHaveCount(3);
+    const research = cards.filter({ hasText: "Research papers" });
+    await expect(research.getByRole("heading", { level: 4 })).toHaveText("Research papers");
     await expect(research.getByText("Original research contributions")).toBeVisible();
     await expect(page.locator(".paper-types details, .paper-types a")).toHaveCount(0);
-    expect(
-      await research.evaluate((li) => getComputedStyle(li.parentElement as Element).listStyleType),
-    ).toBe("disc");
+    const tops = await cards.evaluateAll((all) =>
+      all.map((card) => card.getBoundingClientRect().top),
+    );
+    expect(new Set(tops).size, "one row on a wide screen").toBe(1);
+    if (!populated(testInfo.project.name)) {
+      await expect(research.locator(".paper-type__limit")).toHaveText(
+        /Page limit\s*6 pages, including references/,
+      );
+      const limits = await page
+        .locator(".paper-type__limit")
+        .evaluateAll((all) => all.map((limit) => Math.round(limit.getBoundingClientRect().top)));
+      expect(new Set(limits).size, "the limits line up across the cards").toBe(1);
+    }
+    await page.setViewportSize({ width: 390, height: 844 });
+    const narrow = await cards.evaluateAll((all) =>
+      all.map((card) => card.getBoundingClientRect().top),
+    );
+    expect(new Set(narrow).size, "stacked on a phone").toBe(3);
+  });
+
+  test("Submission opens on where things stand, set apart", async ({ page }) => {
+    await page.goto("");
+    const first = section(page, "submission").locator("> :not(a, h2)").first();
+    await expect(first).toHaveClass(/callout/);
   });
 
   test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {

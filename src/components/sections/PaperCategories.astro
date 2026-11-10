@@ -11,16 +11,18 @@ const limitsUnknown = pageLimitsUnknown(cfp);
 
 <div class="subsection paper-categories">
   <h3 id="paper-categories">Paper categories</h3>
-  {/* Read in place, as the previous edition listed them: no link or toggle to open. */}
+  {/* One card each, side by side on a wide screen, so the three can be compared at a glance; the
+      page limit closes each card, set apart from the description. Read in place: nothing to open. */}
   <ul class="paper-types">
     {cfp.paperTypes.map((type) => (
-      <li id={`paper-${type.id}`}>
-        <strong>{type.title}:</strong> {type.description}
+      <li class="paper-type" id={`paper-${type.id}`}>
+        <h4>{type.title}</h4>
+        <p>{type.description}</p>
         {!limitsUnknown && (
-          <>
-            {" "}
-            Page limit: <Value of={type.pageLimit} />.
-          </>
+          <p class="paper-type__limit">
+            <span class="paper-type__label">Page limit</span>
+            <Value of={type.pageLimit} />
+          </p>
         )}
       </li>
     ))}
