@@ -1,91 +1,4 @@
 /* Every page shares one axis: a rail on the left for names and times, the content beside it. */
-/* The rule under a page's title carries the logo's two directions. */
-.page-header {
-  padding-block: var(--space-6) var(--space-5);
-  border-block-end: 2px solid var(--color-brand-a);
-  border-image: linear-gradient(90deg, var(--color-brand-a) 0 50%, var(--color-brand-b) 50% 100%) 1;
-}
-
-/* On a phone the photo is a card of its own above a plain header, as on every other page: a 16:9
-   crop on the belfry and the Vieille Bourse (see PageHeader.astro), with the words on paper. */
-.page-header__photo {
-  display: block;
-  inline-size: 100%;
-  block-size: auto;
-  aspect-ratio: 16 / 9;
-  margin-block-end: var(--space-5);
-  border-radius: var(--radius-large);
-  object-fit: cover;
-  object-position: 55% 40%;
-}
-
-@media (width < 40rem) {
-  .page-header--photo {
-    padding-block-start: var(--space-4);
-  }
-}
-
-/* From a tablet up, a title over the photo. The scrim is there from the first paint, so the text
-   never waits for the image, and it holds AA over the lightest pixel a photo could have. */
-@media (width >= 40rem) {
-  .page-header--photo {
-    position: relative;
-    isolation: isolate;
-    margin-block-start: var(--space-4);
-    padding: var(--space-6) var(--space-4);
-    overflow: clip;
-    border: 0;
-    border-image: none;
-    border-radius: var(--radius-large);
-    background: var(--color-photo-base);
-  }
-
-  .page-header--photo::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: linear-gradient(90deg, var(--color-scrim) 0%, var(--color-scrim) 100%);
-    content: "";
-  }
-
-  .page-header__photo {
-    position: absolute;
-    z-index: -2;
-    inset: 0;
-    block-size: 100%;
-    aspect-ratio: auto;
-    margin: 0;
-    border-radius: 0;
-    object-position: 75% center;
-    /* The dusk photo, lifted so the square reads clearly. */
-    filter: brightness(1.15) saturate(1.1);
-  }
-
-  .page-header--photo :is(h1, .lede, .page-context) {
-    color: var(--color-on-photo);
-  }
-}
-
-/* From here the text keeps to the left, so the photo can show on the right. */
-@media (width >= 60rem) {
-  .page-header--photo {
-    padding-inline: var(--space-5);
-  }
-
-  .page-header--photo::before {
-    background: linear-gradient(
-      90deg,
-      var(--color-scrim-text) 0%,
-      var(--color-scrim-text) 52%,
-      var(--color-scrim-clear) 85%
-    );
-  }
-
-  .page-header--photo .page-header__text {
-    max-inline-size: 54%;
-  }
-}
-
 /* The logo, in its own colors wherever it is drawn. */
 .mark {
   flex: none;
@@ -111,37 +24,6 @@
   stroke: var(--color-surface);
 }
 
-/* The latest news, said in one line rather than given a section. */
-.news-line {
-  margin-block: 0 var(--space-5);
-  color: var(--color-text-muted);
-}
-
-.news-line time {
-  white-space: nowrap;
-}
-
-.news-line__label {
-  color: var(--color-text);
-  font-weight: 600;
-}
-
-.news-line__label::after {
-  content: ":";
-}
-
-/* What this is, for someone who arrives here rather than at the home page. */
-.page-context {
-  margin-block-end: var(--space-2);
-  max-inline-size: none;
-  color: var(--color-text-muted);
-  font-size: var(--text-sm);
-}
-
-.page-header + p {
-  padding-block: var(--space-3);
-}
-
 .lede {
   margin-block-start: var(--space-3);
   font-size: var(--text-lg);
@@ -158,16 +40,12 @@
 }
 
 main > section:not(.session) {
-  padding-block: var(--space-5) var(--space-6);
+  padding-block: var(--space-5) var(--space-3);
   border-block-start: 1px solid var(--color-rule);
 }
 
 main > section:not(.session) > h2 {
   margin-block: 0 var(--space-3);
-}
-
-.page-header + section:not(.session) {
-  border-block-start: 0;
 }
 
 @media (width >= 60rem) {
@@ -503,7 +381,7 @@ main > section:not(.session) > h2 {
 }
 
 /* The next section's rule closes a list that ends its section; a second line would double it. */
-main > section > .facts:last-child > div:last-child {
+main > section > .facts:has(+ .go-top) > div:last-child {
   border-block-end: 0;
 }
 
@@ -671,8 +549,8 @@ main > section > .facts:last-child > div:last-child {
   border-block-end: 1px solid var(--color-rule);
 }
 
-.entry h2,
-.entry h3 {
+.entry h3,
+.entry h4 {
   margin-block: 0 var(--space-1);
 }
 
@@ -684,24 +562,6 @@ main > section > .facts:last-child > div:last-child {
 
 .entry__fact {
   margin-block-start: var(--space-2);
-}
-
-/* News items at page level put their date in the rail. */
-@media (width >= 60rem) {
-  main > .entry {
-    display: grid;
-    grid-template-columns: var(--rail) minmax(0, 1fr);
-    column-gap: var(--rail-gap);
-  }
-
-  main > .entry > * {
-    grid-column: 2;
-  }
-
-  main > .entry > .entry__meta {
-    grid-row: 1 / span 10;
-    grid-column: 1;
-  }
 }
 
 /* Officers as conference sites list them: one person per line, "Name, Affiliation, Country". */
@@ -922,7 +782,7 @@ details p {
   font-weight: 600;
 }
 
-.session h2 {
+.session h3 {
   margin-block: 0 var(--space-1);
 }
 
@@ -930,7 +790,7 @@ details p {
   padding-block: var(--space-2);
 }
 
-.session--brief h2 {
+.session--brief h3 {
   line-height: 1.6;
   color: var(--color-text-muted);
   font-family: var(--font-serif);
@@ -955,7 +815,7 @@ details p {
   padding-block: var(--space-3) 0;
 }
 
-.talk h3 {
+.talk h4 {
   margin-block: 0 var(--space-1);
 }
 
@@ -975,7 +835,7 @@ details p {
   }
 }
 
-.keynote h2 {
+.keynote h3 {
   margin-block: 0 var(--space-1);
 }
 
@@ -1052,16 +912,18 @@ details p {
 }
 
 /* Inside a section the section's own rule starts the list, so it needs no second one. */
-main > section > .facts {
+main > section > .facts,
+.subsection > .facts {
   border-block-start: 0;
 }
 
-main > section > .steps li:first-child {
+.subsection > .steps li:first-child {
   padding-block-start: 0;
   border-block-start: 0;
 }
 
-main > section > .facts > div:first-child {
+main > section > .facts > div:first-child,
+.subsection > .facts > div:first-child {
   padding-block-start: 0;
 }
 
@@ -1069,7 +931,7 @@ main > section > .entry:first-of-type {
   padding-block-start: 0;
 }
 
-main > section > .entry:last-child {
+.entry:last-of-type {
   padding-block-end: 0;
   border-block-end: 0;
 }
@@ -1084,7 +946,7 @@ main > section > .page-limits > div:first-child {
 }
 
 /* These lists end in their own padding, which would add to the section's. */
-main > section > .steps {
+.subsection > .steps {
   margin-block-end: calc(-1 * var(--space-3));
 }
 
@@ -1097,17 +959,75 @@ main > section > .toolbar:first-of-type {
   max-inline-size: var(--measure);
 }
 
-/* At the end of every page instead of a menu in the footer, as the previous edition had. */
-.go-top {
+/* Under a section's heading, the parts it holds (committees, policies, the checklist), each with
+   a smaller heading of its own. */
+.subsection > h3:first-child {
+  margin-block-start: 0;
+}
+
+:not(h2) + .subsection {
+  margin-block-start: var(--space-5);
+}
+
+/* The rest of a long section, behind "Read more", so the one page stays short to scroll. */
+.read-more {
   max-inline-size: none;
-  margin-block: var(--space-5) 0;
+  margin-block-start: var(--space-3);
+}
+
+.read-more > summary {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-items: center;
+  min-block-size: 2.75rem;
+  font-size: var(--text-base);
+  font-weight: 600;
+  list-style: none;
+}
+
+.read-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.read-more > summary::after {
+  content: "↓" / "";
+}
+
+.read-more[open] > summary::after {
+  content: "↑" / "";
+}
+
+.read-more[open] .read-more__open,
+.read-more:not([open]) .read-more__close {
+  display: none;
+}
+
+.read-more__body > p {
+  margin-block-start: var(--space-3);
+}
+
+.read-more__body > :first-child {
+  margin-block-start: var(--space-2);
+}
+
+.read-more__body > .subsection:first-child {
+  margin-block-start: var(--space-3);
+}
+
+/* At the end of every section of the one page, as the organizers asked. */
+/* It ends where the text does, so it sits under the section rather than out at the page's edge. */
+.go-top {
+  max-inline-size: var(--measure);
+  margin-block: var(--space-3) 0;
   text-align: end;
 }
 
 .go-top a {
   display: inline-flex;
+  gap: var(--space-1);
   align-items: center;
   min-block-size: 2.75rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   text-decoration: none;
 }

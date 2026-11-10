@@ -1,0 +1,29 @@
+---
+import { render } from "astro:content";
+import { getNews } from "../../lib/content";
+import { formatIsoDay } from "../../lib/dates";
+import { url } from "../../lib/paths";
+import PageSection from "../PageSection.astro";
+
+const news = await getNews();
+const items = await Promise.all(
+  news.map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
+);
+---
+
+{items.length > 0 && (
+  <PageSection id="news">
+    {items.map(({ entry, Content }) => (
+      <article class="entry" id={`news-${entry.id}`}>
+        <p class="entry__meta">
+          <time datetime={entry.data.date}>{formatIsoDay(entry.data.date)}</time>
+        </p>
+        <h3>{entry.data.title}</h3>
+        <Content />
+      </article>
+    ))}
+    <p class="note">
+      <a href={url("/rss.xml")}>News feed</a>
+    </p>
+  </PageSection>
+)}

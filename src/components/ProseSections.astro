@@ -2,13 +2,14 @@
 import { TBA } from "../lib/dates";
 import type { ProseSection } from "../lib/schemas";
 import ExternalLink from "./ExternalLink.astro";
-import Heading from "./Heading.astro";
 import Value from "./Value.astro";
 
 interface Props {
   sections: ProseSection[];
+  /** Names the shared "Details to come" list, which more than one section of the page can have. */
+  pendingId: string;
 }
-const { sections } = Astro.props;
+const { sections, pendingId } = Astro.props;
 const liveLinks = (section: ProseSection) =>
   (section.links ?? []).filter((link) => link.url !== TBA);
 const isPending = (section: ProseSection) =>
@@ -21,8 +22,8 @@ const pending = sections.filter(isPending);
   .map((section) => {
     const links = liveLinks(section);
     return (
-      <section>
-        <Heading id={section.id}>{section.heading}</Heading>
+      <div class="subsection">
+        <h3 id={section.id}>{section.heading}</h3>
         <p>
           <Value of={section.body} />
         </p>
@@ -40,12 +41,12 @@ const pending = sections.filter(isPending);
             ))}
           </ul>
         )}
-      </section>
+      </div>
     );
   })}
 {pending.length > 0 && (
-  <section class="pending">
-    <Heading id="to-be-announced">Details to come</Heading>
+  <div class="subsection pending">
+    <h3 id={pendingId}>Details to come</h3>
     <dl class="facts">
       {pending.map((section) => (
         <div id={section.id}>
@@ -56,5 +57,5 @@ const pending = sections.filter(isPending);
         </div>
       ))}
     </dl>
-  </section>
+  </div>
 )}

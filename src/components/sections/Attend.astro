@@ -1,14 +1,11 @@
 ---
-import ContactSection from "../components/ContactSection.astro";
-import ContentImage from "../components/ContentImage.astro";
-import ExternalLink from "../components/ExternalLink.astro";
-import Heading from "../components/Heading.astro";
-import PageHeader from "../components/PageHeader.astro";
-import PhotoCredit from "../components/PhotoCredit.astro";
-import ProseSections from "../components/ProseSections.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getAttend, getSite } from "../lib/content";
-import { hostDatesSentence } from "../lib/view";
+import { getAttend, getSite } from "../../lib/content";
+import { hostDatesSentence } from "../../lib/view";
+import ContentImage from "../ContentImage.astro";
+import ExternalLink from "../ExternalLink.astro";
+import PageSection from "../PageSection.astro";
+import PhotoCredit from "../PhotoCredit.astro";
+import ProseSections from "../ProseSections.astro";
 
 const [site, sections] = await Promise.all([getSite(), getAttend()]);
 const photo = site.hostPhoto;
@@ -16,20 +13,18 @@ const imageProps = photo && {
   file: photo.file,
   alt: photo.alt,
   widths: [480, 832, 1200, 1664],
-  sizes: "(min-width: 70rem) 52rem, 100vw",
-  loading: "eager" as const,
+  sizes: "(min-width: 80rem) 66rem, 100vw",
   // On a phone the whole panorama would be a sliver; a crop on the belfry side stays a photo.
   phone: { width: 720, height: 480, position: "right", sizes: "calc(100vw - 2rem)" },
 };
 ---
 
-<BaseLayout slug="attend">
-  <PageHeader title="Attend" lede={hostDatesSentence(site)} />
-  <ProseSections {sections} />
-  <ContactSection label="Questions about attending" />
+<PageSection id="attend">
+  <p>{hostDatesSentence(site)}</p>
+  <ProseSections {sections} pendingId="attend-to-come" />
   {photo && imageProps && (
-    <section>
-      <Heading id="host-city">Host city</Heading>
+    <div class="subsection">
+      <h3 id="host-city">Host city</h3>
       <figure class="city-photo">
         {site.host.cityUrl ? (
           <ExternalLink href={site.host.cityUrl}>
@@ -50,6 +45,6 @@ const imageProps = photo && {
           )}
         </figcaption>
       </figure>
-    </section>
+    </div>
   )}
-</BaseLayout>
+</PageSection>

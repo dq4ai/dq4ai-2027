@@ -8,7 +8,6 @@ import { siteSchema, cfpSchema } from "../../src/lib/schemas";
 import {
   hostDatesSentence,
   nextDeadline,
-  pageDescription,
   siteSummary,
   sortByName,
   sortBySurname,
@@ -145,13 +144,11 @@ describe("sentences for people and search engines", () => {
       "Workshop date: 7 April 2027, in Lille, France.",
     );
   });
-  it("identifies the workshop and host in the home and page descriptions", () => {
-    for (const description of [siteSummary(site), pageDescription(site, "Sessions and times.")]) {
-      expect(description).toContain("DQ4AI 2027");
-      expect(description).toContain("Data Quality for Artificial Intelligence");
-      expect(description).toContain("EDBT/ICDT 2027");
-    }
-    expect(pageDescription(site, "Sessions and times.")).toMatch(/^Sessions and times\. /);
+  it("identifies the workshop and host in the page description", () => {
+    const description = siteSummary(site);
+    expect(description).toContain("DQ4AI 2027");
+    expect(description).toContain("Data Quality for Artificial Intelligence");
+    expect(description).toContain("EDBT/ICDT 2027");
   });
 });
 

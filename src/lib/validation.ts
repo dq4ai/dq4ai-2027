@@ -263,17 +263,15 @@ function validateKeynotes(
 }
 
 function validateHostPhoto(site: Site, imageExists: (file: string) => boolean): ContentIssue[] {
-  return (["hostPhoto", "cfpPhoto"] as const).flatMap((name) => {
-    const photo = site[name];
-    if (!photo || imageExists(photo.file)) return [];
-    return [
-      {
-        file: "site.yaml",
-        field: `${name}.file`,
-        message: `"${photo.file}" is not in the images folder`,
-      },
-    ];
-  });
+  const photo = site.hostPhoto;
+  if (!photo || imageExists(photo.file)) return [];
+  return [
+    {
+      file: "site.yaml",
+      field: "hostPhoto.file",
+      message: `"${photo.file}" is not in the images folder`,
+    },
+  ];
 }
 
 function validateSponsors(

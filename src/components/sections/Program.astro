@@ -1,48 +1,28 @@
 ---
-import ExternalLink from "../components/ExternalLink.astro";
-import Heading from "../components/Heading.astro";
-import LocalTimeToggle from "../components/LocalTimeToggle.astro";
-import PageHeader from "../components/PageHeader.astro";
-import Value from "../components/Value.astro";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import { getProgram, getSite } from "../lib/content";
-import { formatIsoDay, formatTimeInZone, parseIso, TBA } from "../lib/dates";
-import { url } from "../lib/paths";
-import { hostDatesSentence, isKnown, pageDescription } from "../lib/view";
+import { getProgram, getSite } from "../../lib/content";
+import { formatTimeInZone, parseIso, TBA } from "../../lib/dates";
+import { url } from "../../lib/paths";
+import { isKnown } from "../../lib/view";
+import ExternalLink from "../ExternalLink.astro";
+import LocalTimeToggle from "../LocalTimeToggle.astro";
+import PageSection from "../PageSection.astro";
+import Value from "../Value.astro";
 
 const [site, program] = await Promise.all([getSite(), getProgram()]);
 const zone = site.venueTimezone;
 const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
 ---
 
-<BaseLayout
-  slug="program"
-  description={
-    program.length === 0
-      ? pageDescription(site, "The program has not been announced yet.")
-      : undefined
-  }
->
-  <PageHeader
-    title="Program"
-    lede={
-      site.workshopDate === TBA
-        ? hostDatesSentence(site)
-        : `${formatIsoDay(site.workshopDate)}, ${site.host.city}, ${site.host.country}.`
-    }
-  />
+<PageSection id="program">
   {program.length === 0 ? (
-    <section>
-      <Heading id="schedule">Schedule</Heading>
-      <dl class="facts">
-        <div>
-          <dt>Sessions and talks</dt>
-          <dd>
-            <Value of={TBA} />
-          </dd>
-        </div>
-      </dl>
-    </section>
+    <dl class="facts">
+      <div>
+        <dt>Sessions and talks</dt>
+        <dd>
+          <Value of={TBA} />
+        </dd>
+      </div>
+    </dl>
   ) : (
     <>
       <div class="toolbar">
@@ -75,7 +55,7 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
             </time>
           </p>
           <div>
-            <h2 id={session.id}>{session.title}</h2>
+            <h3 id={session.id}>{session.title}</h3>
             {session.kind !== "break" && (
               <p class="session__meta">
                 {[
@@ -93,7 +73,7 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
             )}
             {session.talks.map((talk) => (
               <article class="talk">
-                <h3>{talk.title}</h3>
+                <h4>{talk.title}</h4>
                 <p class="entry__meta">
                   {talk.speakerPeople.map((person) => person.name).join(", ")}
                 </p>
@@ -124,4 +104,4 @@ const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
       ))}
     </>
   )}
-</BaseLayout>
+</PageSection>

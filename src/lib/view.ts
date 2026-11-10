@@ -144,11 +144,6 @@ export function siteSummary(site: Site): string {
   return `${site.acronym} ${site.year}, the ${workshopTitle(site)}, co-located with ${site.host.name} in ${hostLocation(site)}.`;
 }
 
-/** Adds what a search result needs to identify the workshop to a page's own description. */
-export function pageDescription(site: Site, description: string): string {
-  return `${description} ${site.acronym} ${site.year}, workshop on ${site.title} at ${site.host.name}, ${hostLocation(site)}.`;
-}
-
 export function isKnown(value: string | number | undefined): boolean {
   return value !== undefined && value !== TBA;
 }

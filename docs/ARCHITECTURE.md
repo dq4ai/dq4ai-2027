@@ -48,13 +48,17 @@ for white) and clears to nothing on the right, with the photo itself lightened.
 because stacked they would take too much of a small screen. A very large browser font turns the
 sticky header off, since it would pin half the screen.
 
-**The call's photo on phones, with its own budget.** Under 40rem the Call for Papers shows a 16:9
-crop of the panorama as a card above a plain header, the words on paper. Any photo that is the
-largest paint lands at about 1.95 s in Lighthouse's phone run, whatever its weight (tried from 13 to
-71 KB), and both alternatives were worse: a navy panel, or a thin strip kept smaller than the lede.
-The organizers chose the photo, so `lighthouserc.json` and `lighthouserc.production.json` (the
-audit of the live site after each deploy) give this one page a performance score of
-at least 0.99 and a largest paint under 2000 ms; every other page keeps 100 and 1200 ms.
+**One page.** The organizers asked for the whole site on one page. `src/lib/nav.ts` lists its
+sections in order; `src/pages/index.astro` renders one component per section from
+`src/components/sections/`, each wrapped in `PageSection`, which ends it on "Go to top ↑". The menu
+links to sections by anchor. Long sections show their opening and fold the rest into a native
+`<details>` ("Read more"): no script, the text stays in the page for search engines, and the
+browser's find opens it. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
+kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
+refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
+The Call for Papers' banner photo went with its page, and with it that page's own Lighthouse
+budget: the one page keeps 100 and a largest paint under 1200 ms. Text fills its column up to
+`--measure` (90ch), on a page up to `--page-width` (80rem).
 
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.

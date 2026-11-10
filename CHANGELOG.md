@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+One page, as the organizers asked. The whole site is now the home page, in sections: About, Topics
+of interest, Paper categories, Important dates, Submission, Policies, Program, Keynotes, Accepted
+papers (once there are papers), Organization, Attend, Contact, News and Previous editions. Each
+section ends on "Go to top ↑", and the menu jumps to sections. About shows its first paragraph, and
+Submission its key facts, with the rest behind "Read more". Text now fills the width of the screen,
+up to about 90 characters a line. The old page addresses redirect to their sections. The Call for
+Papers' banner photo is gone with its page (`cfpPhoto` is removed from `site.yaml`), and a checklist
+step's `path` is now an anchor such as `/#dates`. The first edition, QuaLLM-KG 2026 at EDBT/ICDT
+2026 in Tampere, Finland, is listed under Previous editions with a link to its site.
+
 Less again, as the chairs asked. The home page goes from the banner straight to "About": the
 two-line statement, the "Read the call for papers" button and the key facts are gone, and so is the
 unused `exchange` field in `cfp.yaml`. The deadline bar under the header and the theme button are

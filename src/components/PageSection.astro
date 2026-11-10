@@ -1,0 +1,21 @@
+---
+import { sectionById } from "../lib/nav";
+import GoTop from "./GoTop.astro";
+import Heading from "./Heading.astro";
+
+interface Props {
+  /** A section id from lib/nav.ts. */
+  id: string;
+  /** Overrides the title in lib/nav.ts. */
+  title?: string;
+  class?: string;
+}
+const { id, title, class: className } = Astro.props;
+const heading = title ?? sectionById(id).title;
+---
+
+<section class:list={["page-section", className]}>
+  <Heading {id}>{heading}</Heading>
+  <slot />
+  <GoTop />
+</section>

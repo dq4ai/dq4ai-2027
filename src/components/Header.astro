@@ -1,14 +1,19 @@
 ---
 import { getPapers } from "../lib/content";
-import { visibleRoutes } from "../lib/nav";
+import { menuSections } from "../lib/nav";
 import { url } from "../lib/paths";
 import Wordmark from "./Wordmark.astro";
 
 const papers = await getPapers();
-const routes = visibleRoutes(papers.length > 0).filter(
-  (route) => route.primary || route.slug === "home",
-);
-const current = Astro.url.pathname;
+// Every link but Home is a section of the one page.
+const links = [
+  { href: url("/"), label: "Home", home: true },
+  ...menuSections(papers.length > 0).map((section) => ({
+    href: url(`/#${section.id}`),
+    label: section.menu,
+    home: false,
+  })),
+];
 ---
 
 <header class="site-header">
@@ -24,16 +29,11 @@ const current = Astro.url.pathname;
     </button>
     <nav id="site-nav" class="site-nav" aria-label="Main">
       <ul>
-        {routes.map((route) => {
-          const href = url(route.path);
-          return (
-            <li class={route.slug === "home" ? "site-nav__home" : undefined}>
-              <a {href} aria-current={current === href ? "page" : undefined}>
-                {route.title}
-              </a>
-            </li>
-          );
-        })}
+        {links.map((link) => (
+          <li class={link.home ? "site-nav__home" : undefined}>
+            <a href={link.href}>{link.label}</a>
+          </li>
+        ))}
       </ul>
     </nav>
   </div>

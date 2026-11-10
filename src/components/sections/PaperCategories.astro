@@ -1,0 +1,37 @@
+---
+import { getCfp } from "../../lib/content";
+import { TBA } from "../../lib/dates";
+import { pageLimitsUnknown } from "../../lib/view";
+import PageSection from "../PageSection.astro";
+import Value from "../Value.astro";
+
+const cfp = await getCfp();
+const limitsUnknown = pageLimitsUnknown(cfp);
+---
+
+<PageSection id="paper-categories">
+  {/* Read in place, as the previous edition listed them: no link or toggle to open. */}
+  <ul class="paper-types">
+    {cfp.paperTypes.map((type) => (
+      <li id={`paper-${type.id}`}>
+        <strong>{type.title}:</strong> {type.description}
+        {!limitsUnknown && (
+          <>
+            {" "}
+            Page limit: <Value of={type.pageLimit} />.
+          </>
+        )}
+      </li>
+    ))}
+  </ul>
+  {limitsUnknown && (
+    <dl class="facts page-limits">
+      <div>
+        <dt>Page limits</dt>
+        <dd>
+          <Value of={TBA} />
+        </dd>
+      </div>
+    </dl>
+  )}
+</PageSection>

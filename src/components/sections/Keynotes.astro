@@ -1,0 +1,56 @@
+---
+import { getKeynotes } from "../../lib/content";
+import { isKnown } from "../../lib/view";
+import ContentImage from "../ContentImage.astro";
+import PageSection from "../PageSection.astro";
+import Value from "../Value.astro";
+
+const keynotes = await getKeynotes();
+---
+
+{keynotes.length > 0 && (
+  <PageSection id="keynotes">
+    {keynotes.map((keynote) => (
+      <article class="keynote">
+        <div>
+          {keynote.photo && (
+            <ContentImage
+              file={keynote.photo.file}
+              alt={keynote.photo.alt}
+              widths={[192, 224, 384, 448]}
+              sizes="(min-width: 60rem) 12rem, 14rem"
+            />
+          )}
+          <h3 id={keynote.id}>
+            <Value of={keynote.person.name} unknown="Speaker to be announced" />
+          </h3>
+          {isKnown(keynote.person.name) && (
+            <p class="entry__meta">
+              <Value of={keynote.person.affiliation} />
+            </p>
+          )}
+        </div>
+        <dl class="facts">
+          <div>
+            <dt>Talk title</dt>
+            <dd>
+              <Value of={keynote.title} />
+            </dd>
+          </div>
+          <div>
+            <dt>Abstract</dt>
+            <dd>
+              <Value of={keynote.abstract} />
+            </dd>
+          </div>
+          <div>
+            <dt>Biography</dt>
+            <dd>
+              <Value of={keynote.bio} />
+            </dd>
+          </div>
+        </dl>
+      </article>
+    ))}
+  </PageSection>
+)}

@@ -1,0 +1,102 @@
+---
+import { getDeadlines, getSite } from "../../lib/content";
+import { formatAoE, formatIsoDay, TBA } from "../../lib/dates";
+import { nextDeadline, stripPrefix } from "../../lib/view";
+import PageSection from "../PageSection.astro";
+import StatusBadge from "../StatusBadge.astro";
+import Value from "../Value.astro";
+
+const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
+// Status adds nothing until a deadline has a date: the date cell already says it is unknown.
+const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
+const next = nextDeadline(deadlines);
+// The deadlines and the workshop's own day only: the organizers asked to leave out the host
+// conference's dates, the calendar file and the time-zone switch.
+---
+
+<PageSection id="dates">
+  <section class="table-wrap" tabindex="0" aria-label="Important dates">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Item</th>
+          <th scope="col">Date</th>
+          {showStatus && (
+            <th scope="col" class="status-column">
+              Status
+            </th>
+          )}
+        </tr>
+      </thead>
+      <tbody>
+        {deadlines.map((deadline) => (
+          <tr>
+            <th scope="row">{deadline.label}</th>
+            <td class="tabular">
+              {deadline.previous && (
+                <span class="date-change">
+                  Was{" "}
+                  <del>
+                    <time datetime={deadline.previous.toISOString()}>
+                      {formatAoE(deadline.previous)}
+                    </time>
+                  </del>
+                </span>
+              )}
+              {deadline.previous && <span class="visually-hidden now-label">Now</span>}
+              {deadline.id === next?.id && (
+                <span class="visually-hidden next-label">{stripPrefix(deadline.kind)}</span>
+              )}
+              {deadline.due ? (
+                <time
+                  class={deadline.id === next?.id ? "flag" : undefined}
+                  datetime={deadline.due.toISOString()}
+                  data-due={deadline.due.toISOString()}
+                >
+                  {formatAoE(deadline.due)}
+                </time>
+              ) : (
+                <Value of={TBA} />
+              )}
+              {deadline.status !== "tba" && (
+                <span class="status-inline">
+                  <StatusBadge
+                    status={deadline.status}
+                    extended={deadline.previous !== undefined}
+                    due={deadline.due}
+                  />
+                </span>
+              )}
+            </td>
+            {showStatus && (
+              <td class="status-column">
+                {deadline.status !== "tba" && (
+                  <StatusBadge
+                    status={deadline.status}
+                    extended={deadline.previous !== undefined}
+                    due={deadline.due}
+                  />
+                )}
+              </td>
+            )}
+          </tr>
+        ))}
+        <tr>
+          <th scope="row">Workshop date</th>
+          <td class="tabular">
+            {site.workshopDate === TBA ? (
+              <Value of={TBA} />
+            ) : (
+              <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
+            )}
+          </td>
+          {showStatus && <td class="status-column"></td>}
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <p class="note">
+    All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended
+    everywhere on Earth.
+  </p>
+</PageSection>

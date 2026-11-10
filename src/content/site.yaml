@@ -27,7 +27,7 @@ proceedings:
 paperTemplate: TBA
 paperTemplateUrl: TBA # Address of the template file or page
 reviewModel: TBA # e.g. double-blind
-# Shown at the end of the Attend page. Keep every field: the license requires the credit.
+# Shown in the Attend section of the page. Keep every field: the license requires the credit.
 hostPhoto:
   file: lille-grand-place-dusk.jpg
   alt: >-
@@ -40,18 +40,6 @@ hostPhoto:
   licenseUrl: https://creativecommons.org/licenses/by-sa/4.0/
   source: Wikimedia Commons
   sourceUrl: https://commons.wikimedia.org/wiki/File:Lille_gd_place_pano_ter.jpg
-# Shown behind the title of the Call for Papers. Keep every field, as above.
-cfpPhoto:
-  file: lille-grand-place-panorama.jpg
-  alt: >-
-    A panorama of the Grand'Place of Lille by day: the column of the goddess in the square, with the
-    Vieille Bourse and the Chamber of Commerce belfry on the right, under a blue sky with white clouds.
-  subject: The Grand'Place, Lille
-  author: Velvet
-  license: CC BY-SA 3.0
-  licenseUrl: https://creativecommons.org/licenses/by-sa/3.0/
-  source: Wikimedia Commons
-  sourceUrl: https://commons.wikimedia.org/wiki/File:Lille_gd_place.jpg
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

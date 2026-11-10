@@ -1,0 +1,31 @@
+import { describe, expect, it } from "vitest";
+import { menuSections, redirects, SECTIONS, sectionById } from "../../src/lib/nav";
+
+describe("the one page's sections", () => {
+  it("gives every section its own anchor", () => {
+    const ids = SECTIONS.map((section) => section.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+
+  it("keeps Accepted Papers out of the menu until papers exist", () => {
+    expect(menuSections(false).map((section) => section.id)).not.toContain("accepted-papers");
+    expect(menuSections(true).map((section) => section.id)).toContain("accepted-papers");
+  });
+
+  it("sends every old page address to its section", () => {
+    expect(redirects(true)).toContainEqual({ path: "/dates/", to: "/#dates" });
+    expect(redirects(true)).toContainEqual({ path: "/call-for-papers/", to: "/#about" });
+    expect(redirects(true)).toContainEqual({ path: "/accepted-papers/", to: "/#accepted-papers" });
+    for (const path of ["/submission/", "/program/", "/organization/", "/attend/", "/news/"]) {
+      expect(redirects(true).map((redirect) => redirect.path)).toContain(path);
+    }
+  });
+
+  it("sends the old Accepted Papers address to the program until papers exist", () => {
+    expect(redirects(false)).toContainEqual({ path: "/accepted-papers/", to: "/#program" });
+  });
+
+  it("refuses an unknown section", () => {
+    expect(() => sectionById("nope")).toThrow(/Unknown section/);
+  });
+});

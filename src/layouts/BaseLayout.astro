@@ -6,15 +6,15 @@ import Footer from "../components/Footer.astro";
 import DeadlineSync from "../components/DeadlineSync.astro";
 import Header from "../components/Header.astro";
 import { getSite } from "../lib/content";
-import { routeBySlug } from "../lib/nav";
-import { pageDescription, siteSummary } from "../lib/view";
+import { HOME } from "../lib/nav";
+import { siteSummary } from "../lib/view";
 import { absoluteUrl, url } from "../lib/paths";
 import { contentSecurityPolicy, THEME_INIT_SCRIPT } from "../lib/theme";
 import "../styles/global.css";
 
 interface Props {
-  /** A route slug from lib/nav.ts: gives the title, description and social image. */
-  slug?: string;
+  /** "home" for the one page of the site, which gives its title, description and social image. */
+  slug?: "home";
   title?: string;
   description?: string;
   noindex?: boolean;
@@ -22,16 +22,15 @@ interface Props {
 
 const { slug, noindex = false } = Astro.props;
 const site = await getSite();
-const route = slug ? routeBySlug(slug) : undefined;
+const route = slug === "home" ? HOME : undefined;
 const label = `${site.acronym} ${site.year}`;
 const pageTitle = Astro.props.title ?? route?.title ?? label;
 const title =
   slug === "home"
     ? `${label} Workshop at ${site.host.name}: ${site.title}`
     : `${pageTitle} | ${label}`;
-const routeDescription =
-  slug === "home" ? siteSummary(site) : route && pageDescription(site, route.description);
-const description = Astro.props.description ?? routeDescription ?? site.tagline;
+const description =
+  Astro.props.description ?? (route ? siteSummary(site) : undefined) ?? site.tagline;
 const canonical = route ? absoluteUrl(route.path, Astro.site) : undefined;
 const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
 ---
@@ -82,9 +81,6 @@ const ogImage = absoluteUrl(`/og/${slug ?? "home"}.png`, Astro.site);
     <Header />
     <main id="main" tabindex="-1">
       <slot />
-      <p class="go-top">
-        <a href="#top">Go to top ↑</a>
-      </p>
     </main>
     <Footer />
     <DeadlineSync />

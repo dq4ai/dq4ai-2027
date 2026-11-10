@@ -6,9 +6,10 @@
   city: Lille, France
   url: https://dq4ai.github.io/dq4ai-2027/
   current: true
-- id: first-edition
-  edition: First
-  year: TBA
-  host: TBA
-  city: TBA
-  url: TBA
+# The first edition ran under another name. Source: the organizers, 10 November 2026.
+- id: quallm-kg-2026
+  edition: First (QuaLLM-KG 2026)
+  year: 2026
+  host: EDBT/ICDT 2026
+  city: Tampere, Finland
+  url: https://quallmkg2026.github.io/

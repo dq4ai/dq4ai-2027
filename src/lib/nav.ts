@@ -1,115 +1,69 @@
-/** The site map: navigation, footer, sitemap and Open Graph images are all derived from this. */
-export interface Route {
-  path: string;
-  slug: string;
+/**
+ * The site is one page, as the organizers asked. This lists its sections in order: the menu, the
+ * redirects from the old page addresses and the Open Graph image are derived from it.
+ */
+export interface Section {
+  /** The section's anchor on the home page, and its heading's id. */
+  id: string;
   title: string;
-  description: string;
-  /** In the main menu. The rest are linked from the footer, so the menu stays short. */
-  primary?: boolean;
-  /** Left out of navigation and the sitemap until the page has content. */
+  /** In the main menu, under this label. Sections without one are reached by scrolling. */
+  menu?: string;
+  /** The address this section had when it was a page of its own: it now redirects here. */
+  oldPath?: string;
+  /** Left out of the page and the menu until papers are accepted. */
   onlyWithPapers?: boolean;
-  /** Stays in navigation, but is left out of the sitemap until the program exists. */
-  sitemapOnlyWithProgram?: boolean;
 }
 
-export const ROUTES: Route[] = [
+export const HOME = {
+  path: "/",
+  slug: "home",
+  title: "Home",
+  description: "Workshop overview, call for papers, dates, program and organization.",
+} as const;
+
+export const SECTIONS: Section[] = [
+  { id: "about", title: "About", oldPath: "/call-for-papers/" },
+  { id: "topics", title: "Topics of interest", menu: "Call for Papers" },
+  { id: "paper-categories", title: "Paper categories" },
+  { id: "dates", title: "Important dates", menu: "Dates", oldPath: "/dates/" },
+  { id: "submission", title: "Submission", oldPath: "/submission/" },
+  { id: "policies", title: "Policies", oldPath: "/policies/" },
+  { id: "program", title: "Program", menu: "Program", oldPath: "/program/" },
+  { id: "keynotes", title: "Keynotes", oldPath: "/keynotes/" },
   {
-    path: "/",
-    slug: "home",
-    title: "Home",
-    description: "Workshop overview, key dates and latest news.",
-  },
-  {
-    path: "/call-for-papers/",
-    slug: "call-for-papers",
-    title: "Call for Papers",
-    description: "Scope, topics, paper categories and policies.",
-    primary: true,
-  },
-  {
-    path: "/dates/",
-    slug: "dates",
-    title: "Dates",
-    description: "Important dates, in Anywhere on Earth.",
-    primary: true,
-  },
-  {
-    path: "/submission/",
-    slug: "submission",
-    title: "Submission",
-    description: "How to prepare and submit a paper.",
-  },
-  {
-    path: "/program/",
-    slug: "program",
-    title: "Program",
-    description: "Sessions, talks and times.",
-    primary: true,
-    sitemapOnlyWithProgram: true,
-  },
-  {
-    path: "/keynotes/",
-    slug: "keynotes",
-    title: "Keynotes",
-    description: "Keynote speakers and talks.",
-  },
-  {
-    path: "/accepted-papers/",
-    slug: "accepted-papers",
-    title: "Accepted Papers",
-    description: "Papers accepted at the workshop.",
-    primary: true,
+    id: "accepted-papers",
+    title: "Accepted papers",
+    menu: "Accepted Papers",
+    oldPath: "/accepted-papers/",
     onlyWithPapers: true,
   },
-  {
-    path: "/organization/",
-    slug: "organization",
-    title: "Organization",
-    description: "Workshop chairs and program committee.",
-    primary: true,
-  },
-  {
-    path: "/attend/",
-    slug: "attend",
-    title: "Attend",
-    description: "Registration and practical information for attending.",
-    primary: true,
-  },
-  {
-    path: "/news/",
-    slug: "news",
-    title: "News",
-    description: "Announcements about the workshop.",
-  },
-  {
-    path: "/policies/",
-    slug: "policies",
-    title: "Policies",
-    description: "Code of conduct, conflict of interest and ethics.",
-  },
-  {
-    path: "/previous-editions/",
-    slug: "previous-editions",
-    title: "Previous Editions",
-    description: "All editions of the workshop.",
-  },
+  { id: "organization", title: "Organization", menu: "Organization", oldPath: "/organization/" },
+  { id: "attend", title: "Attend", menu: "Attend", oldPath: "/attend/" },
+  { id: "contact", title: "Contact" },
+  { id: "news", title: "News", oldPath: "/news/" },
+  { id: "previous-editions", title: "Previous editions", oldPath: "/previous-editions/" },
+  { id: "sponsors", title: "Supported by" },
 ];
 
-export function routeBySlug(slug: string): Route {
-  const route = ROUTES.find((candidate) => candidate.slug === slug);
-  if (!route) throw new Error(`Unknown route "${slug}"`);
-  return route;
+export function sectionById(id: string): Section {
+  const section = SECTIONS.find((candidate) => candidate.id === id);
+  if (!section) throw new Error(`Unknown section "${id}"`);
+  return section;
 }
 
-export function visibleRoutes(hasPapers: boolean): Route[] {
-  return ROUTES.filter((route) => !route.onlyWithPapers || hasPapers);
+/** The menu: a link to each section that has a label and is on the page. */
+export function menuSections(hasPapers: boolean): Section[] {
+  return SECTIONS.filter((section) => section.menu && (!section.onlyWithPapers || hasPapers));
 }
 
-/** The pages kept out of the main menu, for the footer. */
-export function secondaryRoutes(): Route[] {
-  return ROUTES.filter((route) => !route.primary && route.slug !== "home");
-}
-
-export function sitemapRoutes(hasPapers: boolean, hasProgram: boolean): Route[] {
-  return visibleRoutes(hasPapers).filter((route) => !route.sitemapOnlyWithProgram || hasProgram);
+/**
+ * Old page addresses, each to its section. Accepted Papers points at the program until papers
+ * exist, so a link shared early still lands somewhere useful.
+ */
+export function redirects(hasPapers: boolean): { path: string; to: string }[] {
+  return SECTIONS.flatMap((section) => {
+    if (!section.oldPath) return [];
+    const id = section.onlyWithPapers && !hasPapers ? "program" : section.id;
+    return [{ path: section.oldPath, to: `/#${id}` }];
+  });
 }

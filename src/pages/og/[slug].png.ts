@@ -1,15 +1,14 @@
 import type { APIRoute, GetStaticPaths } from "astro";
 import { getSite } from "../../lib/content";
 import { formatDayRange, formatIsoDay, TBA } from "../../lib/dates";
-import { ROUTES } from "../../lib/nav";
+import { HOME } from "../../lib/nav";
 import { renderOgImage } from "../../lib/og";
 import { hostLocation, workshopTitle } from "../../lib/view";
 
-export const getStaticPaths = (() =>
-  ROUTES.map((route) => ({
-    params: { slug: route.slug },
-    props: { title: route.title },
-  }))) satisfies GetStaticPaths;
+// One image, for the one page; the route keeps its name so the image's address does not change.
+export const getStaticPaths = (() => [
+  { params: { slug: HOME.slug }, props: { title: HOME.title } },
+]) satisfies GetStaticPaths;
 
 export const GET: APIRoute = async ({ props, params }) => {
   const site = await getSite();

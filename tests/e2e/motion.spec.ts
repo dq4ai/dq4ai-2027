@@ -53,8 +53,8 @@ test.describe("what moves", () => {
 
   test("a hovered button eases, and only then", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
-    await page.goto("call-for-papers/");
-    const link = page.getByRole("link", { name: "Policies page" });
+    await page.goto("");
+    const link = page.locator(".go-top a").first();
     const duration = () => link.evaluate((e) => getComputedStyle(e).transitionDuration);
     expect(await duration()).toBe("0s");
     await link.hover();
@@ -116,8 +116,8 @@ test.describe("every control shows its state", () => {
 
   test("an abstract's control responds to a pointer", async ({ page }, testInfo) => {
     test.skip(testInfo.project.name !== "populated-content", "needs an abstract");
-    await page.goto("program/");
-    const summary = page.locator("summary").first();
+    await page.goto("");
+    const summary = page.locator("#program ~ .session summary").first();
     const before = await summary.evaluate((e) => getComputedStyle(e).textDecorationLine);
     await summary.hover();
     expect(await summary.evaluate((e) => getComputedStyle(e).textDecorationLine)).not.toBe(before);
@@ -132,7 +132,7 @@ test.describe("every control shows its state", () => {
     });
     const page = await context.newPage();
     await page.goto("");
-    const link = page.locator(".news-line a");
+    const link = page.locator(".go-top a").first();
     await link.evaluate((a) => {
       a.addEventListener("click", (event) => {
         event.preventDefault();
@@ -153,7 +153,7 @@ test.describe("every control shows its state", () => {
       viewport: { width: 390, height: 844 },
     });
     const page = await context.newPage();
-    await page.goto("call-for-papers/");
+    await page.goto("");
     for (const selector of [".go-top a"]) {
       const box = await page.locator(selector).first().boundingBox();
       expect(box?.height ?? 0, selector).toBeGreaterThanOrEqual(44);
@@ -163,7 +163,7 @@ test.describe("every control shows its state", () => {
 
   test("a section's own link is a full pointer target", async ({ page }) => {
     await page.setViewportSize({ width: 1100, height: 800 });
-    await page.goto("call-for-papers/");
+    await page.goto("");
     const box = await page.locator(".section-anchor").first().boundingBox();
     expect(box?.width ?? 0).toBeGreaterThanOrEqual(24);
     expect(box?.x ?? -1).toBeGreaterThanOrEqual(0);
