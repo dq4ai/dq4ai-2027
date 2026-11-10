@@ -122,6 +122,11 @@ test("the page has no News section, as the organizers asked", async ({ page }) =
   await expect(page.locator("main h2", { hasText: /news/i })).toHaveCount(0);
 });
 
+test("Submission does not link to the dates just below it", async ({ page }) => {
+  await page.goto("");
+  await expect(section(page, "submission").locator('> p a[href$="#dates"]')).toHaveCount(0);
+});
+
 test("every old page address leads to its section", async ({ page }) => {
   for (const [path, id] of Object.entries(OLD_PAGES)) {
     if (id === "keynotes") continue; // Only there while there are keynotes.

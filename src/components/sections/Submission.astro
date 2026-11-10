@@ -36,16 +36,16 @@ const pending = pendingSentence(
 <PageSection id="submission">
   {site.submissionUrl === TBA ? (
     <p>
-      <strong>The submission link will be announced here.</strong> See the{" "}
-      <a href={url("/#dates")}>important dates</a>
+      {/* The dates are just below, so only the host's page is linked. */}
+      <strong>The submission link will be announced here.</strong>
       {site.host.workshopsUrl && (
         <>
           {" "}
-          and the{" "}
+          See the{" "}
           <ExternalLink href={site.host.workshopsUrl}>{site.host.name} workshops page</ExternalLink>
+          .
         </>
       )}
-      .
     </p>
   ) : submissionOpen(site, deadlines) ? (
     <p class="page-action">
@@ -59,7 +59,7 @@ const pending = pendingSentence(
     </p>
   ) : (
     <p>
-      <strong>Submission has closed.</strong> See the <a href={url("/#dates")}>important dates</a>.
+      <strong>Submission has closed.</strong>
     </p>
   )}
   <Dates />
