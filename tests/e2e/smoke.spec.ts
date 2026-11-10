@@ -187,6 +187,53 @@ test("the navigation stays visible wherever its links fit", async ({ page }) => 
   await expect(page.locator(".nav-toggle")).toBeVisible();
 });
 
+// The organizers asked for the next deadline in clearer type, without its yellow background, as
+// the previous edition set it: bold and red.
+test("the next deadline is bold and red, without a background", async ({ page }) => {
+  await page.goto("");
+  const flag = datesTable(page).locator(".flag");
+  await expect(flag).toHaveCount(1);
+  const style = await flag.evaluate((e) => {
+    const computed = getComputedStyle(e);
+    return {
+      background: computed.backgroundColor,
+      color: computed.color,
+      weight: computed.fontWeight,
+    };
+  });
+  expect(style).toEqual({ background: "rgba(0, 0, 0, 0)", color: "rgb(204, 0, 0)", weight: "600" });
+});
+
+// The organizers asked for every name and affiliation on one line, with a smaller affiliation
+// where it needs one.
+test("every name and affiliation is on one line", async ({ page }) => {
+  for (const width of [1280, 820]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto("");
+    const lines = await page.locator("main .person, main .keynote__person").evaluateAll((all) =>
+      all.map((e) => ({
+        text: e.textContent?.trim() ?? "",
+        lines: Math.round(
+          e.getBoundingClientRect().height / parseFloat(getComputedStyle(e).lineHeight),
+        ),
+      })),
+    );
+    expect(lines.length).toBeGreaterThan(0);
+    for (const line of lines) expect(line.lines, `${line.text} at ${width}px`).toBe(1);
+  }
+  await page.setViewportSize({ width: 390, height: 844 });
+  const sizes = await page
+    .locator("main .person")
+    .first()
+    .evaluate((person) => ({
+      name: parseFloat(getComputedStyle(person.querySelector(".person__name") as Element).fontSize),
+      place: parseFloat(
+        getComputedStyle(person.querySelector(".person__place") as Element).fontSize,
+      ),
+    }));
+  expect(sizes.place).toBeLessThan(sizes.name);
+});
+
 test("the wordmark keeps its words apart", async ({ page }) => {
   await page.goto("");
   for (const area of [".site-header", ".site-footer"]) {

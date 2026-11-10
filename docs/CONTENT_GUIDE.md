@@ -44,6 +44,13 @@ appears under the banner at the top of the page. Leave it out if you do not know
 statusNote: Your sentence here.
 ```
 
+## Set the submission link
+
+Submission ends on the previous edition's sentence: "Authors must format their submissions according
+to the CEUR-WS proceedings template, and all submissions in PDF format should be submitted here."
+Until `submissionUrl` in `site.yaml` is set, "here" is a placeholder that looks like a link and goes
+nowhere. Set `submissionUrl` to the real address and "here" becomes that link.
+
 ## Link the paper template
 
 `paperTemplate` in `site.yaml` is the template's name, and `paperTemplateUrl` is where to get it.

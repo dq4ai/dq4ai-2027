@@ -73,12 +73,6 @@
     padding: 0;
   }
 
-  .flag {
-    background: none;
-    margin-inline-start: 0 !important;
-    padding: 0;
-  }
-
   /* Collapsed text is not on paper to open. */
   details::details-content {
     display: block;
@@ -126,7 +120,7 @@
     text-decoration: none;
   }
 
-  a[href^="http"]:not(.link-is-address)::after {
+  a[href^="http"]::after {
     content: " (" attr(href) ")";
     font-size: 8pt;
   }

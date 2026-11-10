@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+Submission ends as the previous edition's did: "Authors must format their submissions according to
+the CEUR-WS proceedings template, and all submissions in PDF format should be submitted here." The
+template links to CEUR-WS's instructions, and "here" is a placeholder until `submissionUrl` is set.
+The box announcing the link, the submit button and the "to be announced" sentence are gone. The next
+deadline is bold red, without its yellow background. Affiliations are slightly smaller so each name
+and affiliation keep to one line; the keynote speaker's too, now above the talk rather than in a
+narrow column.
+
 The previous edition's site exactly, with this edition's content, as the organizers asked. The
 banner reads "DQ4AI 2027" in large type over the full title, where and when. The sections and menu
 are those of QuaLLM-KG 2026: About the DQ4AI Workshop, Topics of Interest, Submission, Program,

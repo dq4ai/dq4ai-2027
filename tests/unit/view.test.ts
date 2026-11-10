@@ -1,15 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { parseIso } from "../../src/lib/dates";
 import { cfpSchema, siteSchema, submissionSchema } from "../../src/lib/schemas";
 import type { Site } from "../../src/lib/schemas";
-import {
-  pageContext,
-  pendingSentence,
-  stripPrefix,
-  submissionOpen,
-  topicAnchor,
-  type DeadlineView,
-} from "../../src/lib/view";
+import { pageContext, stripPrefix, topicAnchor } from "../../src/lib/view";
 
 const site = {
   acronym: "DQ4AI",
@@ -26,14 +18,6 @@ const site = {
   },
 } as Site;
 
-const deadline = (id: string, status: DeadlineView["status"]): DeadlineView => ({
-  id,
-  label: id,
-  kind: "submission",
-  status,
-  ...(status === "tba" ? {} : { due: parseIso("2026-12-18T23:59:00-12:00") }),
-});
-
 describe("pageContext", () => {
   it("keeps the host's dates apart from a workshop date not yet known", () => {
     expect(pageContext(site)).toBe(
@@ -44,29 +28,6 @@ describe("pageContext", () => {
     expect(pageContext({ ...site, workshopDate: "2027-04-07" })).toBe(
       "DQ4AI 2027 workshop, 7 April 2027, at EDBT/ICDT 2027, Lille, France",
     );
-  });
-});
-
-describe("submissionOpen", () => {
-  it("is closed with no submission link", () => {
-    expect(
-      submissionOpen({ ...site, submissionUrl: "TBA" }, [deadline("submission", "upcoming")]),
-    ).toBe(false);
-  });
-  it("is open while the deadline is ahead, or on its day", () => {
-    expect(submissionOpen(site, [deadline("submission", "upcoming")])).toBe(true);
-    expect(submissionOpen(site, [deadline("submission", "today")])).toBe(true);
-  });
-  it("is open while the deadline is unknown", () => {
-    expect(submissionOpen(site, [deadline("submission", "tba")])).toBe(true);
-  });
-  it("closes once the deadline passes", () => {
-    expect(submissionOpen(site, [deadline("submission", "passed")])).toBe(false);
-  });
-  it("ignores other deadlines", () => {
-    expect(
-      submissionOpen(site, [deadline("abstract", "passed"), deadline("submission", "upcoming")]),
-    ).toBe(true);
   });
 });
 
@@ -152,20 +113,5 @@ describe("topics in content", () => {
   it("topics no longer take an icon, so a leftover icon field fails the build", () => {
     const parsed = topicsOnly.safeParse([{ title: "t", items: ["a"], icon: "knowledge-graph" }]);
     expect(parsed.success).toBe(false);
-  });
-});
-
-describe("pendingSentence", () => {
-  it("names what is still unknown in one sentence", () => {
-    expect(pendingSentence(["Submission system", "Template", "Review model"])).toBe(
-      "Submission system, template and review model: to be announced.",
-    );
-    expect(pendingSentence(["Dual submission", "Use of generative AI"])).toBe(
-      "Dual submission and use of generative AI: to be announced.",
-    );
-    expect(pendingSentence(["Template"])).toBe("Template: to be announced.");
-  });
-  it("is empty when everything is known", () => {
-    expect(pendingSentence([])).toBe("");
   });
 });

@@ -3,6 +3,7 @@ import { getKeynotes } from "../../lib/content";
 import { isKnown } from "../../lib/view";
 import ContentImage from "../ContentImage.astro";
 import PageSection from "../PageSection.astro";
+import PersonEntry from "../PersonEntry.astro";
 import Value from "../Value.astro";
 
 const keynotes = await getKeynotes();
@@ -21,14 +22,14 @@ const keynotes = await getKeynotes();
               sizes="(min-width: 60rem) 12rem, 14rem"
             />
           )}
-          <h3 id={keynote.id}>
-            <Value of={keynote.person.name} unknown="Speaker to be announced" />
+          {/* Name and affiliation on one line, as for everyone else on the page. */}
+          <h3 id={keynote.id} class="keynote__person">
+            {isKnown(keynote.person.name) ? (
+              <PersonEntry person={keynote.person} />
+            ) : (
+              <Value of={keynote.person.name} unknown="Speaker to be announced" />
+            )}
           </h3>
-          {isKnown(keynote.person.name) && (
-            <p class="entry__meta">
-              <Value of={keynote.person.affiliation} />
-            </p>
-          )}
         </div>
         <dl class="facts">
           <div>

@@ -4,8 +4,8 @@ import { stripPrefix } from "../lib/view";
 
 const deadlines = await getDeadlines();
 // Everything still ahead, so a page built earlier can move on when a deadline closes. The
-// organizers asked for no deadline bar, so nothing here is seen: the script below keeps statuses,
-// the flagged date and the submit button right between the daily rebuilds.
+// organizers asked for no deadline bar, so nothing here is seen: the script below keeps statuses
+// and the flagged date right between the daily rebuilds.
 const schedule = deadlines
   .flatMap((deadline) => (deadline.due ? [{ ...deadline, due: deadline.due }] : []))
   .filter((deadline) => deadline.status !== "passed")
@@ -52,17 +52,10 @@ const schedule = deadlines
     }
   };
 
-  const updateOffers = (now: Date) => {
-    for (const offer of document.querySelectorAll<HTMLElement>("[data-closes]")) {
-      offer.hidden = now > new Date(offer.dataset.closes ?? "");
-    }
-  };
-
   const tick = () => {
     const now = new Date();
     const current = schedule.find((entry) => new Date(entry.due) >= now);
     updateRows(current, now);
-    updateOffers(now);
     // Just after the next minute begins, so a deadline's status changes on the minute it passes.
     setTimeout(tick, 60_000 - (now.getTime() % 60_000) + 50);
   };
