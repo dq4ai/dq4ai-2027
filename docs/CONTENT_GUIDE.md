@@ -161,6 +161,7 @@ is not CC BY 4.0 in `LICENSE`.
 
 ## Post news
 
+News is not shown on the page, by the organizers' choice: it goes to the RSS feed (`rss.xml`) only.
 Add a file such as `news/2026-12-01-deadline-extended.md`:
 
 ```markdown

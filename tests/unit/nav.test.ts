@@ -21,6 +21,11 @@ describe("the one page's sections", () => {
     }
   });
 
+  it("sends the old News address to the top, since the page has no News section", () => {
+    expect(redirects(true)).toContainEqual({ path: "/news/", to: "/#about" });
+    expect(SECTIONS.map((section) => section.id)).not.toContain("news");
+  });
+
   it("sends the old Accepted Papers address to the program until papers exist", () => {
     expect(redirects(false)).toContainEqual({ path: "/accepted-papers/", to: "/#program" });
   });

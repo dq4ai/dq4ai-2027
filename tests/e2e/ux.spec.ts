@@ -697,7 +697,6 @@ test.describe("one name for one thing", () => {
     await expect(section(page, "dates").locator("thead")).not.toContainText("Milestone");
     await expect(section(page, "dates").locator("tbody")).toContainText("Workshop date");
     await expect(page.getByRole("heading", { name: "Submission", exact: true })).toBeVisible();
-    await expect(page.locator("main").getByRole("link", { name: "News feed" })).toBeVisible();
     if (populated(testInfo.project.name)) {
       await expect(page.locator("#accepted-papers")).toHaveText("Accepted papers");
     }

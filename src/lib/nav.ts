@@ -40,7 +40,6 @@ export const SECTIONS: Section[] = [
   { id: "organization", title: "Organization", menu: "Organization", oldPath: "/organization/" },
   { id: "attend", title: "Attend", menu: "Attend", oldPath: "/attend/" },
   { id: "contact", title: "Contact" },
-  { id: "news", title: "News", oldPath: "/news/" },
   { id: "previous-editions", title: "Previous editions", oldPath: "/previous-editions/" },
   { id: "sponsors", title: "Supported by" },
 ];
@@ -61,9 +60,11 @@ export function menuSections(hasPapers: boolean): Section[] {
  * exist, so a link shared early still lands somewhere useful.
  */
 export function redirects(hasPapers: boolean): { path: string; to: string }[] {
-  return SECTIONS.flatMap((section) => {
+  const moved = SECTIONS.flatMap((section) => {
     if (!section.oldPath) return [];
     const id = section.onlyWithPapers && !hasPapers ? "program" : section.id;
     return [{ path: section.oldPath, to: `/#${id}` }];
   });
+  // The organizers asked for no News section; its old address goes to the top of the page.
+  return [...moved, { path: "/news/", to: "/#about" }];
 }

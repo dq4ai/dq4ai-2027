@@ -14,7 +14,7 @@ export const OLD_PAGES = {
   "attend/": "attend",
   "policies/": "policies",
   "previous-editions/": "previous-editions",
-  "news/": "news",
+  "news/": "about",
 } as const;
 
 /** The section whose heading has this id. */

@@ -116,9 +116,15 @@ test("the Submission section folds its checklist and questions behind Read more"
   await expect(submission.locator("#checklist")).toBeVisible();
 });
 
+test("the page has no News section, as the organizers asked", async ({ page }) => {
+  await page.goto("");
+  await expect(page.locator("#news, [id^='news-']")).toHaveCount(0);
+  await expect(page.locator("main h2", { hasText: /news/i })).toHaveCount(0);
+});
+
 test("every old page address leads to its section", async ({ page }) => {
   for (const [path, id] of Object.entries(OLD_PAGES)) {
-    if (id === "news" || id === "keynotes") continue; // Only there while they have content.
+    if (id === "keynotes") continue; // Only there while there are keynotes.
     await page.goto(path);
     await expect(page, path).toHaveURL(new RegExp(`/#${id}$`));
     await expect(page.locator(`#${id}`), path).toBeVisible();

@@ -4,7 +4,8 @@
 
 One page, as the organizers asked. The whole site is now the home page, in sections: About, Topics
 of interest, Paper categories, Important dates, Submission, Policies, Program, Keynotes, Accepted
-papers (once there are papers), Organization, Attend, Contact, News and Previous editions. Each
+papers (once there are papers), Organization, Attend, Contact and Previous editions; news goes to
+the RSS feed only. Each
 section ends on "Go to top ↑", and the menu jumps to sections. About shows its first paragraph, and
 Submission its key facts, with the rest behind "Read more". Text now fills the width of the screen,
 up to about 90 characters a line. The old page addresses redirect to their sections. The Call for
