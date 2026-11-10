@@ -200,6 +200,13 @@ test.describe("the call for papers banner", () => {
     test(`white text holds AA over any photo at ${width}px`, async ({ page }) => {
       await page.setViewportSize({ width, height });
       await page.goto("call-for-papers/");
+      if (width < 640) {
+        // On a phone the photo is a card above the words, which sit on the page's own paper.
+        const photo = await page.locator(".page-header__photo").boundingBox();
+        const text = await page.locator(".page-header .page-context").boundingBox();
+        expect(text?.y ?? 0).toBeGreaterThanOrEqual((photo?.y ?? 0) + (photo?.height ?? 0));
+        return;
+      }
       const samples = await page.locator(".page-header--photo").evaluate((header) => {
         const box = header.getBoundingClientRect();
         const text = [...header.querySelectorAll(".page-context, h1, .lede")].map((e) => {
@@ -242,15 +249,25 @@ test.describe("the call for papers banner", () => {
     ).toBe("rgb(0, 0, 0)");
   });
 
-  test("a phone gets the title on navy, without downloading the photo", async ({ page }) => {
-    const panorama: string[] = [];
-    page.on("request", (request) => {
-      if (request.url().includes("grand-place-panorama")) panorama.push(request.url());
+  // Replaced after the phone review: the organizers wanted Lille on a phone too, not a navy panel.
+  // The phone still downloads one small crop, never the panorama itself.
+  test("a phone downloads only a small crop of the photo", async ({ page }) => {
+    const images: { url: string; bytes: number }[] = [];
+    page.on("response", async (response) => {
+      if (response.request().resourceType() === "image") {
+        images.push({ url: response.url(), bytes: (await response.body()).length });
+      }
     });
     await page.setViewportSize({ width: 412, height: 823 });
     await page.goto("call-for-papers/", { waitUntil: "networkidle" });
-    expect(panorama).toEqual([]);
-    await expect(page.locator(".page-header__photo")).toBeHidden();
+    // Every framing of the photo shares its file's name, up to the build's hash.
+    const shown = await page
+      .locator(".page-header__photo")
+      .evaluate((img: HTMLImageElement) => img.currentSrc.split("/").pop()?.split(".")[0] ?? "");
+    const panorama = images.filter((image) => image.url.includes(`/${shown}.`));
+    expect(panorama).toHaveLength(1);
+    expect(panorama[0]?.bytes ?? Infinity).toBeLessThan(40_000);
+    await expect(page.locator(".page-header__photo")).toBeVisible();
     await expect(page.locator(".page-header--photo h1")).toBeVisible();
   });
 

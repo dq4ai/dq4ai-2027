@@ -262,7 +262,7 @@ test("the host city photo is credited and does not claim to be the venue", async
     "href",
     real ? /commons\.wikimedia\.org\/wiki\/File:Lille_gd_place/ : "https://example.org/photo",
   );
-  await expect(caption).toContainText("resized");
+  await expect(caption).toContainText("resized and cropped");
   expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(832);
 
   await page.setViewportSize({ width: 390, height: 844 });

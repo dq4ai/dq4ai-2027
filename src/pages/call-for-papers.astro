@@ -169,7 +169,7 @@ const policiesPending = pendingSentence(
 
   <section>
     <Heading id="policies">Submission policies</Heading>
-    {policiesPending !== "" && <p>{policiesPending}</p>}
+    {policiesPending !== "" && <p class="note">{policiesPending}</p>}
     {(isKnown(cfp.dualSubmission) || isKnown(cfp.generativeAi)) && (
       <dl class="facts">
         {isKnown(cfp.dualSubmission) && (

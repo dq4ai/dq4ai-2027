@@ -36,8 +36,12 @@ for white) and clears to nothing on the right, with the photo itself lightened.
 because stacked they would take too much of a small screen. A very large browser font turns the
 sticky header off, since it would pin half the screen.
 
-**No banner photo on phones.** The Call for Papers panorama would be the page's largest paint on a
-phone and missed the 1200 ms budget at about 1800 ms, so screens under 40rem get the title on navy.
+**The call's photo on phones, with its own budget.** Under 40rem the Call for Papers shows a 16:9
+crop of the panorama as a card above a plain header, the words on paper. Any photo that is the
+largest paint lands at about 1.95 s in Lighthouse's phone run, whatever its weight (tried from 13 to
+71 KB), and both alternatives were worse: a navy panel, or a thin strip kept smaller than the lede.
+The organizers chose the photo, so `lighthouserc.json` gives this one page a performance score of
+at least 0.99 and a largest paint under 2000 ms; every other page keeps 100 and 1200 ms.
 
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.

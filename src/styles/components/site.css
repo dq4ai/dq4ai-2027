@@ -366,19 +366,8 @@
   margin-block-start: var(--space-2);
 }
 
-@media (width < 40rem) {
-  .site-footer__links {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-/* Only reached with a very large browser font: two columns would leave no room for a word. */
-@media (width < 18rem) {
-  .site-footer__links {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
+/* On a phone too the links flow as words do, so each moves to the next row whole rather than
+   leaving half of itself behind. */
 
 .site-footer__legal {
   margin-block-start: var(--space-3);

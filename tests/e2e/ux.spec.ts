@@ -332,15 +332,21 @@ test.describe("values not yet known", () => {
     await expect(page.locator(".keynote .entry__meta .tba")).toHaveCount(0);
   });
 
-  test("on a phone an unset row keeps its label beside it", async ({ page }) => {
+  // Reversed after the phone review: unset rows sat beside their label while every other row
+  // stacked, so one list mixed two shapes. Now every row on a phone has one shape.
+  test("on a phone every row puts its label above its value, known or not", async ({ page }) => {
     await page.setViewportSize(PHONE);
-    await page.goto("submission/");
-    const row = page.locator(".facts > div", { has: page.locator("dd > .tba:only-child") }).first();
-    const [label, value] = await Promise.all([
-      row.locator("dt").boundingBox(),
-      row.locator("dd").boundingBox(),
-    ]);
-    expect(value?.y).toBe(label?.y);
+    for (const path of ["", "submission/", "call-for-papers/"]) {
+      await page.goto(path);
+      for (const row of await page.locator(".facts > div").all()) {
+        const [label, value] = await Promise.all([
+          row.locator("dt").boundingBox(),
+          row.locator("dd").boundingBox(),
+        ]);
+        expect(value?.y ?? 0, path).toBeGreaterThan(label?.y ?? 0);
+        expect(value?.x, path).toBe(label?.x);
+      }
+    }
   });
 });
 
@@ -871,4 +877,83 @@ test.describe("less at once", () => {
       details.getByRole("link", { name: "How to prepare and submit a paper" }),
     ).toHaveAttribute("href", /submission\/$/);
   });
+});
+
+// The organizers asked for a phone view as finished as the desktop one.
+test.describe("on a phone", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize(PHONE);
+  });
+
+  // The organizers chose a photo card over a navy panel or a strip, and gave the call its own
+  // phone budget in lighthouserc.json for it.
+  test("the call opens on a photo of Lille, with its words on paper below", async ({ page }) => {
+    await page.goto("call-for-papers/");
+    const photo = page.locator(".page-header__photo");
+    await expect(photo).toBeVisible();
+    await expect
+      .poll(() => photo.evaluate((img: HTMLImageElement) => img.naturalWidth))
+      .toBeGreaterThan(0);
+    const box = await photo.boundingBox();
+    expect((box?.width ?? 0) / (box?.height ?? 1)).toBeCloseTo(16 / 9, 1);
+    const heading = await page.locator(".page-header h1").boundingBox();
+    expect(heading?.y ?? 0).toBeGreaterThan((box?.y ?? 0) + (box?.height ?? 0));
+    const title = await page
+      .locator(".page-header--photo h1")
+      .evaluate((e) => getComputedStyle(e).color);
+    expect(title).toBe(await page.evaluate(() => getComputedStyle(document.body).color));
+    await expect(page.locator(".page-header--photo")).toHaveCSS(
+      "background-color",
+      "rgba(0, 0, 0, 0)",
+    );
+  });
+
+  test("the host city photo is a photo, not a sliver", async ({ page }) => {
+    await page.goto("attend/");
+    const photo = page.locator(".city-photo img");
+    await photo.scrollIntoViewIfNeeded();
+    const box = await photo.boundingBox();
+    expect((box?.width ?? 0) / (box?.height ?? 1)).toBeCloseTo(1.5, 1);
+    await expect
+      .poll(() => photo.evaluate((img: HTMLImageElement) => img.naturalWidth))
+      .toBeGreaterThan(0);
+  });
+
+  test("footer links never break in two", async ({ page }) => {
+    await page.goto("");
+    for (const link of await page.locator(".site-footer__links a").all()) {
+      const lines = await link.evaluate((a) => a.getClientRects().length);
+      expect(lines, (await link.textContent()) ?? "").toBe(1);
+    }
+  });
+
+  test("a list that ends its section does not draw a second rule", async ({ page }) => {
+    for (const path of ["call-for-papers/", "submission/", "attend/"]) {
+      await page.goto(path);
+      const widths = await page.locator("main > section").evaluateAll((sections) =>
+        sections
+          .filter((section) => section.lastElementChild?.matches(".facts"))
+          .map((section) => {
+            const row = section.lastElementChild?.lastElementChild;
+            return row ? getComputedStyle(row).borderBottomWidth : "";
+          }),
+      );
+      for (const width of widths) expect(width, path).toBe("0px");
+    }
+  });
+
+  test("the topics share rows", async ({ page }) => {
+    await page.goto("");
+    const tops = await page
+      .locator(".topic-list a")
+      .evaluateAll((links) => links.map((a) => Math.round(a.getBoundingClientRect().top)));
+    expect(new Set(tops).size).toBeLessThan(tops.length);
+  });
+});
+
+test("a break in the program is set in the page's type", async ({ page }, testInfo) => {
+  test.skip(!populated(testInfo.project.name), "needs a break");
+  await page.goto("program/");
+  const brief = page.locator(".session--brief h2").first();
+  expect(await brief.evaluate((e) => getComputedStyle(e).fontFamily)).toContain("Source Serif 4");
 });
