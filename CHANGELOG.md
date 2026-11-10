@@ -12,7 +12,9 @@ sections are gone, with their content files (`attend.yaml`, `policies.yaml`, `ed
 two photos of Lille, `hostPhoto`, `host.cityUrl`, the policy fields in `cfp.yaml` and the checklist
 and FAQ in `submission.yaml`; the contact now closes Organizers, and their old addresses lead to the
 nearest section. Accepted papers appear in the program. The topic "Knowledge graphs" is now
-"Quality in KGs". The site is always light.
+"Quality in KGs". The site is always light. The Program Committee no longer lists Fabian M. Suchanek,
+Jesualdo Fernandez Breis, Mourad Ouzzani and Nathalie Aussenac, and adds Cinzia Cappiello
+(Politecnico di Milano).
 
 One page, as the organizers asked. The whole site is now the home page, in sections: About, Topics
 of interest, Submission (with the important dates, paper categories and submission details),

@@ -375,14 +375,11 @@ test("organizers are listed once and the committee is sorted as configured", asy
     // The organizers asked for the committee in order of the names as they read.
     expect(names).toEqual([
       "Asma Abboura",
-      "Fabian M. Suchanek",
+      "Cinzia Cappiello",
       "Hazar Harmouch",
       "Imane Hocine",
       "Jahid Hasan",
-      "Jesualdo Fernandez Breis",
       "Mohammad Sadoghi",
-      "Mourad Ouzzani",
-      "Nathalie Aussenac",
       "Sijie Dong",
     ]);
     await expect(page.locator("#chairs ~ ul .person__name")).toHaveText([
