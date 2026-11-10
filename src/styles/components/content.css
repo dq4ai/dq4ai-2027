@@ -1015,9 +1015,9 @@ main > section > .toolbar:first-of-type {
 }
 
 /* At the end of every section of the one page, as the organizers asked. */
-/* It ends where the text does, so it sits under the section rather than out at the page's edge. */
+/* At the far right of the page, as the organizers asked, wherever the text ends. */
 .go-top {
-  max-inline-size: var(--measure);
+  max-inline-size: none;
   margin-block: var(--space-3) 0;
   text-align: end;
 }

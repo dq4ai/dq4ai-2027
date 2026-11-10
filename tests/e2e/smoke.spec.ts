@@ -283,6 +283,14 @@ test("every section ends on a way back to the top", async ({ page }) => {
     await expect(link).toHaveText("Go to top ↑");
     await expect(link).toHaveAttribute("href", "#top");
   }
+  // At the far right of the page, as the organizers asked, in line with the header.
+  await page.setViewportSize({ width: 1366, height: 800 });
+  const right = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((e) => e.getBoundingClientRect().right);
+  expect(await right(".go-top a")).toBeCloseTo(await right(".site-header__inner"), 0);
   await section(page, "organization").locator(".go-top a").click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
 });
