@@ -1,14 +1,12 @@
 ---
 import { getCfp, getDeadlines, getSite, getSubmission } from "../../lib/content";
 import { TBA } from "../../lib/dates";
-import { url } from "../../lib/paths";
 import { isKnown, pendingSentence, submissionCloses, submissionOpen } from "../../lib/view";
 import ExternalLink from "../ExternalLink.astro";
 import Dates from "./Dates.astro";
 import PaperCategories from "./PaperCategories.astro";
 import PageSection from "../PageSection.astro";
 import PaperTemplate from "../PaperTemplate.astro";
-import ReadMore from "../ReadMore.astro";
 import Value from "../Value.astro";
 
 const [site, submission, cfp, deadlines] = await Promise.all([
@@ -67,8 +65,9 @@ const pending = pendingSentence(
       </p>
     )}
   </div>
-  <Dates />
+  {/* In the previous edition's order: the categories, then the dates, then how to submit. */}
   <PaperCategories />
+  <Dates />
   <div class="subsection">
     <h3 id="submission-details">Submission details</h3>
     <dl class="facts">
@@ -126,28 +125,4 @@ const pending = pendingSentence(
     </dl>
     {pending && <p class="note">{pending}</p>}
   </div>
-  <ReadMore label="Checklist and frequently asked questions">
-    <div class="subsection">
-      <h3 id="checklist">Checklist</h3>
-      <ol class="steps">
-        {submission.steps.map((step) => (
-          <li>
-            <strong>{step.title}</strong> {step.detail}{" "}
-            {step.link && <a href={url(step.link.path)}>{step.link.label}</a>}
-          </li>
-        ))}
-      </ol>
-    </div>
-    {submission.faq.length > 0 && (
-      <div class="subsection">
-        <h3 id="faq">Frequently asked questions</h3>
-        {submission.faq.map((item) => (
-          <div class="entry">
-            <h4>{item.question}</h4>
-            <p>{item.answer}</p>
-          </div>
-        ))}
-      </div>
-    )}
-  </ReadMore>
 </PageSection>

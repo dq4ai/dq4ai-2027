@@ -10,10 +10,11 @@ export const OLD_PAGES = {
   "submission/": "submission",
   "program/": "program",
   "keynotes/": "keynotes",
-  "organization/": "organization",
-  "attend/": "attend",
-  "policies/": "policies",
-  "previous-editions/": "previous-editions",
+  "organization/": "organizers",
+  "attend/": "about",
+  "policies/": "submission",
+  "previous-editions/": "about",
+  "accepted-papers/": "program",
   "news/": "about",
 } as const;
 

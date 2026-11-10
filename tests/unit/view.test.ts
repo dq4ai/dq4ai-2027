@@ -7,7 +7,6 @@ import {
   pendingSentence,
   stripPrefix,
   submissionOpen,
-  titleLead,
   topicAnchor,
   type DeadlineView,
 } from "../../src/lib/view";
@@ -123,16 +122,10 @@ describe("content options", () => {
     expect(siteSchema.safeParse({ ...minimalSite, statusNote: "Soon." }).success).toBe(true);
   });
 
-  const minimalSubmission = { formatting: "TBA", anonymization: "TBA", faq: [] };
-
-  it("a checklist step may link inside the site", () => {
-    const step = { title: "t", detail: "d", link: { label: "l", path: "/dates/" } };
-    expect(submissionSchema.safeParse({ ...minimalSubmission, steps: [step] }).success).toBe(true);
-  });
-
-  it("a checklist step's link must be a path inside the site", () => {
-    const step = { title: "t", detail: "d", link: { label: "l", path: "https://example.org" } };
-    expect(submissionSchema.safeParse({ ...minimalSubmission, steps: [step] }).success).toBe(false);
+  it("the submission checklist and FAQ are gone, so leftover ones fail the build", () => {
+    const minimal = { formatting: "TBA", anonymization: "TBA" };
+    expect(submissionSchema.safeParse(minimal).success).toBe(true);
+    expect(submissionSchema.safeParse({ ...minimal, faq: [] }).success).toBe(false);
   });
 });
 
@@ -141,22 +134,6 @@ describe("topicAnchor", () => {
     expect(topicAnchor("Knowledge graphs")).toBe("topic-knowledge-graphs");
     expect(topicAnchor("Quality in LLMs, NLP, and generative AI")).toBe(
       "topic-quality-in-llms-nlp-and-generative-ai",
-    );
-  });
-});
-
-describe("titleLead", () => {
-  const base = {
-    edition: "Second",
-    title: "Data Quality for Artificial Intelligence",
-    fullName: "International Workshop on Data Quality for Artificial Intelligence",
-  };
-  it("is the words before the title, so the banner can set the title on its own line", () => {
-    expect(titleLead(base as Site)).toBe("Second International Workshop on");
-  });
-  it("falls back to the whole name when the name does not end with the title", () => {
-    expect(titleLead({ ...base, fullName: "Workshop on Something Else" } as Site)).toBe(
-      "Second Workshop on Something Else",
     );
   });
 });

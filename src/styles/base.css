@@ -89,7 +89,7 @@ a:active {
   color: var(--color-accent-hover);
 }
 
-/* Ease towards a hover, and nowhere else: a change of system theme has to change everything at once. */
+/* Ease towards a hover, and nowhere else. */
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   a:hover {
     transition: color var(--dur-fast) var(--ease-out);

@@ -88,32 +88,29 @@ test("the home page goes from the banner straight to About", async ({ page }) =>
   );
 });
 
-// The organizers asked for one page, with long sections showing their first paragraph and the rest
-// behind "Read more". Every topic is still read in place.
-test("About shows its first paragraph and folds the rest behind Read more", async ({ page }) => {
+// The organizers asked for no "Read more" or "Show less": everything is read in place.
+test("About shows the whole scope and goal, with nothing to open", async ({ page }) => {
   await page.goto("");
   const about = page.locator(".about");
   await expect(about.getByRole("heading", { name: "About the DQ4AI Workshop" })).toBeVisible();
   await expect(about.getByText("The rapid emergence")).toBeVisible();
-  await expect(about.getByText("two-way relationship")).toBeHidden();
-  await expect(about.getByText("The goal of the workshop")).toBeHidden();
-  const toggle = about.locator(".read-more summary");
-  await expect(toggle).toHaveText(/Read more/);
-  await toggle.click();
   await expect(about.getByText("two-way relationship")).toBeVisible();
   await expect(about.getByText("The goal of the workshop")).toBeVisible();
-  await expect(toggle).toHaveText(/Show less/);
-  await expect(page.locator("main .topics a, main .topics details")).toHaveCount(0);
+  // Talk abstracts in a program may still open; nothing else does.
+  await expect(page.locator("main details:not(.session details)")).toHaveCount(0);
+  await expect(page.locator("main")).not.toContainText(/Read more|Show less/);
 });
 
-test("the Submission section folds its checklist and questions behind Read more", async ({
-  page,
-}) => {
+// As on the previous edition's site: the categories, then the dates, then how to submit.
+test("the Submission section reads like the previous edition's", async ({ page }) => {
   await page.goto("");
   const submission = section(page, "submission");
-  await expect(submission.locator(".read-more #checklist")).toBeHidden();
-  await submission.locator(".read-more summary").click();
-  await expect(submission.locator("#checklist")).toBeVisible();
+  await expect(submission.locator("h3")).toHaveText([
+    "Paper categories",
+    "Important dates",
+    "Submission details",
+  ]);
+  await expect(submission.locator("#checklist, #faq")).toHaveCount(0);
 });
 
 test("the page has no News section, as the organizers asked", async ({ page }) => {
@@ -161,7 +158,7 @@ test("no page has sideways scrolling or a color band", async ({ page }) => {
 test("a heading's name is its text, without its section link", async ({ page }) => {
   await page.goto("");
   await expect(
-    page.getByRole("heading", { name: "Topics of interest", exact: true }),
+    page.getByRole("heading", { name: "Topics of Interest", exact: true }),
   ).toBeVisible();
 });
 
@@ -221,41 +218,12 @@ test("no page shows the raw value TBA or the old wording", async ({ page }) => {
   }
 });
 
-test("the host city photo is credited and does not claim to be the venue", async ({
-  page,
-}, testInfo) => {
-  await page.setViewportSize({ width: 1280, height: 800 });
+// The organizers asked for no Attend section: the host conference handles venue and travel.
+test("the page has no Attend, Policies, Previous editions or Contact section", async ({ page }) => {
   await page.goto("");
-  const attend = section(page, "attend");
-  await expect(attend.getByRole("heading", { name: "Host city", exact: true })).toBeVisible();
-  const image = attend.locator("img");
-  await expect(image).toHaveAttribute("alt", /\S/);
-  await image.scrollIntoViewIfNeeded();
-  await expect
-    .poll(() => image.evaluate((img: HTMLImageElement) => img.naturalWidth))
-    .toBeGreaterThan(0);
-  const caption = attend.locator("figcaption");
-  await expect(caption).toContainText("not the workshop venue");
-  const real = !populated(testInfo.project.name);
-  await expect(caption).toContainText(real ? "Velvet" : "Example Photographer");
-  await expect(
-    caption.getByRole("link", { name: real ? "CC BY-SA 4.0" : "Example License" }),
-  ).toHaveAttribute(
-    "href",
-    real ? "https://creativecommons.org/licenses/by-sa/4.0/" : "https://example.org/license",
-  );
-  await expect(
-    caption.getByRole("link", { name: real ? "Wikimedia Commons" : "Example Archive" }),
-  ).toHaveAttribute(
-    "href",
-    real ? /commons\.wikimedia\.org\/wiki\/File:Lille_gd_place/ : "https://example.org/photo",
-  );
-  await expect(caption).toContainText("resized and cropped");
-  // It fills its column, beside the rail.
-  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(1008);
-
-  await page.setViewportSize({ width: 390, height: 844 });
-  expect((await image.boundingBox())?.width ?? Infinity).toBeLessThanOrEqual(342);
+  await expect(page.locator("#attend, #policies, #previous-editions, #contact")).toHaveCount(0);
+  await expect(page.locator("main figure, main .city-photo")).toHaveCount(0);
+  await expect(page.locator("main")).not.toContainText(/Visa letters|Host city/);
 });
 
 test("no photo reaches the first screen, and every photo waits to be scrolled to", async ({
@@ -293,7 +261,7 @@ test("the footer is one line with the copyright and no menu", async ({ page }) =
 test("every section ends on a way back to the top", async ({ page }) => {
   await page.goto("");
   const sections = page.locator("main > section");
-  expect(await sections.count()).toBeGreaterThanOrEqual(8);
+  expect(await sections.count()).toBeGreaterThanOrEqual(7);
   for (const each of await sections.all()) {
     const link = each.locator("> .go-top:last-child a");
     await expect(link).toHaveText("Go to top ↑");
@@ -307,25 +275,15 @@ test("every section ends on a way back to the top", async ({ page }) => {
       .first()
       .evaluate((e) => e.getBoundingClientRect().right);
   expect(await right(".go-top a")).toBeCloseTo(await right(".site-header__inner"), 0);
-  await section(page, "organization").locator(".go-top a").click();
+  await section(page, "organizers").locator(".go-top a").click();
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
-});
-
-test("the first edition links to its own site", async ({ page }, testInfo) => {
-  test.skip(populated(testInfo.project.name), "the real first edition");
-  await page.goto("");
-  const first = page.locator("tbody tr", { hasText: "First" });
-  await expect(first).toContainText("QuaLLM-KG 2026");
-  await expect(first).toContainText("EDBT/ICDT 2026");
-  await expect(first).toContainText("Tampere, Finland");
-  await expect(first.getByRole("link")).toHaveAttribute("href", "https://quallmkg2026.github.io/");
 });
 
 test("a section heading is plain text with its link beside it", async ({ page }) => {
   await page.goto("");
   await expect(page.locator("#topics a")).toHaveCount(0);
   const anchor = page.getByRole("link", {
-    name: "Link to section: Topics of interest",
+    name: "Link to section: Topics of Interest",
     exact: true,
   });
   await expect(anchor).toHaveAttribute("href", "#topics");
@@ -377,9 +335,9 @@ test("the skip link is the first stop and moves focus to the content", async ({ 
 
 test("navigation reaches a section of the page", async ({ page }) => {
   await page.goto("");
-  await page.locator("#site-nav").getByRole("link", { name: "Organization" }).click();
-  await expect(page).toHaveURL(/\/#organization$/);
-  await expect(page.locator("#organization")).toBeInViewport();
+  await page.locator("#site-nav").getByRole("link", { name: "Organizers" }).click();
+  await expect(page).toHaveURL(/\/#organizers$/);
+  await expect(page.locator("#organizers")).toBeInViewport();
 });
 
 test("the site works without JavaScript", async ({ browser, baseURL }) => {
@@ -432,7 +390,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Farah Benamara",
     ]);
     // The organizers asked for the Honorary Chair to open the page.
-    await expect(section(page, "organization").locator("h3").first()).toHaveText("Honorary Chair");
+    await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
   }
 });
 
@@ -508,12 +466,10 @@ test.describe("states that depend on content", () => {
   });
 
   test("the conference's dates are not given as the workshop's", async ({ page }, testInfo) => {
-    const expected = populated(testInfo.project.name)
-      ? /Workshop date: 7 April 2027, in [^.]+\./
-      : "Workshop date: 6 April 2027, in Lille, France.";
     await page.goto("");
-    const attend = section(page, "attend");
-    await expect(attend.locator("> p").first()).toContainText(expected);
+    await expect(page.locator(".hero__date")).toHaveText(
+      populated(testInfo.project.name) ? "(April 7, 2027)" : "(April 6, 2027)",
+    );
     // The organizers asked to leave out the host conference's dates.
     await expect(page.locator("main")).not.toContainText("6–9 April 2027");
   });
@@ -523,21 +479,11 @@ test.describe("states that depend on content", () => {
     await expect(page.locator(".subsection.paper-categories")).toContainText(/Page limit/);
   });
 
-  test("details not yet known are listed once, and keep their addresses", async ({
-    page,
-  }, testInfo) => {
-    test.skip(populated(testInfo.project.name), "needs unknown sections");
-    await page.goto("");
-    const pending = section(page, "attend").locator(".pending");
-    await expect(pending.locator("#venue")).toBeVisible();
-    await expect(pending.locator("#venue")).toContainText("To be announced");
-    await expect(page.getByRole("heading", { name: "Venue" })).toHaveCount(0);
-  });
-
-  test("accepted papers join the navigation only once populated", async ({ page }, testInfo) => {
+  // As on the previous edition's site, accepted papers are part of the program.
+  test("the menu has no Accepted Papers link", async ({ page }) => {
     await page.goto("");
     const link = page.locator("#site-nav").getByRole("link", { name: "Accepted Papers" });
-    await expect(link).toHaveCount(populated(testInfo.project.name) ? 1 : 0);
+    await expect(link).toHaveCount(0);
   });
 
   test("an extended deadline strikes through the old date", async ({ page }, testInfo) => {

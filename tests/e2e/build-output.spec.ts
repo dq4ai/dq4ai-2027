@@ -131,10 +131,11 @@ test.describe("build output", () => {
       expect(html, file).toContain('rel="canonical"');
       expect(html, file).not.toContain("<script");
     }
-    const programStub = readFileSync(join(dist, "accepted-papers", "index.html"), "utf8");
-    const papersAnchor =
-      testInfo.project.name === "populated-content" ? "accepted-papers" : "program";
-    expect(programStub).toContain(`url=${BASE}#${papersAnchor}"`);
+    // Accepted papers belong in the program, as on the previous edition's site.
+    const papersStub = readFileSync(join(dist, "accepted-papers", "index.html"), "utf8");
+    expect(papersStub).toContain(`url=${BASE}#program"`);
+    const attendStub = readFileSync(join(dist, "attend", "index.html"), "utf8");
+    expect(attendStub).toContain(`url=${BASE}#about"`);
   });
 
   test("every page description names the workshop and its host", ({}, testInfo) => {

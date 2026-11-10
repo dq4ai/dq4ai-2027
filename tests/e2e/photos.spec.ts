@@ -1,8 +1,6 @@
-/** The header stays within reach, and the photo of Lille is credited and fills its column. */
+/** The header stays within reach. */
 import { expect, test } from "@playwright/test";
 import { PAGES } from "./pages";
-
-const populated = (name: string) => name === "populated-content";
 
 test.describe("the header stays within reach", () => {
   for (const [width, height] of [
@@ -32,9 +30,9 @@ test.describe("the header stays within reach", () => {
     await page.evaluate(() => {
       scrollTo(0, 2000);
     });
-    await page.locator("#site-nav").getByRole("link", { name: "Organization" }).click();
-    await expect(page).toHaveURL(/\/#organization$/);
-    await expect(page.locator("#organization")).toBeInViewport();
+    await page.locator("#site-nav").getByRole("link", { name: "Organizers" }).click();
+    await expect(page).toHaveURL(/\/#organizers$/);
+    await expect(page.locator("#organizers")).toBeInViewport();
   });
 
   test("a section link does not land under it", async ({ page }) => {
@@ -43,11 +41,11 @@ test.describe("the header stays within reach", () => {
       [390, 844],
     ] as const) {
       await page.setViewportSize({ width, height });
-      await page.goto("#policies");
+      await page.goto("#program");
       await expect
         .poll(async () => {
           const header = await page.locator(".site-header").boundingBox();
-          const heading = await page.locator("#policies").boundingBox();
+          const heading = await page.locator("#program").boundingBox();
           return (heading?.y ?? 0) - ((header?.y ?? 0) + (header?.height ?? 0));
         })
         .toBeGreaterThanOrEqual(0);
@@ -110,44 +108,5 @@ test.describe("the header stays within reach", () => {
       );
       expect(overflow, path).toBe(0);
     }
-  });
-});
-
-test.describe("the host city", () => {
-  test("the photo leads to a description of Lille", async ({ page }, testInfo) => {
-    await page.goto("");
-    const expected = populated(testInfo.project.name)
-      ? "https://example.org/city"
-      : "https://fr.wikipedia.org/wiki/Lille";
-    await expect(page.locator(".city-photo a:has(img)")).toHaveAttribute("href", expected);
-    await expect(
-      page.locator(".city-photo figcaption").getByRole("link", { name: /Wikipedia/ }),
-    ).toHaveAttribute("href", expected);
-  });
-
-  test("the real photo is the Grand'Place at dusk, credited to its author", async ({
-    page,
-  }, testInfo) => {
-    test.skip(populated(testInfo.project.name), "the fixture has its own images");
-    await page.goto("");
-    const caption = page.locator(".city-photo figcaption");
-    await expect(caption).toContainText("Velvet");
-    await expect(caption.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
-      "href",
-      "https://creativecommons.org/licenses/by-sa/4.0/",
-    );
-    await expect(caption.getByRole("link", { name: "Wikimedia Commons" })).toHaveAttribute(
-      "href",
-      /File:Lille_gd_place_pano_ter\.jpg/,
-    );
-  });
-
-  test("the panorama fills its column", async ({ page }, testInfo) => {
-    test.skip(populated(testInfo.project.name), "the fixture has its own images");
-    await page.setViewportSize({ width: 1280, height: 800 });
-    await page.goto("");
-    const image = page.locator(".city-photo img");
-    await image.scrollIntoViewIfNeeded();
-    expect((await image.boundingBox())?.width ?? 0).toBeGreaterThan(700);
   });
 });

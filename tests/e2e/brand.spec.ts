@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 const TOPICS = [
   "Data quality for AI",
   "AI for data quality",
-  "Knowledge graphs",
+  "Quality in KGs",
   "Quality in LLMs, NLP, and generative AI",
   "Data management and governance for AI",
   "Multimodal data quality",
@@ -41,13 +41,12 @@ test.describe("logo", () => {
     expect(background).toBe("rgba(0, 0, 0, 0)");
   });
 
-  test("the logo's colors follow the theme", async ({ page }) => {
+  // Light only, as the organizers asked: a dark system theme changes nothing.
+  test("the logo keeps its colors whatever the system theme", async ({ page }) => {
     const arc = page.locator(".site-header .mark .mark__stroke-a").first();
-    await page.emulateMedia({ colorScheme: "light" });
+    await page.emulateMedia({ colorScheme: "dark" });
     await page.goto("");
     expect(await arc.evaluate((e) => getComputedStyle(e).stroke)).toBe("rgb(30, 58, 138)");
-    await page.emulateMedia({ colorScheme: "dark" });
-    expect(await arc.evaluate((e) => getComputedStyle(e).stroke)).toBe("rgb(143, 176, 255)");
   });
 
   test("the home page opens with the logo", async ({ page }) => {
@@ -70,12 +69,8 @@ test.describe("logo", () => {
     await page.goto("");
     const surface = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     expect(surface).toBe("rgb(251, 249, 244)");
-    await expect(
-      page.locator('meta[name="theme-color"][media="(prefers-color-scheme: light)"]'),
-    ).toHaveAttribute("content", "#fbf9f4");
-    await expect(
-      page.locator('meta[name="theme-color"][media="(prefers-color-scheme: dark)"]'),
-    ).toHaveAttribute("content", "#141820");
+    await expect(page.locator('meta[name="theme-color"]')).toHaveCount(1);
+    await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", "#fbf9f4");
   });
 });
 
@@ -100,10 +95,11 @@ test.describe("topics", () => {
   }
 
   test("each topic has its own address", async ({ page }) => {
-    await page.goto("#topic-knowledge-graphs");
-    const heading = page.locator("#topic-knowledge-graphs");
+    // The organizers asked for "Quality in KGs" rather than "Knowledge graphs".
+    await page.goto("#topic-quality-in-kgs");
+    const heading = page.locator("#topic-quality-in-kgs");
     await expect(heading).toBeInViewport();
-    await expect(page.locator("#topic-knowledge-graphs + ul")).toContainText(
+    await expect(page.locator("#topic-quality-in-kgs + ul")).toContainText(
       "Entity resolution and ontology alignment",
     );
     await expect(page.locator("#topic-data-quality-for-ai + ul")).toContainText(

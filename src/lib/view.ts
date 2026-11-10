@@ -108,14 +108,6 @@ export function workshopTitle(site: Site): string {
   return `${site.edition} ${site.fullName}`;
 }
 
-/** "Second International Workshop on": the words the banner sets above the title. */
-export function titleLead(site: Site): string {
-  const lead = site.fullName.endsWith(site.title)
-    ? site.fullName.slice(0, -site.title.length).trimEnd()
-    : site.fullName;
-  return `${site.edition} ${lead}`;
-}
-
 export function hostLocation(site: Site): string {
   return `${site.host.city}, ${site.host.country}`;
 }

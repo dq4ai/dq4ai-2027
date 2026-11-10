@@ -14,7 +14,7 @@
 5. **Reset per-edition data:** set the dates in `dates.yaml` to `TBA`; empty `sessions.yaml`,
    `talks.yaml` and `papers.yaml` to `[]`; delete old files in `news/`; update `keynotes.yaml`,
    `committees.yaml` and `people.yaml`.
-6. **Review the wording** of `cfp.yaml`, `attend.yaml` and `policies.yaml`.
+6. **Review the wording** of `cfp.yaml` and `submission.yaml`.
 7. **Commit to `main`.** Actions builds and deploys. Check the placeholder list in the build log.
    The previous edition stays live at its own address.
 8. **Move the root address.** In the `dq4ai/dq4ai.github.io` repository, replace `dq4ai-2027` with

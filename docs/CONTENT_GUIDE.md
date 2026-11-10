@@ -28,15 +28,12 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 | Workshop date, contact, submission link | `site.yaml`                         |
 | Template, review model                  | `site.yaml`                         |
 | Page limits, topics and their bullets   | `cfp.yaml` (`topics`: `items`)      |
-| Dual submission, generative AI policies | `cfp.yaml`                          |
-| Formatting, anonymization, FAQ          | `submission.yaml`                   |
+| Formatting, anonymization               | `submission.yaml`                   |
 | People and committees                   | `people.yaml` and `committees.yaml` |
 | Keynotes                                | `keynotes.yaml`                     |
 | Program                                 | `sessions.yaml` and `talks.yaml`    |
 | Accepted papers                         | `papers.yaml`                       |
 | Announcements                           | a new file in `news/`               |
-| Venue, visa and travel information      | `attend.yaml`                       |
-| Code of conduct, conflicts, ethics      | `policies.yaml`                     |
 
 ## Say when details will be known
 
@@ -51,18 +48,6 @@ statusNote: Your sentence here.
 
 `paperTemplate` in `site.yaml` is the template's name, and `paperTemplateUrl` is where to get it.
 Once both are set, the name becomes a link.
-
-## Link a checklist step
-
-Each step in `submission.yaml` can link to a section of the site with an optional `link`. The site
-is one page, so a path is `/#` and the section's name, such as `/#dates`, `/#topics`, `/#policies`
-or `/#submission`:
-
-```yaml
-link:
-  label: See the dates
-  path: /#dates
-```
 
 ## Set or extend a deadline
 
@@ -129,9 +114,8 @@ in Lille in April). Sessions must fall on the workshop date and must not overlap
 
 ## Add accepted papers
 
-The Accepted papers section, and its link in the menu, appear as soon as `papers.yaml` is not
-empty. `type` is `research`, `system`
-or `vision`.
+As on the previous edition's site, accepted papers appear in the Program, through the talk that
+presents each one (`paper` in `talks.yaml`). `type` is `research`, `system` or `vision`.
 
 ```yaml
 - id: paper-1
@@ -149,15 +133,6 @@ see it. Check that you may publish the image first.
 ```yaml
 photo: { file: jane-doe.jpg, alt: Portrait of Jane Doe }
 ```
-
-## Change the host city photos
-
-The photo in the Attend section is set by `hostPhoto` in `site.yaml`, and links to `host.cityUrl`. It always needs its
-author, license, source and a description, and the build fails without them. Use a photo you may
-publish, never one copied from a search results page. The caption says it shows the city and not the
-workshop venue, so once the venue is known, change that sentence in `src/components/PhotoCredit.astro` if you
-switch to a photo of the venue itself. Remove `hostPhoto` to remove the section. List a photo that
-is not CC BY 4.0 in `LICENSE`.
 
 ## Post news
 

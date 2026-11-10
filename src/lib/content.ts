@@ -15,17 +15,7 @@ export const getCfp = async () => onlyEntry(await getCollection("cfp"), "cfp");
 export const getSubmission = async () => onlyEntry(await getCollection("submission"), "submission");
 
 type ListCollection =
-  | "dates"
-  | "people"
-  | "committees"
-  | "keynotes"
-  | "sessions"
-  | "talks"
-  | "papers"
-  | "editions"
-  | "sponsors"
-  | "attend"
-  | "policies";
+  "dates" | "people" | "committees" | "keynotes" | "sessions" | "talks" | "papers" | "sponsors";
 
 /** Entries in the order they appear in their YAML file. */
 const listOf = async <C extends ListCollection>(collection: C) => {
@@ -100,10 +90,7 @@ export const getProgram = async () => {
 };
 
 export const getPapers = () => listOf("papers");
-export const getEditions = () => listOf("editions");
 export const getSponsors = () => listOf("sponsors");
-export const getAttend = () => listOf("attend");
-export const getPolicies = () => listOf("policies");
 
 export const getNews = async () =>
   (await getCollection("news")).sort((a, b) => b.data.date.localeCompare(a.data.date));

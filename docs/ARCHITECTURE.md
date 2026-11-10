@@ -4,8 +4,8 @@
 
 **Static Astro site, zero framework JS.** The site is documents with three small behaviours: the
 menu, the program's time-zone toggle, and keeping deadline statuses current. Each is a short script,
-and the site works without them. The site follows the system's light or dark theme; the organizers
-asked for no theme button.
+and the site works without them. The site is always light: the organizers asked for no dark theme
+and no theme button, so the colour tokens have one value each.
 
 **One content folder, validated at build time.** `src/lib/schemas.ts` checks each field and
 `src/lib/validation.ts` checks rules across files. `src/integrations/content-guard.ts` runs them
@@ -34,26 +34,28 @@ Policies from the call, News from the latest-news line). Later the chairs asked 
 home page goes from the banner straight to "About", with no statement, button or key facts; there
 is no deadline bar and no theme button; the Dates page lists the deadlines and the workshop's day
 only, without the host conference's dates, the calendar file or the time-zone switch; and the footer
-reads "© DQ4AI 2027 — All rights reserved", as the previous edition's did.
+reads "© DQ4AI 2027 — All rights reserved", as the previous edition's did. Then they asked for the
+previous edition's site exactly, with this edition's content: "DQ4AI 2027" large over the full title;
+its sections and menu (About, Topics of Interest, Submission, Program, Keynote Speakers, Organizers,
+Program Committee), each title above its content; nothing behind "Read more"; and no Attend,
+Policies, Previous editions or Contact section, since the host conference handles venue and travel.
+The contact closes Organizers. Accepted papers appear in the program, through the talks that
+present them.
 
 **Warm and plain, like an academic page.** The organizers found the first design too "industrial" and
 pointed to classic workshop sites. So: a warm paper background, serif type throughout (Source Serif
 4 in three weights, about the same weight in bytes as the two IBM Plex files it replaced; IBM Plex
 remains only in the social images), no icons, tiles or boxed labels, an unset value in muted text,
 organizers listed one per line as "Name, Affiliation, Country", and the Call for Papers read straight
-through without a links bar. The banner photo keeps a navy scrim only behind the text (66%, still 6:1
-for white) and clears to nothing on the right, with the photo itself lightened.
+through without a links bar. The site has no photos.
 
-**The header stays on screen.** Any page is one click away. The deadline bar scrolls with the page,
-because stacked they would take too much of a small screen. A very large browser font turns the
+**The header stays on screen.** Any section is one click away. A very large browser font turns the
 sticky header off, since it would pin half the screen.
 
 **One page.** The organizers asked for the whole site on one page. `src/lib/nav.ts` lists its
 sections in order; `src/pages/index.astro` renders one component per section from
 `src/components/sections/`, each wrapped in `PageSection`, which ends it on "Go to top ↑". The menu
-links to sections by anchor. Long sections show their opening and fold the rest into a native
-`<details>` ("Read more"): no script, the text stays in the page for search engines, and the
-browser's find opens it. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
+links to sections by anchor. Nothing is folded away. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
 The Call for Papers' banner photo went with its page, and with it that page's own Lighthouse

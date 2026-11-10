@@ -1,19 +1,17 @@
 ---
 import type { GetStaticPaths } from "astro";
-import { getPapers, getSite } from "../lib/content";
+import { getSite } from "../lib/content";
 import { redirects } from "../lib/nav";
 import { absoluteUrl, url } from "../lib/paths";
 import { contentSecurityPolicy } from "../lib/theme";
 
 // The site used to have a page per section. Their addresses may be in announcements already, so
 // each one stays as a stub that sends the browser on to its section of the one page.
-export const getStaticPaths = (async () => {
-  const papers = await getPapers();
-  return redirects(papers.length > 0).map(({ path, to }) => ({
+export const getStaticPaths = (() =>
+  redirects().map(({ path, to }) => ({
     params: { moved: path.replaceAll("/", "") },
     props: { to },
-  }));
-}) satisfies GetStaticPaths;
+  }))) satisfies GetStaticPaths;
 
 const { to } = Astro.props;
 const site = await getSite();

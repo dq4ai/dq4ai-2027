@@ -15,7 +15,6 @@ host:
   endDate: "2027-04-09"
   city: Lille
   country: France
-  cityUrl: https://example.org/city
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-07"
 contactEmail: chairs@example.org
@@ -28,15 +27,6 @@ paperTemplate: Example template
 paperTemplateUrl: https://example.org/template.zip
 statusNote: Example status note from the organizers.
 reviewModel: double-blind
-hostPhoto:
-  file: example-portrait.png
-  alt: Grey placeholder used in test builds
-  subject: An example view of the host city
-  author: Example Photographer
-  license: Example License
-  licenseUrl: https://example.org/license
-  source: Example Archive
-  sourceUrl: https://example.org/photo
 deployment:
   githubOwner: dq4ai
   repoName: dq4ai-2027

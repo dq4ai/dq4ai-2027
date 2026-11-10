@@ -13,8 +13,9 @@ test.describe("contact", () => {
   for (const path of [""]) {
     test("the page says how to reach the organizers", async ({ page }, testInfo) => {
       await page.goto(path);
-      const contact = page.locator(".contact");
-      await expect(contact.getByRole("heading", { name: "Contact" })).toBeVisible();
+      // The contact closes the Organizers section; there is no Contact section of its own.
+      const contact = section(page, "organizers").locator(".contact");
+      await expect(contact).toContainText("Contact:");
       if (populated(testInfo.project.name)) {
         await expect(contact.locator('a[href^="mailto:"]')).toHaveAttribute(
           "href",
@@ -181,17 +182,15 @@ test.describe("phone menu", () => {
   });
 });
 
-// The organizers asked for no theme button: the site follows the system's light or dark theme.
-test("the site follows the system theme, with no button to change it", async ({ page }) => {
-  await page.emulateMedia({ colorScheme: "light" });
+// The organizers asked for no theme button and no dark theme: the site is always light.
+test("the site stays light whatever the system theme, with no button", async ({ page }) => {
+  await page.emulateMedia({ colorScheme: "dark" });
   await page.goto("");
   await expect(page.locator(".theme-toggle")).toHaveCount(0);
-  const light = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  await page.emulateMedia({ colorScheme: "dark" });
-  await expect
-    .poll(() => page.evaluate(() => getComputedStyle(document.body).backgroundColor))
-    .not.toBe(light);
-  await expect(page.locator("html")).not.toHaveAttribute("data-theme");
+  expect(await page.evaluate(() => getComputedStyle(document.body).backgroundColor)).toBe(
+    "rgb(251, 249, 244)",
+  );
+  expect(await page.evaluate(() => getComputedStyle(document.body).color)).toBe("rgb(35, 38, 45)");
 });
 
 test.describe("authors' tasks", () => {
@@ -224,21 +223,6 @@ test.describe("authors' tasks", () => {
         populated(testInfo.project.name) ? 1 : 0,
       );
     }
-  });
-
-  test("the checklist links to what each step needs", async ({ page }) => {
-    await page.goto("");
-    const steps = page.locator(".steps li");
-    await expect(steps.nth(0).locator("a")).toHaveAttribute("href", /\/#topics$/);
-    await expect(steps.nth(2).locator("a")).toHaveAttribute("href", /\/#policies$/);
-    await expect(steps.nth(3).locator("a")).toHaveAttribute("href", /\/#dates$/);
-  });
-
-  test("both kinds of policy share one section", async ({ page }) => {
-    await page.goto("");
-    const policies = section(page, "policies");
-    await expect(policies).toContainText(/Dual submission/);
-    await expect(policies.getByRole("heading", { name: "Code of conduct" })).toBeVisible();
   });
 
   // The organizers asked for the call to read straight through, without the links bar or the
@@ -429,7 +413,7 @@ test.describe("rows and tables line up", () => {
       .locator("dl.facts dd")
       .first()
       .evaluate((dd) => dd.getBoundingClientRect().left);
-    for (const table of [datesTable(page), section(page, "previous-editions")]) {
+    for (const table of [datesTable(page)]) {
       const left = await table
         .locator("thead th")
         .nth(1)
@@ -453,14 +437,6 @@ test.describe("rows and tables line up", () => {
       .locator("td > time");
     const [a, b] = await Promise.all([plain.boundingBox(), extended.boundingBox()]);
     expect(b?.x).toBeCloseTo(a?.x ?? 0, 0);
-  });
-
-  test("the editions table fits a 390px phone", async ({ page }) => {
-    await page.setViewportSize(PHONE);
-    await page.goto("");
-    const wrap = section(page, "previous-editions").locator(".table-wrap");
-    const excess = await wrap.evaluate((e) => e.scrollWidth - e.clientWidth);
-    expect(excess).toBeLessThanOrEqual(0);
   });
 
   test("a table cut off on a narrow phone shows it scrolls", async ({ page }) => {
@@ -491,14 +467,6 @@ test.describe("rows and tables line up", () => {
       .locator(".toolbar > :visible")
       .evaluateAll((all) => all.map((e) => e.getBoundingClientRect().width));
     expect(new Set(widths).size).toBe(1);
-  });
-
-  test("a section's list does not add to the space below it", async ({ page }) => {
-    await page.goto("");
-    const margin = await page
-      .locator(".subsection > .steps")
-      .evaluate((list) => parseFloat(getComputedStyle(list).marginBlockEnd));
-    expect(margin).toBeLessThan(0);
   });
 });
 
@@ -579,12 +547,6 @@ test.describe("fonts and images", () => {
     expect(new Set(displays)).toEqual(new Set(["optional"]));
   });
 
-  // Since the site became one page, the Attend photo is far down it, so it waits to be scrolled to.
-  test("the Attend photo is lazy, since it is far below the first screen", async ({ page }) => {
-    await page.goto("");
-    await expect(page.locator(".city-photo img")).toHaveAttribute("loading", "lazy");
-  });
-
   test("other images stay lazy", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a keynote photo");
     await page.goto("");
@@ -601,13 +563,6 @@ test.describe("reading without seeing the layout", () => {
       "href",
       "https://dblp.org/pid/00/0000.html",
     );
-  });
-
-  test("the current edition does not link to itself", async ({ page }) => {
-    await page.goto("");
-    const row = page.locator("tbody tr", { hasText: "this edition" });
-    await expect(row.getByRole("link")).toHaveCount(0);
-    await expect(page.locator("#previous-editions")).toHaveText("Previous editions");
   });
 
   test("the next deadline is named, not only colored", async ({ page }, testInfo) => {
@@ -691,24 +646,21 @@ test.describe("touch and target sizes", () => {
 });
 
 test.describe("one name for one thing", () => {
-  test("terms match across the page", async ({ page }, testInfo) => {
+  test("terms match across the page", async ({ page }) => {
     await page.goto("");
     await expect(page.getByRole("heading", { name: "Important dates", exact: true })).toBeVisible();
     await expect(datesTable(page).locator("thead")).not.toContainText("Milestone");
     await expect(datesTable(page).locator("tbody")).toContainText("Workshop date");
     await expect(page.getByRole("heading", { name: "Submission", exact: true })).toBeVisible();
-    if (populated(testInfo.project.name)) {
-      await expect(page.locator("#accepted-papers")).toHaveText("Accepted papers");
-    }
   });
 });
 
 // The organizers asked for a site that does not overwhelm: a short menu, and a call for papers
 // that leads with what matters and folds away the rest.
 test.describe("less at once", () => {
-  // The organizers asked for the menu to reflect the page: Home, then one link per section, in
-  // the page's order.
-  test("the menu has a link for every section of the page", async ({ page }) => {
+  // The organizers asked for the previous edition's menu: Home, then one link per section, in the
+  // page's order. As there, the topics have no link of their own.
+  test("the menu has a link for every section of the page but the topics", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
     const menu = page.locator("#site-nav a");
@@ -718,8 +670,19 @@ test.describe("less at once", () => {
     );
     const sections = await page
       .locator("main > section > h2")
-      .evaluateAll((headings) => headings.map((h) => h.id).filter((id) => id !== "sponsors"));
+      .evaluateAll((headings) =>
+        headings.map((h) => h.id).filter((id) => !["sponsors", "topics"].includes(id)),
+      );
     expect(targets).toEqual(sections);
+    await expect(menu).toHaveText([
+      "Home",
+      "About",
+      "Submission",
+      "Program",
+      "Keynote Speakers",
+      "Organizers",
+      "Program Committee",
+    ]);
     await expect(page.locator(".site-footer nav")).toHaveCount(0);
   });
 
@@ -733,37 +696,25 @@ test.describe("less at once", () => {
     expect(nav?.y ?? 0).toBeGreaterThanOrEqual((brand?.y ?? 0) + (brand?.height ?? 0));
   });
 
-  // Redesigned at the organizers' request: a card per category, compared at a glance, with its
-  // page limit at the foot, and still nothing to open.
-  test("paper categories are cards, side by side, each closing on its page limit", async ({
+  // As on the previous edition's site: one bullet each, the name in bold, nothing to open.
+  test("paper categories are one bullet each, with their page limit", async ({
     page,
   }, testInfo) => {
-    await page.setViewportSize({ width: 1366, height: 900 });
     await page.goto("");
-    const cards = page.locator(".paper-type");
-    await expect(cards).toHaveCount(3);
-    const research = cards.filter({ hasText: "Research papers" });
-    await expect(research.getByRole("heading", { level: 4 })).toHaveText("Research papers");
+    const items = page.locator(".paper-types > li");
+    await expect(items).toHaveCount(3);
+    const research = items.filter({ hasText: "Research papers" });
+    await expect(research.locator("strong")).toHaveText("Research papers:");
     await expect(research.getByText("Original research contributions")).toBeVisible();
-    await expect(page.locator(".paper-types details, .paper-types a")).toHaveCount(0);
-    const tops = await cards.evaluateAll((all) =>
-      all.map((card) => card.getBoundingClientRect().top),
-    );
-    expect(new Set(tops).size, "one row on a wide screen").toBe(1);
+    await expect(page.locator(".paper-types details, .paper-types a, .paper-type")).toHaveCount(0);
+    expect(
+      await items
+        .first()
+        .evaluate((li) => getComputedStyle(li.parentElement as Element).listStyleType),
+    ).toBe("disc");
     if (!populated(testInfo.project.name)) {
-      await expect(research.locator(".paper-type__limit")).toHaveText(
-        /Page limit\s*6 pages, including references/,
-      );
-      const limits = await page
-        .locator(".paper-type__limit")
-        .evaluateAll((all) => all.map((limit) => Math.round(limit.getBoundingClientRect().top)));
-      expect(new Set(limits).size, "the limits line up across the cards").toBe(1);
+      await expect(research).toContainText("Page limit: 6 pages, including references.");
     }
-    await page.setViewportSize({ width: 390, height: 844 });
-    const narrow = await cards.evaluateAll((all) =>
-      all.map((card) => card.getBoundingClientRect().top),
-    );
-    expect(new Set(narrow).size, "stacked on a phone").toBe(3);
   });
 
   test("Submission opens on where things stand, set apart", async ({ page }) => {
@@ -775,7 +726,6 @@ test.describe("less at once", () => {
   test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {
     await page.goto("");
     const details = page.locator("section", { has: page.locator("#submission") });
-    const policies = page.locator("section", { has: page.locator("#policies") });
     if (populated(testInfo.project.name)) {
       await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(1);
       // The fixture leaves only these two unknown.
@@ -786,10 +736,6 @@ test.describe("less at once", () => {
       "Submission system, template, review model, formatting and anonymization: to be announced.",
     );
     await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(0);
-    await expect(policies).toContainText(
-      "Dual submission and use of generative AI: to be announced.",
-    );
-    await expect(policies.locator("> .facts")).toHaveCount(0);
   });
 });
 
@@ -797,17 +743,6 @@ test.describe("less at once", () => {
 test.describe("on a phone", () => {
   test.beforeEach(async ({ page }) => {
     await page.setViewportSize(PHONE);
-  });
-
-  test("the host city photo is a photo, not a sliver", async ({ page }) => {
-    await page.goto("");
-    const photo = page.locator(".city-photo img");
-    await photo.scrollIntoViewIfNeeded();
-    const box = await photo.boundingBox();
-    expect((box?.width ?? 0) / (box?.height ?? 1)).toBeCloseTo(1.5, 1);
-    await expect
-      .poll(() => photo.evaluate((img: HTMLImageElement) => img.naturalWidth))
-      .toBeGreaterThan(0);
   });
 
   test("a list that ends its section does not draw a second rule", async ({ page }) => {

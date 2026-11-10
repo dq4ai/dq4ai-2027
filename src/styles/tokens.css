@@ -23,39 +23,40 @@
 }
 
 :root {
-  color-scheme: light dark;
+  /* Light only: the organizers asked for no dark theme. */
+  color-scheme: light;
 
   /* Everything starts from the logo: navy and teal, on warm paper rather than a cool white so the
      site reads as an academic page, not a product. Amber is the one flagged cell, used only for the
      next deadline. */
-  --color-brand-a: light-dark(#1e3a8a, #8fb0ff);
-  --color-brand-b: light-dark(#0f7f72, #3fd0bd);
+  --color-brand-a: #1e3a8a;
+  --color-brand-b: #0f7f72;
   /* The home banner's ribbons: the brand colours softened into the paper, and a sand tint from
      the amber. Text never sits on the deep ends; a veil of paper keeps the centre calm. */
-  --wave-a1: light-dark(#97a9de, #2e4a9a);
-  --wave-a2: light-dark(#c6d1f0, #24366e);
-  --wave-b1: light-dark(#9ad3c9, #17695f);
-  --wave-b2: light-dark(#cbe8e2, #1a4a46);
-  --wave-sand: light-dark(#efd9b6, #2c3550);
-  --wave-veil: light-dark(rgb(251 249 244 / 0.72), rgb(20 24 32 / 0.7));
-  --color-surface: light-dark(#fbf9f4, #141820);
-  --color-surface-raised: light-dark(#f3efe6, #1d222c);
-  --color-text: light-dark(#23262d, #ece8e1);
-  --color-text-muted: light-dark(#5b5853, #b3aea6);
-  --color-rule: light-dark(#e3ddd1, #333946);
-  --color-rule-strong: light-dark(#c9c1b2, #4f5869);
+  --wave-a1: #97a9de;
+  --wave-a2: #c6d1f0;
+  --wave-b1: #9ad3c9;
+  --wave-b2: #cbe8e2;
+  --wave-sand: #efd9b6;
+  --wave-veil: rgb(251 249 244 / 0.72);
+  --color-surface: #fbf9f4;
+  --color-surface-raised: #f3efe6;
+  --color-text: #23262d;
+  --color-text-muted: #5b5853;
+  --color-rule: #e3ddd1;
+  --color-rule-strong: #c9c1b2;
   --color-accent: var(--color-brand-a);
-  --color-accent-hover: light-dark(#142a66, #b9cdff);
-  --color-on-accent: light-dark(#fff, #141820);
+  --color-accent-hover: #142a66;
+  --color-on-accent: #fff;
   --color-primary: var(--color-brand-a);
-  --color-primary-hover: light-dark(#142a66, #b9cdff);
+  --color-primary-hover: #142a66;
   --color-flag: #f6c945;
   --color-on-flag: #141c26;
-  --color-status-today: light-dark(#7a4f00, #e8be6a);
+  --color-status-today: #7a4f00;
   --color-status-passed: var(--color-text-muted);
-  --color-focus: light-dark(#0b57a4, #8cc4ff);
-  /* People's names, in the previous edition's red: 7:1 on the paper in both themes. */
-  --color-person: light-dark(#a51d1d, #ff9d92);
+  --color-focus: #0b57a4;
+  /* People's names, in the previous edition's red: 7:1 on the paper. */
+  --color-person: #a51d1d;
 
   --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
   /* Small interface labels only; reading text is serif. Nothing to download. */

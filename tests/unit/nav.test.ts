@@ -7,43 +7,56 @@ describe("the one page's sections", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("keeps Accepted Papers out of the menu until papers exist", () => {
-    expect(
-      menuSections({ papers: false, keynotes: true }).map((section) => section.id),
-    ).not.toContain("accepted-papers");
-    expect(menuSections({ papers: true, keynotes: true }).map((section) => section.id)).toContain(
-      "accepted-papers",
-    );
+  // The organizers asked for the previous edition's sections and menu (QuaLLM-KG 2026).
+  it("follows the previous edition's sections, in its order", () => {
+    expect(SECTIONS.map((section) => section.title)).toEqual([
+      "About",
+      "Topics of Interest",
+      "Submission",
+      "Program",
+      "Keynote Speakers",
+      "Organizers",
+      "Program Committee",
+      "Supported by",
+    ]);
   });
 
-  it("lists every section in the menu, in the page's order, but the sponsors", () => {
-    const ids = menuSections({ papers: true, keynotes: true }).map((section) => section.id);
-    expect(ids).toEqual(SECTIONS.map((section) => section.id).filter((id) => id !== "sponsors"));
-    expect(ids).not.toContain("dates");
+  it("puts every section in the menu but the topics and the sponsors", () => {
+    expect(menuSections({ keynotes: true }).map((section) => section.menu)).toEqual([
+      "About",
+      "Submission",
+      "Program",
+      "Keynote Speakers",
+      "Organizers",
+      "Program Committee",
+    ]);
   });
 
   it("leaves Keynotes out of the menu until there is one", () => {
-    expect(menuSections({ papers: true, keynotes: false }).map((s) => s.id)).not.toContain(
-      "keynotes",
-    );
+    expect(menuSections({ keynotes: false }).map((s) => s.id)).not.toContain("keynotes");
   });
 
-  it("sends every old page address to its section", () => {
-    expect(redirects(true)).toContainEqual({ path: "/dates/", to: "/#dates" });
-    expect(redirects(true)).toContainEqual({ path: "/call-for-papers/", to: "/#about" });
-    expect(redirects(true)).toContainEqual({ path: "/accepted-papers/", to: "/#accepted-papers" });
-    for (const path of ["/submission/", "/program/", "/organization/", "/attend/", "/news/"]) {
-      expect(redirects(true).map((redirect) => redirect.path)).toContain(path);
+  it("sends every old page address to a section that exists", () => {
+    const ids = new Set(SECTIONS.map((section) => section.id).concat("dates"));
+    const paths = redirects().map((redirect) => redirect.path);
+    for (const path of [
+      "/call-for-papers/",
+      "/dates/",
+      "/submission/",
+      "/program/",
+      "/keynotes/",
+      "/organization/",
+      "/attend/",
+      "/news/",
+      "/policies/",
+      "/previous-editions/",
+      "/accepted-papers/",
+    ]) {
+      expect(paths).toContain(path);
     }
-  });
-
-  it("sends the old News address to the top, since the page has no News section", () => {
-    expect(redirects(true)).toContainEqual({ path: "/news/", to: "/#about" });
-    expect(SECTIONS.map((section) => section.id)).not.toContain("news");
-  });
-
-  it("sends the old Accepted Papers address to the program until papers exist", () => {
-    expect(redirects(false)).toContainEqual({ path: "/accepted-papers/", to: "/#program" });
+    for (const { to } of redirects()) expect(ids.has(to.replace("/#", ""))).toBe(true);
+    expect(redirects()).toContainEqual({ path: "/organization/", to: "/#organizers" });
+    expect(redirects()).toContainEqual({ path: "/attend/", to: "/#about" });
   });
 
   it("refuses an unknown section", () => {
