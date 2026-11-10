@@ -19,4 +19,4 @@ const place = isKnown(person.affiliation)
 <span class="person__name">
   {profile ? <ExternalLink href={profile}>{person.name}</ExternalLink> : <Value of={person.name} />}
 </span>
-, {place ?? <span class="tba">affiliation to be announced</span>}
+, <span class="person__place">{place ?? <span class="tba">affiliation to be announced</span>}</span>

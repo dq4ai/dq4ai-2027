@@ -17,12 +17,12 @@ consistently, and appear in the placeholder report. Checks on a date apply once 
 **Build-time status plus a daily rebuild.** Statuses are correct without JavaScript. The rebuild
 moves "upcoming" to "passed". GitHub pauses scheduled workflows after 60 days without repository
 activity; any commit, or re-enabling the workflow under Actions, resumes them. The rebuild runs just after 12:00 UTC, when a day ends in AoE. Between builds, a small script
-corrects statuses, the flagged date and the submit button (`DeadlineSync.astro`), so a page built
+corrects statuses and the flagged date (`DeadlineSync.astro`), so a page built
 earlier never contradicts itself.
 
 **The logo first.** The palette comes from logo D: navy for data quality for AI, teal for AI for
 data quality. `src/lib/brand.ts` draws it once, for the page, the favicon's shape and the social
-images. Amber is only ever the next deadline.
+images. The next deadline is set in bold red, without a background, as the previous edition set it.
 
 **Like the previous edition's site.** The organizers asked for the layout of QuaLLM-KG 2026
 (<https://quallmkg2026.github.io/>): the banner title on four set lines, the full "About" and the

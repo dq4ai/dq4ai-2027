@@ -27,12 +27,12 @@
   color-scheme: light;
 
   /* Everything starts from the logo: navy and teal, on warm paper rather than a cool white so the
-     site reads as an academic page, not a product. Amber is the one flagged cell, used only for the
-     next deadline. */
+     site reads as an academic page, not a product. The next deadline is set in bold red, as the
+     previous edition set it. */
   --color-brand-a: #1e3a8a;
   --color-brand-b: #0f7f72;
-  /* The home banner's ribbons: the brand colours softened into the paper, and a sand tint from
-     the amber. Text never sits on the deep ends; a veil of paper keeps the centre calm. */
+  /* The home banner's ribbons: the brand colours softened into the paper, and a warm sand
+     tint. Text never sits on the deep ends; a veil of paper keeps the centre calm. */
   --wave-a1: #97a9de;
   --wave-a2: #c6d1f0;
   --wave-b1: #9ad3c9;
@@ -50,8 +50,8 @@
   --color-on-accent: #fff;
   --color-primary: var(--color-brand-a);
   --color-primary-hover: #142a66;
-  --color-flag: #f6c945;
-  --color-on-flag: #141c26;
+  /* The next deadline, in the previous edition's red: 5.5:1 on the paper. */
+  --color-deadline: #c00;
   --color-status-today: #7a4f00;
   --color-status-passed: var(--color-text-muted);
   --color-focus: #0b57a4;

@@ -23,8 +23,8 @@ submissionUrl: TBA
 proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/
-paperTemplate: TBA
-paperTemplateUrl: TBA # Address of the template file or page
+paperTemplate: CEUR-WS proceedings template
+paperTemplateUrl: https://ceur-ws.org/HOWTOSUBMIT.html # Address of the template file or page
 reviewModel: TBA # e.g. double-blind
 deployment:
   githubOwner: dq4ai

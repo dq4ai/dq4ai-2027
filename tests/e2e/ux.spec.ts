@@ -58,14 +58,6 @@ test.describe("deadlines as they pass", () => {
     await expect(row.locator(".status--today:visible")).toHaveText("Today");
   });
 
-  test("the submit button goes when submission closes", async ({ page }) => {
-    await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
-    await page.goto("");
-    await expect(page.getByRole("link", { name: "Submit a paper" })).toBeHidden();
-    await page.goto("");
-    await expect(page.getByRole("link", { name: "Submit a paper" })).toBeHidden();
-  });
-
   test("an announcement is not called a deadline", async ({ page }) => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
     await page.goto("");
@@ -196,24 +188,48 @@ test("the site stays light whatever the system theme, with no button", async ({ 
 test.describe("authors' tasks", () => {
   test("the template can be downloaded", async ({ page, request, baseURL }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a template");
-    for (const path of [""]) {
-      await page.goto(path);
-      const row = page.locator(".facts > div", { hasText: "Template" });
-      await expect(row.getByRole("link", { name: "Example template" })).toHaveAttribute(
-        "href",
-        "https://example.org/template.zip",
-      );
-    }
+    await page.goto("");
+    const line = section(page, "submission").locator(".submit-line");
+    await expect(line.getByRole("link", { name: "Example template" })).toHaveAttribute(
+      "href",
+      "https://example.org/template.zip",
+    );
     const text = await (await request.get(`${baseURL}cfp.txt`)).text();
     expect(text).toContain("https://example.org/template.zip");
   });
 
-  test("an unknown link points on to the host's workshops page", async ({ page }, testInfo) => {
-    test.skip(populated(testInfo.project.name), "needs an unknown submission link");
+  // The organizers asked for the previous edition's sentence, with a link that does nothing until
+  // the real address is known: "after, we change it".
+  test("Submission says how to submit, as the previous edition did", async ({ page }, testInfo) => {
     await page.goto("");
-    await expect(
-      page.getByRole("link", { name: "workshops page", exact: false }).first(),
-    ).toHaveAttribute("href", /contents=workshops/);
+    const submission = section(page, "submission");
+    await expect(submission.locator(".callout")).toHaveCount(0);
+    await expect(submission).not.toContainText(/will be announced here|workshops page/);
+    const line = submission.locator(".submit-line");
+    if (populated(testInfo.project.name)) {
+      await expect(line).toHaveText(
+        "Authors must format their submissions according to the Example template, and all " +
+          "submissions in PDF format should be submitted here.",
+      );
+      await expect(line.getByRole("link", { name: "here" })).toHaveAttribute(
+        "href",
+        /example\.org\/submit/,
+      );
+      return;
+    }
+    await expect(line).toContainText(
+      "Authors must format their submissions according to the CEUR-WS proceedings template, and " +
+        "all submissions in PDF format should be submitted here",
+    );
+    await expect(line.getByRole("link", { name: "CEUR-WS proceedings template" })).toHaveAttribute(
+      "href",
+      "https://ceur-ws.org/HOWTOSUBMIT.html",
+    );
+    // A placeholder: looks like the previous edition's link, goes nowhere, and says so aloud.
+    const here = line.locator(".link-pending");
+    await expect(here).toHaveText("here");
+    await expect(here).not.toHaveAttribute("href");
+    await expect(line.locator(".visually-hidden")).toHaveText("(link to come)");
   });
 
   test("the organizers' status note appears once they write one", async ({ page }, testInfo) => {
@@ -499,17 +515,6 @@ test.describe("printing", () => {
       await expect(page.locator(".session__meta a[download]").first()).toBeHidden();
     }
   });
-
-  test("a link whose text is its address prints it once", async ({ page }, testInfo) => {
-    test.skip(!populated(testInfo.project.name), "needs a submission link");
-    await page.goto("");
-    await page.emulateMedia({ media: "print" });
-    const after = await page
-      .locator(".facts a.link-is-address")
-      .first()
-      .evaluate((a) => getComputedStyle(a, "::after").content);
-    expect(after).toBe("none");
-  });
 });
 
 test.describe("calendar files", () => {
@@ -717,25 +722,16 @@ test.describe("less at once", () => {
     }
   });
 
-  test("Submission opens on where things stand, set apart", async ({ page }) => {
+  // As on the previous edition's site, facts not yet known are simply not listed.
+  test("Submission lists only what is known", async ({ page }, testInfo) => {
     await page.goto("");
-    const first = section(page, "submission").locator("> :not(a, h2)").first();
-    await expect(first).toHaveClass(/callout/);
-  });
-
-  test("facts not yet known share one sentence instead of rows", async ({ page }, testInfo) => {
-    await page.goto("");
-    const details = page.locator("section", { has: page.locator("#submission") });
-    if (populated(testInfo.project.name)) {
-      await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(1);
-      // The fixture leaves only these two unknown.
-      await expect(details).toContainText("Formatting and anonymization: to be announced.");
-      return;
-    }
-    await expect(details).toContainText(
-      "Submission system, template, review model, formatting and anonymization: to be announced.",
+    const details = section(page, "submission").locator(".subsection", {
+      has: page.locator("#submission-details"),
+    });
+    await expect(details).not.toContainText(/to be announced/i);
+    await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(
+      populated(testInfo.project.name) ? 1 : 0,
     );
-    await expect(details.locator(".facts > div", { hasText: "Review model" })).toHaveCount(0);
   });
 });
 

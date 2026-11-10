@@ -51,17 +51,6 @@ export const STATUS_LABELS: Record<DeadlineStatus, string> = {
   passed: "Passed",
 };
 
-/** Whether to offer the submit button. An unknown deadline has not passed. */
-export function submissionOpen(site: Pick<Site, "submissionUrl">, views: DeadlineView[]): boolean {
-  if (site.submissionUrl === TBA) return false;
-  return views.find((view) => view.id === "submission")?.status !== "passed";
-}
-
-/** The moment a page already built should stop offering the submit button. */
-export function submissionCloses(views: DeadlineView[]): string | undefined {
-  return views.find((view) => view.id === "submission")?.due?.toISOString();
-}
-
 /** Authors must meet a deadline; a notification is only a date to wait for. */
 export function stripPrefix(kind: DateEntry["kind"]): string {
   return kind === "notification" ? "Next date:" : "Next deadline:";
@@ -138,15 +127,4 @@ export function siteSummary(site: Site): string {
 
 export function isKnown(value: string | number | undefined): boolean {
   return value !== undefined && value !== TBA;
-}
-
-/** One sentence naming the facts not yet known, so they do not each take a row. */
-export function pendingSentence(labels: string[]): string {
-  if (labels.length === 0) return "";
-  const [first = "", ...rest] = labels.map((label, index) =>
-    index === 0 ? label : label.charAt(0).toLowerCase() + label.slice(1),
-  );
-  const last = rest.pop();
-  const list = last ? `${[first, ...rest].join(", ")} and ${last}` : first;
-  return `${list}: to be announced.`;
 }
