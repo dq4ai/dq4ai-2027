@@ -78,8 +78,8 @@
   --space-6: 3rem;
   --space-7: 4rem;
 
-  /* Text fills its column, and stops at about 90 characters on a very wide screen. */
-  --measure: 90ch;
+  /* Text runs the full width of its column, as the organizers asked; the page width bounds it. */
+  --measure: none;
   --page-width: 80rem;
   /* The left column of every page: section names, session times and news dates sit in it. */
   --rail: 12rem;

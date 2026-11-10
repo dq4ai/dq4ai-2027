@@ -57,8 +57,8 @@ browser's find opens it. The old page addresses (`/dates/`, `/call-for-papers/` 
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
 The Call for Papers' banner photo went with its page, and with it that page's own Lighthouse
-budget: the one page keeps 100 and a largest paint under 1200 ms. Text fills its column up to
-`--measure` (90ch), on a page up to `--page-width` (80rem).
+budget: the one page keeps 100 and a largest paint under 1200 ms. Text runs the full width of its
+column, on a page up to `--page-width` (80rem).
 
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.

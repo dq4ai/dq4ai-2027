@@ -7,8 +7,8 @@ of interest, Paper categories, Important dates, Submission, Policies, Program, K
 papers (once there are papers), Organization, Attend, Contact and Previous editions; news goes to
 the RSS feed only. Each
 section ends on "Go to top ↑", and the menu jumps to sections. About shows its first paragraph, and
-Submission its key facts, with the rest behind "Read more". Text now fills the width of the screen,
-up to about 90 characters a line. The old page addresses redirect to their sections. The Call for
+Submission its key facts, with the rest behind "Read more". Text now runs the full width of the
+page. The old page addresses redirect to their sections. The Call for
 Papers' banner photo is gone with its page (`cfpPhoto` is removed from `site.yaml`), and a checklist
 step's `path` is now an anchor such as `/#dates`. The first edition, QuaLLM-KG 2026 at EDBT/ICDT
 2026 in Tampere, Finland, is listed under Previous editions with a link to its site.
