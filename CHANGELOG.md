@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+The organization's root address, <https://dq4ai.github.io/>, can now send visitors to this edition
+instead of showing GitHub's 404 page. The redirect pages are in `org-root/`, with the steps to
+publish them from a `dq4ai/dq4ai.github.io` repository, which needs an owner of the organization. A
+step in `docs/NEW_EDITION.md` moves the redirect each year.
+
 The audit of the live site after each deploy uses the same budgets as CI, including the Call for
 Papers' own phone budget, which it was missing.
 
