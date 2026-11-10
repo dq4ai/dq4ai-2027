@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The audit of the live site after each deploy uses the same budgets as CI, including the Call for
+Papers' own phone budget, which it was missing.
+
 The layout of the previous edition's site, as the organizers asked. The home banner reads, one line
 each: "Second International Workshop on", "Data Quality for Artificial Intelligence (DQ4AI 2027),",
 "co-located with EDBT/ICDT 2027, Lille, France" and "(April 6, 2027)". The home page shows the full
