@@ -33,7 +33,7 @@
   country: Luxembourg
 - id: sijie-dong
   name: Sijie Dong
-  affiliation: Alibaba
+  affiliation: Ant International
 - id: jahid-hasan
   name: Jahid Hasan
   affiliation: Purdue University
@@ -45,3 +45,6 @@
   surname: Fernández Breis
   affiliation: Universidad de Murcia, IMIB-Arrixaca
   country: Spain
+- id: sebastian-schelter
+  name: Sebastian Schelter
+  affiliation: BIFOLD & TU Berlin
