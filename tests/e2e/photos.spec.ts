@@ -32,7 +32,6 @@ test.describe("the header stays within reach", () => {
     });
     await page.locator("#site-nav").getByRole("link", { name: "Program Committee" }).click();
     await expect(page).toHaveURL(/\/#program-committee$/);
-
     await expect(page.locator("#program-committee")).toBeInViewport();
   });
 
