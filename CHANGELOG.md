@@ -3,8 +3,8 @@
 ## Unreleased
 
 The organizers' fifth round. The page is a centred frame of 900px, as on QuaLLM-KG 2026, rather
-than running edge to edge. The banner is a public-domain (CC0) photo of Lille's Opera and Chamber
-of Commerce belfry, under an even navy veil, so it needs no credit; its Lighthouse budget allows a largest paint of 2000 ms instead of 1200 ms
+than running edge to edge. The banner is a public-domain photo of Lille's Vieille Bourse and the
+Chamber of Commerce belfry, under an even navy veil, so it needs no credit; its Lighthouse budget allows a largest paint of 2000 ms instead of 1200 ms
 for the photo. The Program section and its menu link are left out until there is a program; its old
 addresses lead to About meanwhile. A keynote whose talk is not yet known reads "To be announced"
 once, not for each of its title, abstract and biography. Jesualdo Tomás Fernández Breis (Universidad

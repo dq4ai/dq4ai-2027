@@ -50,8 +50,8 @@ main > section:not(.session) > h2 {
   padding-block: var(--space-4) var(--space-6);
 }
 
-/* The host city behind the title, as the organizers chose: Lille's Opera and the Chamber of
-   Commerce belfry, a public-domain (CC0) photo that needs no credit. An even navy veil keeps white
+/* The host city behind the title, as the organizers chose: the Vieille Bourse and the Chamber of
+   Commerce belfry on the Grand'Place, a public-domain photo that needs no credit. An even navy veil keeps white
    text above 4.5:1 over the brightest sky, and a soft shadow keeps its edges crisp. */
 .hero__banner {
   position: relative;

@@ -58,7 +58,7 @@ sections in order; `src/pages/index.astro` renders one component per section fro
 links to sections by anchor. Nothing is folded away. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
-The banner is a public-domain (CC0) photo of Lille's Opera and Chamber of Commerce belfry, as the
+The banner is a public-domain photo of Lille's Vieille Bourse and Chamber of Commerce belfry, as the
 organizers chose one that needs no credit, under an even navy veil so the white title stays above
 7:1. It is the first
 screen's largest paint, so it loads eagerly, and the page's Lighthouse budget is 100 with a largest
