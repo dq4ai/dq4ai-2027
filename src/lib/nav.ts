@@ -16,6 +16,8 @@ export interface Section {
   onlyWithProgram?: boolean;
   /** On the page when there is one, but not in the menu. */
   notInMenu?: boolean;
+  /** No title shown on the page; it stays for screen readers and the menu's link. */
+  hideTitle?: boolean;
 }
 
 export const HOME = {
@@ -45,7 +47,14 @@ export const SECTIONS: Section[] = [
     oldPath: "/keynotes/",
     onlyWithKeynotes: true,
   },
-  { id: "organizers", title: "Organizers", menu: "Organizers", oldPath: "/organization/" },
+  {
+    id: "organizers",
+    title: "Organizers",
+    menu: "Organizers",
+    oldPath: "/organization/",
+    // The organizers asked for no "Organizers" title: the committees' own titles open it.
+    hideTitle: true,
+  },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
 ];

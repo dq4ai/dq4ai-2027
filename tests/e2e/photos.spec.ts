@@ -1,6 +1,6 @@
 /** The header stays within reach. */
 import { expect, test } from "@playwright/test";
-import { PAGES } from "./pages";
+import { PAGES, section } from "./pages";
 
 test.describe("the header stays within reach", () => {
   for (const [width, height] of [
@@ -32,7 +32,8 @@ test.describe("the header stays within reach", () => {
     });
     await page.locator("#site-nav").getByRole("link", { name: "Organizers" }).click();
     await expect(page).toHaveURL(/\/#organizers$/);
-    await expect(page.locator("#organizers")).toBeInViewport();
+    // Its title is hidden, as the organizers asked: its first committee's title is what is seen.
+    await expect(section(page, "organizers").locator("h3").first()).toBeInViewport();
   });
 
   test("a section link does not land under it", async ({ page }) => {
