@@ -21,6 +21,7 @@
   .toolbar,
   .hero__actions,
   .hero__photo,
+  .hero__credit,
   .section-anchor,
   .more-link,
   .go-top,
@@ -63,6 +64,7 @@
     content: none;
   }
 
+  .hero__mark,
   .not-found__mark {
     inline-size: 32pt;
     block-size: 32pt;

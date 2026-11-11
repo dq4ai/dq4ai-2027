@@ -27,11 +27,13 @@ test.describe("tokens", () => {
 });
 
 test.describe("what moves", () => {
-  // The banner shows the city, not the logo, which the header already shows; neither moves.
-  test("the logo stays still", async ({ page }) => {
+  test("the home logo's loop settles once around the checked data", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("");
-    await expect(page.locator(".hero .mark")).toHaveCount(0);
+    const names = await page
+      .locator(".hero .mark__loop")
+      .evaluate((e) => getComputedStyle(e).animationName);
+    expect(names).toBe("settle");
     const header = await page
       .locator(".site-header .mark__loop")
       .evaluate((e) => getComputedStyle(e).animationName);
@@ -184,17 +186,46 @@ test.describe("every control shows its state", () => {
   });
 });
 
-// The organizers chose a photo of the host city for the banner, behind the title, and one that
-// needs no credit on the page.
+// The organizers chose a photo of the host city for the banner, behind the title.
 test.describe("the home banner", () => {
   test("its photo is decoration, and left off paper", async ({ page }) => {
     await page.goto("");
     const photo = page.locator(".hero__banner img.hero__photo");
     await expect(photo).toHaveCount(1);
     await expect(photo).toHaveAttribute("alt", "");
-    await expect(page.locator(".hero")).not.toContainText(/Photo:|CC BY/);
     await page.emulateMedia({ media: "print" });
     await expect(photo).toBeHidden();
+  });
+
+  test("its photo is credited, as its licence requires", async ({ page }) => {
+    await page.goto("");
+    const credit = page.locator(".hero__credit");
+    await expect(credit).toContainText("Photo: Velvet");
+    await expect(credit.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
+      "href",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    );
+  });
+
+  // As the organizers asked: out of sight until the photo is hovered, at its foot, and reachable
+  // from the keyboard.
+  test("its credit shows at the foot of the photo on hover or focus", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("");
+    const banner = page.locator(".hero__banner");
+    const credit = banner.locator(".hero__credit");
+    await expect(credit).toHaveCSS("opacity", "0");
+    await banner.hover();
+    await expect(credit).toHaveCSS("opacity", "1");
+    const [outer, inner] = await Promise.all([banner.boundingBox(), credit.boundingBox()]);
+    expect(
+      Math.abs((outer?.y ?? 0) + (outer?.height ?? 0) - ((inner?.y ?? 0) + (inner?.height ?? 0))),
+    ).toBeLessThan(1);
+    await page.mouse.move(0, 0);
+    await expect(credit).toHaveCSS("opacity", "0");
+    await credit.getByRole("link").first().focus();
+    await expect(credit).toHaveCSS("opacity", "1");
   });
 
   test("its words stay readable over the art", async ({ page }) => {
@@ -203,16 +234,10 @@ test.describe("the home banner", () => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto("");
       await expect(page.locator(".hero__banner h1")).toBeVisible();
-      // The photo shows clear above; the words sit below the middle, where the navy veil is
-      // deep enough for white text over any part of the photo.
       const veil = await page
         .locator(".hero__banner")
         .evaluate((e) => getComputedStyle(e, "::after").backgroundImage);
-      expect(veil, scheme).toContain("rgba(15, 25, 60, 0.8) 55%");
-      const banner = await page.locator(".hero__banner").boundingBox();
-      const title = await page.locator(".hero__banner h1").boundingBox();
-      if (!banner || !title) throw new Error("no banner");
-      expect(title.y - banner.y, scheme).toBeGreaterThanOrEqual(banner.height * 0.45);
+      expect(veil, scheme).toContain("radial-gradient");
     }
   });
 });

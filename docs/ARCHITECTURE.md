@@ -58,9 +58,10 @@ sections in order; `src/pages/index.astro` renders one component per section fro
 links to sections by anchor. Nothing is folded away. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
-The banner is a public-domain photo of Lille's Vieille Bourse and Chamber of Commerce belfry, as the
-organizers chose one that needs no credit, under an even navy veil so the white title stays above
-7:1. It is the first
+The banner is a photo of Lille's Grand'Place at dusk, as the organizers chose, under a navy veil so
+the white title stays readable; its CC BY-SA licence requires the credit, which the
+organizers asked to keep out of sight: it shows at the foot of the photo on hover or keyboard focus,
+and stays in the page for screen readers. It is the first
 screen's largest paint, so it loads eagerly, and the page's Lighthouse budget is 100 with a largest
 paint under 2000 ms (under 1200 ms without the photo, on Lighthouse's simulated slow 4G). The page
 is a centred frame of `--page-width` (56.25rem, the previous edition's 900px), and text runs its
@@ -69,11 +70,12 @@ full width.
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.
 
-| Moment             | Motion                           | Why                                    |
-| ------------------ | -------------------------------- | -------------------------------------- |
-| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content |
-| Hover on a pointer | Color or border eases, 150 ms    | Feedback                               |
-| Press              | Color, and buttons scale to 0.97 | Feedback                               |
+| Moment             | Motion                           | Why                                      |
+| ------------------ | -------------------------------- | ---------------------------------------- |
+| Home logo, on load | The loop settles once, 480 ms    | The hero: the two directions around data |
+| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content   |
+| Hover on a pointer | Color or border eases, 150 ms    | Feedback                                 |
+| Press              | Color, and buttons scale to 0.97 | Feedback                                 |
 
 These stay still on purpose: a change of system theme, so every color changes at once; section
 jumps, because smooth scrolling took over a second on long pages and ran on page load; the time-zone

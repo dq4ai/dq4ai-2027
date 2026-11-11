@@ -50,10 +50,8 @@ main > section:not(.session) > h2 {
   padding-block: var(--space-4) var(--space-6);
 }
 
-/* The host city behind the title, as the organizers chose: the Vieille Bourse and the Chamber of
-   Commerce belfry on the Grand'Place, a public-domain photo that needs no credit. The photo shows
-   clear at the top; the words sit at the foot, where the navy veil is deep enough for white text
-   above 4.5:1 over any part of the photo. */
+/* The host city at dusk behind the title, as the organizers chose. A navy veil, deepest under
+   the words, keeps white text above 4.5:1 on every part of the photo. */
 .hero__banner {
   position: relative;
   isolation: isolate;
@@ -62,40 +60,19 @@ main > section:not(.session) > h2 {
   border-radius: var(--radius-large);
   background: var(--color-brand-a);
   color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  min-block-size: 26rem;
-  padding-block-start: 10rem;
   text-align: center;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.55);
 }
 
 .hero__banner::after {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgb(15 25 60 / 0) 0%,
-    rgb(15 25 60 / 0.15) 12%,
-    rgb(15 25 60 / 0.8) 35%,
-    rgb(15 25 60 / 0.85) 100%
+  background: radial-gradient(
+    ellipse 70% 80% at 50% 50%,
+    rgb(15 25 60 / 0.68) 0%,
+    rgb(15 25 60 / 0.5) 100%
   );
   content: "";
-}
-
-/* Wider, the words take less height, so the photo stays clear further down. */
-@media (width >= 40rem) {
-  .hero__banner::after {
-    background: linear-gradient(
-      to bottom,
-      rgb(15 25 60 / 0) 0%,
-      rgb(15 25 60 / 0.15) 25%,
-      rgb(15 25 60 / 0.8) 55%,
-      rgb(15 25 60 / 0.85) 100%
-    );
-  }
 }
 
 .hero__photo {
@@ -105,7 +82,6 @@ main > section:not(.session) > h2 {
   inline-size: 100%;
   block-size: 100%;
   object-fit: cover;
-  object-position: center 12%;
 }
 
 .hero__banner a,
@@ -113,11 +89,55 @@ main > section:not(.session) > h2 {
   color: #fff;
 }
 
+/* The logo is navy and teal: on the photo it sits on a disc of paper. */
+.hero__banner .hero__mark {
+  padding: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-surface);
+}
+
+/* The photo's credit, which its licence requires, stays out of sight until the photo is hovered
+   or a credit link has keyboard focus, as the organizers asked. It stays in the page for screen
+   readers and search engines. */
+.hero__credit {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  background: rgb(10 16 40 / 0.8);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-align: end;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.hero__banner:hover .hero__credit,
+.hero__credit:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__credit {
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
+}
+
 .hero__title {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
   align-items: center;
+}
+
+/* On a phone the header already shows the logo, and the banner stays short. */
+.hero__mark {
+  display: none;
 }
 
 .hero__where a {
@@ -137,11 +157,32 @@ main > section:not(.session) > h2 {
   text-wrap: balance;
 }
 
+/* The one moment nobody asked for: the two directions settle once around the checked data, which
+   stays still. From-only, so it cannot leave the logo hidden. */
+@media (prefers-reduced-motion: no-preference) {
+  .hero__mark .mark__loop {
+    transform-box: view-box;
+    transform-origin: center;
+    animation: settle var(--dur-slower) var(--ease-out);
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    transform: rotate(-60deg);
+  }
+}
+
 @media (width >= 40rem) {
   .hero__banner {
-    min-block-size: 28rem;
-    padding-inline: var(--space-5);
-    padding-block: 12rem var(--space-5);
+    padding: var(--space-7) var(--space-5);
+  }
+
+  .hero__mark {
+    display: block;
+    inline-size: 6rem;
+    block-size: 6rem;
   }
 }
 

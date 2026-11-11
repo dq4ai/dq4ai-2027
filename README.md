@@ -8,7 +8,7 @@ with EDBT/ICDT 2027 in Lille, France.
 
 **Live site:** <https://dq4ai.github.io/dq4ai-2027/>
 
-![Home page of the DQ4AI 2027 website: a banner photo of Lille's Vieille Bourse and belfry behind "DQ4AI 2027", the full title and the date, then About](docs/screenshot.png)
+![Home page of the DQ4AI 2027 website: a banner photo of Lille's Grand'Place at dusk behind "DQ4AI 2027", the full title and the date, then About](docs/screenshot.png)
 
 ## The site
 
