@@ -8,7 +8,7 @@ import {
   TBA,
   type DeadlineStatus,
 } from "./dates";
-import type { Cfp, DateEntry, Person, Site } from "./schemas";
+import type { DateEntry, Person, Site } from "./schemas";
 
 export interface DeadlineView {
   id: string;
@@ -43,13 +43,6 @@ export function nextDeadline(views: DeadlineView[]): DatedDeadline | undefined {
     .filter((v) => v.status === "upcoming" || v.status === "today")
     .sort((a, b) => a.due.getTime() - b.due.getTime())[0];
 }
-
-export const STATUS_LABELS: Record<DeadlineStatus, string> = {
-  tba: "To be announced",
-  upcoming: "Upcoming",
-  today: "Today",
-  passed: "Passed",
-};
 
 /** Authors must meet a deadline; a notification is only a date to wait for. */
 export function stripPrefix(kind: DateEntry["kind"]): string {
@@ -86,11 +79,6 @@ export function wordmarkParts(
 ): { before: string; digit: string; after: string } | undefined {
   const [, before = "", digit, after = ""] = /^(\D*)(\d)(.*)$/.exec(acronym) ?? [];
   return digit ? { before, digit, after } : undefined;
-}
-
-/** True until at least one paper type has a page limit. */
-export function pageLimitsUnknown(cfp: Pick<Cfp, "paperTypes">): boolean {
-  return cfp.paperTypes.every((type) => type.pageLimit === TBA);
 }
 
 export function workshopTitle(site: Site): string {

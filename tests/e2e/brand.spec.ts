@@ -6,7 +6,7 @@ const TOPICS = [
   "Data quality for AI",
   "AI for data quality",
   "Quality in KGs",
-  "Quality in LLMs, NLP, and generative AI",
+  "Quality in LLMs and generative AI",
   "Data management and governance for AI",
   "Multimodal data quality",
   "Evaluation and benchmarks",

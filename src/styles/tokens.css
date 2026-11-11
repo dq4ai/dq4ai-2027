@@ -44,8 +44,6 @@
   --color-primary-hover: #142a66;
   /* The next deadline, in the previous edition's red: 5.5:1 on the paper. */
   --color-deadline: #c00;
-  --color-status-today: #7a4f00;
-  --color-status-passed: var(--color-text-muted);
   --color-focus: #0b57a4;
   /* People's names, in the previous edition's red: 7:1 on the paper. */
   --color-person: #a51d1d;

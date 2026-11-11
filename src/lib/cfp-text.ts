@@ -70,12 +70,13 @@ export function buildCfpText({ site, cfp, deadlines, chairs, siteUrl }: CfpTextI
       .join("\n"),
     "",
     heading("Paper categories"),
+    wrapText(cfp.paperTypesIntro),
+    "",
     cfp.paperTypes
-      .map(
-        (type) =>
-          `  * ${type.title} (page limit: ${known(type.pageLimit)})\n${wrapText(type.description, WIDTH, "    ")}`,
-      )
+      .map((type) => `  * ${type.title}\n${wrapText(type.description, WIDTH, "    ")}`)
       .join("\n"),
+    "",
+    wrapText(`Paper lengths: ${known(cfp.paperLengths)}`),
     "",
     heading("Submission"),
     `  Submission system: ${known(site.submissionSystem)}`,

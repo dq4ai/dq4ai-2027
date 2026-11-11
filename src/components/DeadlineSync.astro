@@ -4,8 +4,8 @@ import { stripPrefix } from "../lib/view";
 
 const deadlines = await getDeadlines();
 // Everything still ahead, so a page built earlier can move on when a deadline closes. The
-// organizers asked for no deadline bar, so nothing here is seen: the script below keeps statuses
-// and the flagged date right between the daily rebuilds.
+// organizers asked for no deadline bar, so nothing here is seen: the script below keeps the
+// flagged date right between the daily rebuilds.
 const schedule = deadlines
   .flatMap((deadline) => (deadline.due ? [{ ...deadline, due: deadline.due }] : []))
   .filter((deadline) => deadline.status !== "passed")
@@ -19,9 +19,6 @@ const schedule = deadlines
 {schedule.length > 0 && <span hidden data-deadline-schedule={JSON.stringify(schedule)} />}
 
 <script>
-  import { deadlineStatus } from "../lib/dates";
-  import { STATUS_LABELS } from "../lib/view";
-
   interface Entry {
     due: string;
     prefix: string;
@@ -30,12 +27,7 @@ const schedule = deadlines
   const source = document.querySelector<HTMLElement>("[data-deadline-schedule]");
   const schedule = JSON.parse(source?.dataset.deadlineSchedule ?? "[]") as Entry[];
 
-  const updateRows = (current: Entry | undefined, now: Date) => {
-    for (const status of document.querySelectorAll<HTMLElement>("[data-status-due]")) {
-      const value = deadlineStatus({ date: status.dataset.statusDue ?? "" }, now);
-      status.className = `status status--${value}`;
-      status.textContent = STATUS_LABELS[value];
-    }
+  const updateRows = (current: Entry | undefined) => {
     for (const time of document.querySelectorAll<HTMLElement>("main time[data-due]")) {
       const isNext = time.dataset.due === current?.due;
       time.classList.toggle("flag", isNext);
@@ -55,8 +47,8 @@ const schedule = deadlines
   const tick = () => {
     const now = new Date();
     const current = schedule.find((entry) => new Date(entry.due) >= now);
-    updateRows(current, now);
-    // Just after the next minute begins, so a deadline's status changes on the minute it passes.
+    updateRows(current);
+    // Just after the next minute begins, so the flag moves on the minute a deadline passes.
     setTimeout(tick, 60_000 - (now.getTime() % 60_000) + 50);
   };
   tick();

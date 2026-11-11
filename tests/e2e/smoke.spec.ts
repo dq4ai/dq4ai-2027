@@ -433,6 +433,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Jahid Hasan",
       "Jesualdo Tomás Fernández Breis",
       "Mohammad Sadoghi",
+      "Sebastian Schelter",
       "Sijie Dong",
     ]);
     await expect(page.locator("#chairs ~ ul .person__name")).toHaveText([
@@ -479,21 +480,19 @@ test.describe("states that depend on content", () => {
     await page.goto("");
     const dates = datesTable(page);
     const row = dates.locator("tbody tr", { hasText: "Author notification" });
-    await expect(row.locator(".status--extended:visible")).toHaveText("Extended");
+    await expect(row.locator("del")).toHaveCount(1);
+    await expect(row).toContainText("Was");
     const plain = dates.locator("tbody tr", { hasText: "Camera-ready" });
-    await expect(plain.locator(".status--extended")).toHaveCount(0);
+    await expect(plain.locator("del")).toHaveCount(0);
   });
 
-  test("on a phone the dates table is two columns and keeps its status", async ({
-    page,
-  }, testInfo) => {
+  test("on a phone the dates table keeps its two columns", async ({ page }, testInfo) => {
     test.skip(!populated(testInfo.project.name), "needs a dated deadline");
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("");
-    await expect(page.locator("thead").getByText("Status")).toBeHidden();
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.getByRole("cell")).toHaveCount(1);
-    await expect(row.locator(".status--extended:visible")).toHaveText("Extended");
+    await expect(row.locator("del")).toBeVisible();
     const flag = page.locator("main .flag");
     const fragments = await flag.evaluate((element) => element.getClientRects().length);
     expect(fragments, "the flagged date is one solid cell").toBe(1);
@@ -503,9 +502,12 @@ test.describe("states that depend on content", () => {
   });
 
   // Both content sets have dated deadlines now; the undated table is no longer built anywhere.
-  test("the dates table shows each deadline's status once dates are set", async ({ page }) => {
+  // The organizers asked for no status: the date says it all.
+  test("the dates table has no status", async ({ page }) => {
     await page.goto("");
-    await expect(page.locator("thead").getByText("Status")).toBeVisible();
+    await expect(datesTable(page).locator("thead th")).toHaveText(["Item", "Date"]);
+    await expect(page.locator("main .status, main [data-status-due]")).toHaveCount(0);
+    await expect(datesTable(page)).not.toContainText("everywhere on Earth");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.getByText("To be announced")).toHaveCount(0);
   });
@@ -526,9 +528,9 @@ test.describe("states that depend on content", () => {
     await expect(page.locator("main")).not.toContainText("6–9 April 2027");
   });
 
-  test("the page limit is with the paper categories", async ({ page }) => {
+  test("the page limits are with the paper categories", async ({ page }) => {
     await page.goto("");
-    await expect(page.locator(".subsection.paper-categories")).toContainText(/Page limit/);
+    await expect(page.locator(".subsection.paper-categories")).toContainText(/pages|Page limits/);
   });
 
   // As on the previous edition's site, accepted papers are part of the program.
@@ -544,7 +546,6 @@ test.describe("states that depend on content", () => {
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
     await expect(row.locator("del")).toHaveText("11 December 2026, 23:59 AoE");
     await expect(row.getByText("18 December 2026, 23:59 AoE")).toBeVisible();
-    await expect(row.locator(".status--extended:visible")).toBeVisible();
     await expect(row).toContainText("Was");
     await expect(row).toContainText("Now");
   });
