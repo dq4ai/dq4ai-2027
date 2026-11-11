@@ -27,13 +27,11 @@ test.describe("tokens", () => {
 });
 
 test.describe("what moves", () => {
-  test("the home logo's loop settles once around the checked data", async ({ page }) => {
+  // The banner shows the city, not the logo, which the header already shows; neither moves.
+  test("the logo stays still", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("");
-    const names = await page
-      .locator(".hero .mark__loop")
-      .evaluate((e) => getComputedStyle(e).animationName);
-    expect(names).toBe("settle");
+    await expect(page.locator(".hero .mark")).toHaveCount(0);
     const header = await page
       .locator(".site-header .mark__loop")
       .evaluate((e) => getComputedStyle(e).animationName);
@@ -205,11 +203,16 @@ test.describe("the home banner", () => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto("");
       await expect(page.locator(".hero__banner h1")).toBeVisible();
-      // White over the brightest sky under this veil is about 7:1.
+      // The photo shows clear above; the words sit below the middle, where the navy veil is
+      // deep enough for white text over any part of the photo.
       const veil = await page
         .locator(".hero__banner")
-        .evaluate((e) => getComputedStyle(e, "::after").backgroundColor);
-      expect(veil, scheme).toBe("rgba(15, 25, 60, 0.74)");
+        .evaluate((e) => getComputedStyle(e, "::after").backgroundImage);
+      expect(veil, scheme).toContain("rgba(15, 25, 60, 0.8) 55%");
+      const banner = await page.locator(".hero__banner").boundingBox();
+      const title = await page.locator(".hero__banner h1").boundingBox();
+      if (!banner || !title) throw new Error("no banner");
+      expect(title.y - banner.y, scheme).toBeGreaterThanOrEqual(banner.height * 0.45);
     }
   });
 });

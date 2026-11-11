@@ -49,12 +49,12 @@ test.describe("logo", () => {
     expect(await arc.evaluate((e) => getComputedStyle(e).stroke)).toBe("rgb(30, 58, 138)");
   });
 
+  // The banner shows the city; the logo opens the page in the header, as on every screen.
   test("the home page opens with the logo", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
-    const mark = page.locator(".hero svg.mark");
-    await expect(mark).toBeInViewport({ ratio: 1 });
-    expect((await mark.boundingBox())?.width ?? 0).toBeGreaterThanOrEqual(96);
+    await expect(page.locator(".site-header svg.mark")).toBeInViewport({ ratio: 1 });
+    await expect(page.locator(".hero svg.mark")).toHaveCount(0);
   });
 
   test("the favicon is the logo, in the logo's colors", () => {

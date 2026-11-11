@@ -1,7 +1,6 @@
 ---
 import ContentImage from "../components/ContentImage.astro";
 import ExternalLink from "../components/ExternalLink.astro";
-import Mark from "../components/Mark.astro";
 import PageSection from "../components/PageSection.astro";
 import About from "../components/sections/About.astro";
 import Keynotes from "../components/sections/Keynotes.astro";
@@ -42,7 +41,6 @@ const jsonLd = serializeJsonLd(
         quality={35}
       />
       <div class="hero__title">
-        <Mark class="hero__mark" />
         {/* As the previous edition's banner: the short name large, the full title smaller below. */}
         <h1>
           {site.acronym} {site.year}

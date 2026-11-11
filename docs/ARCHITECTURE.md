@@ -69,12 +69,11 @@ full width.
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.
 
-| Moment             | Motion                           | Why                                      |
-| ------------------ | -------------------------------- | ---------------------------------------- |
-| Home logo, on load | The loop settles once, 480 ms    | The hero: the two directions around data |
-| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content   |
-| Hover on a pointer | Color or border eases, 150 ms    | Feedback                                 |
-| Press              | Color, and buttons scale to 0.97 | Feedback                                 |
+| Moment             | Motion                           | Why                                    |
+| ------------------ | -------------------------------- | -------------------------------------- |
+| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content |
+| Hover on a pointer | Color or border eases, 150 ms    | Feedback                               |
+| Press              | Color, and buttons scale to 0.97 | Feedback                               |
 
 These stay still on purpose: a change of system theme, so every color changes at once; section
 jumps, because smooth scrolling took over a second on long pages and ran on page load; the time-zone
