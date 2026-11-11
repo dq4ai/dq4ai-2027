@@ -186,25 +186,17 @@ test.describe("every control shows its state", () => {
   });
 });
 
-// The organizers chose a photo of the host city for the banner, behind the title.
+// The organizers chose a photo of the host city for the banner, behind the title, and one that
+// needs no credit on the page.
 test.describe("the home banner", () => {
   test("its photo is decoration, and left off paper", async ({ page }) => {
     await page.goto("");
     const photo = page.locator(".hero__banner img.hero__photo");
     await expect(photo).toHaveCount(1);
     await expect(photo).toHaveAttribute("alt", "");
+    await expect(page.locator(".hero")).not.toContainText(/Photo:|CC BY/);
     await page.emulateMedia({ media: "print" });
     await expect(photo).toBeHidden();
-  });
-
-  test("its photo is credited, as its licence requires", async ({ page }) => {
-    await page.goto("");
-    const credit = page.locator(".hero__credit");
-    await expect(credit).toContainText("Photo: Velvet");
-    await expect(credit.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
-      "href",
-      "https://creativecommons.org/licenses/by-sa/4.0/",
-    );
   });
 
   test("its words stay readable over the art", async ({ page }) => {
@@ -213,10 +205,11 @@ test.describe("the home banner", () => {
       await page.emulateMedia({ colorScheme: scheme });
       await page.goto("");
       await expect(page.locator(".hero__banner h1")).toBeVisible();
+      // White over the brightest sky under this veil is about 7:1.
       const veil = await page
         .locator(".hero__banner")
-        .evaluate((e) => getComputedStyle(e, "::after").backgroundImage);
-      expect(veil, scheme).toContain("radial-gradient");
+        .evaluate((e) => getComputedStyle(e, "::after").backgroundColor);
+      expect(veil, scheme).toBe("rgba(15, 25, 60, 0.74)");
     }
   });
 });
