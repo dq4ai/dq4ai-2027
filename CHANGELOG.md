@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+The organizers' fifth round. The page is a centred frame of 900px, as on QuaLLM-KG 2026, rather
+than running edge to edge. The banner is a photo of Lille's Grand'Place at dusk, credited below it
+as its licence requires; its Lighthouse budget allows a largest paint of 2000 ms instead of 1200 ms
+for the photo. The Program section and its menu link are left out until there is a program; its old
+addresses lead to About meanwhile. A keynote whose talk is not yet known reads "To be announced"
+once, not for each of its title, abstract and biography. Jesualdo Tomás Fernández Breis (Universidad
+de Murcia, IMIB-Arrixaca, Spain) rejoins the Program Committee, which now ends on "To be completed."
+The banner's ribbons and their drift are gone.
+
 Submission ends as the previous edition's did: "Authors must format their submissions according to
 the CEUR-WS proceedings template, and all submissions in PDF format should be submitted here." The
 template links to CEUR-WS's instructions, and "here" is a placeholder until `submissionUrl` is set.

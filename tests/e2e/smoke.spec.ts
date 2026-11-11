@@ -1,7 +1,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 import ICAL from "ical.js";
-import { datesTable, OLD_PAGES, PAGES, section } from "./pages";
+import { datesTable, OLD_PAGES, oldPageTarget, PAGES, section } from "./pages";
 
 const populated = (name: string) => name === "populated-content";
 const PRINT_PAGES = 8;
@@ -80,7 +80,9 @@ test("the home page goes from the banner straight to About", async ({ page }) =>
   const banner = page.locator(".hero__banner");
   await expect(banner).toContainText("Lille, France");
   await expect(banner.getByRole("link", { name: "EDBT/ICDT 2027" })).toBeVisible();
-  await expect(page.locator(".hero > *")).toHaveCount(1);
+  // The banner, then only its photo's credit.
+  await expect(page.locator(".hero > *")).toHaveCount(2);
+  await expect(page.locator(".hero > .hero__credit")).toHaveCount(1);
   await expect(page.locator(".exchange, .record, .hero__actions, .hero__body")).toHaveCount(0);
   await expect(page.locator("main").getByRole("link", { name: /call for papers/i })).toHaveCount(0);
   await expect(page.locator("main > section").first().locator("h2")).toHaveText(
@@ -124,9 +126,10 @@ test("Submission does not link to the dates just below it", async ({ page }) => 
   await expect(section(page, "submission").locator('> p a[href$="#dates"]')).toHaveCount(0);
 });
 
-test("every old page address leads to its section", async ({ page }) => {
-  for (const [path, id] of Object.entries(OLD_PAGES)) {
-    if (id === "keynotes") continue; // Only there while there are keynotes.
+test("every old page address leads to its section", async ({ page }, testInfo) => {
+  for (const [path, section] of Object.entries(OLD_PAGES)) {
+    if (section === "keynotes") continue; // Only there while there are keynotes.
+    const id = oldPageTarget(section, populated(testInfo.project.name));
     await page.goto(path);
     await expect(page, path).toHaveURL(new RegExp(`/#${id}$`));
     await expect(page.locator(`#${id}`), path).toBeVisible();
@@ -273,11 +276,13 @@ test("the page has no Attend, Policies, Previous editions or Contact section", a
   await expect(page.locator("main")).not.toContainText(/Visa letters|Host city/);
 });
 
-test("no photo reaches the first screen, and every photo waits to be scrolled to", async ({
-  page,
-}) => {
+// The banner's photo is the first screen's largest picture, so it loads at once; any other waits.
+test("only the banner's photo loads before it is scrolled to", async ({ page }) => {
   await page.goto("");
-  for (const image of await page.locator("main img").all()) {
+  const banner = page.locator(".hero__photo");
+  await expect(banner).toHaveAttribute("loading", "eager");
+  await expect(banner).toHaveAttribute("fetchpriority", "high");
+  for (const image of await page.locator("main img:not(.hero__photo)").all()) {
     await expect(image).toHaveAttribute("loading", "lazy");
     await expect(image).not.toBeInViewport();
   }
@@ -308,7 +313,7 @@ test("the footer is one line with the copyright and no menu", async ({ page }) =
 test("every section ends on a way back to the top", async ({ page }) => {
   await page.goto("");
   const sections = page.locator("main > section");
-  expect(await sections.count()).toBeGreaterThanOrEqual(7);
+  expect(await sections.count()).toBeGreaterThanOrEqual(6);
   for (const each of await sections.all()) {
     const link = each.locator("> .go-top:last-child a");
     await expect(link).toHaveText("Go to top ↑");
@@ -426,6 +431,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Hazar Harmouch",
       "Imane Hocine",
       "Jahid Hasan",
+      "Jesualdo Tomás Fernández Breis",
       "Mohammad Sadoghi",
       "Sijie Dong",
     ]);
@@ -443,8 +449,10 @@ test.describe("states that depend on content", () => {
     await page.goto("");
     const program = section(page, "program");
     if (!populated(testInfo.project.name)) {
-      await expect(program.locator(".tba")).toHaveText("To be announced");
-      await expect(page.locator(".tz-toggle")).toBeHidden();
+      // The organizers asked for no Program section, nor a menu link, until there is a program.
+      await expect(program).toHaveCount(0);
+      await expect(page.locator('#site-nav a[href$="#program"]')).toHaveCount(0);
+      await expect(page.locator(".tz-toggle")).toHaveCount(0);
       return;
     }
     await expect(program.locator(".session")).toHaveCount(2);

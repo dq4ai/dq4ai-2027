@@ -12,6 +12,8 @@ export interface Section {
   oldPath?: string;
   /** Left out of the page and the menu until there is a keynote. */
   onlyWithKeynotes?: boolean;
+  /** Left out of the page and the menu until there is a program, as the organizers asked. */
+  onlyWithProgram?: boolean;
   /** On the page when there is one, but not in the menu. */
   notInMenu?: boolean;
 }
@@ -29,7 +31,13 @@ export const SECTIONS: Section[] = [
   { id: "about", title: "About", menu: "About", oldPath: "/call-for-papers/" },
   { id: "topics", title: "Topics of Interest", menu: "Topics", notInMenu: true },
   { id: "submission", title: "Submission", menu: "Submission", oldPath: "/submission/" },
-  { id: "program", title: "Program", menu: "Program", oldPath: "/program/" },
+  {
+    id: "program",
+    title: "Program",
+    menu: "Program",
+    oldPath: "/program/",
+    onlyWithProgram: true,
+  },
   {
     id: "keynotes",
     title: "Keynote Speakers",
@@ -49,9 +57,12 @@ export function sectionById(id: string): Section {
 }
 
 /** The menu: a link to each section on the page, in the page's order. */
-export function menuSections(has: { keynotes: boolean }): Section[] {
+export function menuSections(has: { keynotes: boolean; program: boolean }): Section[] {
   return SECTIONS.filter(
-    (section) => !section.notInMenu && (!section.onlyWithKeynotes || has.keynotes),
+    (section) =>
+      !section.notInMenu &&
+      (!section.onlyWithKeynotes || has.keynotes) &&
+      (!section.onlyWithProgram || has.program),
   );
 }
 
@@ -59,9 +70,12 @@ export function menuSections(has: { keynotes: boolean }): Section[] {
  * Old page addresses, each to its section. They may be in announcements already. Pages whose
  * section the organizers removed lead to the nearest one that remains.
  */
-export function redirects(): { path: string; to: string }[] {
+export function redirects(has: { program: boolean }): { path: string; to: string }[] {
+  const program = has.program ? "/#program" : "/#about";
   const moved = SECTIONS.flatMap((section) =>
-    section.oldPath ? [{ path: section.oldPath, to: `/#${section.id}` }] : [],
+    section.oldPath
+      ? [{ path: section.oldPath, to: section.onlyWithProgram ? program : `/#${section.id}` }]
+      : [],
   );
   return [
     ...moved,
@@ -70,6 +84,6 @@ export function redirects(): { path: string; to: string }[] {
     { path: "/attend/", to: "/#about" },
     { path: "/policies/", to: "/#submission" },
     { path: "/previous-editions/", to: "/#about" },
-    { path: "/accepted-papers/", to: "/#program" },
+    { path: "/accepted-papers/", to: program },
   ];
 }

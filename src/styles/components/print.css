@@ -20,7 +20,8 @@
   .skip-link,
   .toolbar,
   .hero__actions,
-  .hero-waves,
+  .hero__photo,
+  .hero__credit,
   .section-anchor,
   .more-link,
   .go-top,
@@ -56,6 +57,7 @@
   .hero__banner {
     padding: 0;
     background: none;
+    color: inherit;
   }
 
   .hero__banner::after {

@@ -2,7 +2,11 @@ This repository is dual-licensed.
 
 Website code: MIT License (below).
 Site content in src/content/: Creative Commons Attribution 4.0 International
-(https://creativecommons.org/licenses/by/4.0/).
+(https://creativecommons.org/licenses/by/4.0/), except as follows.
+src/content/images/lille-grand-place-dusk.jpg: by Velvet, resized and cropped,
+Creative Commons Attribution-ShareAlike 4.0 International
+(https://creativecommons.org/licenses/by-sa/4.0/). Source:
+https://commons.wikimedia.org/wiki/File:Lille_gd_place_pano_ter.jpg
 Fonts in src/assets/fonts/: SIL Open Font License 1.1, see the license files there.
 
 MIT License

@@ -186,30 +186,25 @@ test.describe("every control shows its state", () => {
   });
 });
 
-// The organizers asked for a banner as soft and inviting as classic workshop sites. Its art is the
-// logo's two directions, so it says what the workshop is about without a word.
+// The organizers chose a photo of the host city for the banner, behind the title.
 test.describe("the home banner", () => {
-  test("its two directions drift in once from their own sides", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "no-preference" });
+  test("its photo is decoration, and left off paper", async ({ page }) => {
     await page.goto("");
-    const name = (selector: string) =>
-      page.locator(selector).evaluate((e) => getComputedStyle(e).animationName);
-    expect(await name(".hero-waves--a")).toBe("drift-from-left");
-    expect(await name(".hero-waves--b")).toBe("drift-from-right");
-    const count = await page
-      .locator(".hero-waves--a")
-      .evaluate((e) => getComputedStyle(e).animationIterationCount);
-    expect(count).toBe("1");
+    const photo = page.locator(".hero__banner img.hero__photo");
+    await expect(photo).toHaveCount(1);
+    await expect(photo).toHaveAttribute("alt", "");
+    await page.emulateMedia({ media: "print" });
+    await expect(photo).toBeHidden();
   });
 
-  test("its art is decoration, and left off paper", async ({ page }) => {
+  test("its photo is credited, as its licence requires", async ({ page }) => {
     await page.goto("");
-    await expect(page.locator(".hero-waves")).toHaveCount(2);
-    for (const svg of await page.locator(".hero-waves").all()) {
-      await expect(svg).toHaveAttribute("aria-hidden", "true");
-    }
-    await page.emulateMedia({ media: "print" });
-    await expect(page.locator(".hero-waves").first()).toBeHidden();
+    const credit = page.locator(".hero__credit");
+    await expect(credit).toContainText("Photo: Velvet");
+    await expect(credit.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
+      "href",
+      "https://creativecommons.org/licenses/by-sa/4.0/",
+    );
   });
 
   test("its words stay readable over the art", async ({ page }) => {

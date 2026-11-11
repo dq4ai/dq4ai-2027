@@ -22,7 +22,7 @@ describe("the one page's sections", () => {
   });
 
   it("puts every section in the menu but the topics and the sponsors", () => {
-    expect(menuSections({ keynotes: true }).map((section) => section.menu)).toEqual([
+    expect(menuSections({ keynotes: true, program: true }).map((section) => section.menu)).toEqual([
       "About",
       "Submission",
       "Program",
@@ -33,12 +33,20 @@ describe("the one page's sections", () => {
   });
 
   it("leaves Keynotes out of the menu until there is one", () => {
-    expect(menuSections({ keynotes: false }).map((s) => s.id)).not.toContain("keynotes");
+    expect(menuSections({ keynotes: false, program: true }).map((s) => s.id)).not.toContain(
+      "keynotes",
+    );
+  });
+
+  it("leaves Program out of the menu until there is one, as the organizers asked", () => {
+    expect(menuSections({ keynotes: true, program: false }).map((s) => s.id)).not.toContain(
+      "program",
+    );
   });
 
   it("sends every old page address to a section that exists", () => {
     const ids = new Set(SECTIONS.map((section) => section.id).concat("dates"));
-    const paths = redirects().map((redirect) => redirect.path);
+    const paths = redirects({ program: true }).map((redirect) => redirect.path);
     for (const path of [
       "/call-for-papers/",
       "/dates/",
@@ -54,9 +62,20 @@ describe("the one page's sections", () => {
     ]) {
       expect(paths).toContain(path);
     }
-    for (const { to } of redirects()) expect(ids.has(to.replace("/#", ""))).toBe(true);
-    expect(redirects()).toContainEqual({ path: "/organization/", to: "/#organizers" });
-    expect(redirects()).toContainEqual({ path: "/attend/", to: "/#about" });
+    for (const { to } of redirects({ program: true }))
+      expect(ids.has(to.replace("/#", ""))).toBe(true);
+    expect(redirects({ program: true })).toContainEqual({
+      path: "/organization/",
+      to: "/#organizers",
+    });
+    expect(redirects({ program: true })).toContainEqual({ path: "/attend/", to: "/#about" });
+  });
+
+  it("sends the program's old addresses to About while there is no program", () => {
+    const moved = redirects({ program: false });
+    expect(moved).toContainEqual({ path: "/program/", to: "/#about" });
+    expect(moved).toContainEqual({ path: "/accepted-papers/", to: "/#about" });
+    expect(moved.map(({ to }) => to)).not.toContain("/#program");
   });
 
   it("refuses an unknown section", () => {
