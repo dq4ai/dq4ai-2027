@@ -22,9 +22,6 @@ const [site, committees, sponsors] = await Promise.all([getSite(), getCommittees
 // edition's content, as the organizers asked: the banner, then each section in the order of
 // lib/nav.ts, each ending in a link back to the top.
 const organizers = committees.find((committee) => committee.id === "chairs")?.people ?? [];
-// The banner photo's licence (CC BY-SA 4.0) requires this credit on the page.
-const photoLicense = "https://creativecommons.org/licenses/by-sa/4.0/";
-const photoSource = "https://commons.wikimedia.org/wiki/File:Lille_gd_place_pano_ter.jpg";
 const jsonLd = serializeJsonLd(
   buildEventJsonLd({ site, url: absoluteUrl("/", Astro.site), organizers }),
 );
@@ -36,12 +33,13 @@ const jsonLd = serializeJsonLd(
     <div class="hero__banner">
       <ContentImage
         class="hero__photo"
-        file="lille-grand-place-dusk.jpg"
+        file="lille-opera-belfry.jpg"
         alt=""
         widths={[640, 960, 1440, 1800]}
         sizes="(min-width: 60rem) 56rem, 100vw"
         loading="eager"
         fetchpriority="high"
+        quality={35}
       />
       <div class="hero__title">
         <Mark class="hero__mark" />
@@ -61,11 +59,6 @@ const jsonLd = serializeJsonLd(
         )}
       </div>
     </div>
-    <p class="hero__credit">
-      The Grand'Place, Lille. Photo: Velvet,{" "}
-      <ExternalLink href={photoLicense}>CC BY-SA 4.0</ExternalLink>, via{" "}
-      <ExternalLink href={photoSource}>Wikimedia Commons</ExternalLink>, cropped.
-    </p>
   </div>
   {site.statusNote && <p class="note status-note">{site.statusNote}</p>}
 

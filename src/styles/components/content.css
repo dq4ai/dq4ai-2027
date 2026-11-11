@@ -50,8 +50,9 @@ main > section:not(.session) > h2 {
   padding-block: var(--space-4) var(--space-6);
 }
 
-/* The host city at dusk behind the title, as the organizers chose. A navy veil, deepest under
-   the words, keeps white text above 4.5:1 on every part of the photo. */
+/* The host city behind the title, as the organizers chose: Lille's Opera and the Chamber of
+   Commerce belfry, a public-domain (CC0) photo that needs no credit. An even navy veil keeps white
+   text above 4.5:1 over the brightest sky, and a soft shadow keeps its edges crisp. */
 .hero__banner {
   position: relative;
   isolation: isolate;
@@ -61,17 +62,14 @@ main > section:not(.session) > h2 {
   background: var(--color-brand-a);
   color: #fff;
   text-align: center;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.55);
 }
 
 .hero__banner::after {
   position: absolute;
   z-index: -1;
   inset: 0;
-  background: radial-gradient(
-    ellipse 70% 80% at 50% 50%,
-    rgb(15 25 60 / 0.68) 0%,
-    rgb(15 25 60 / 0.5) 100%
-  );
+  background: rgb(15 25 60 / 0.74);
   content: "";
 }
 
@@ -94,14 +92,6 @@ main > section:not(.session) > h2 {
   padding: var(--space-2);
   border-radius: 50%;
   background: var(--color-surface);
-}
-
-.hero__credit {
-  margin: var(--space-1) 0 0;
-  color: var(--color-text-muted);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  text-align: end;
 }
 
 .hero__title {

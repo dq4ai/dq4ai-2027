@@ -80,9 +80,7 @@ test("the home page goes from the banner straight to About", async ({ page }) =>
   const banner = page.locator(".hero__banner");
   await expect(banner).toContainText("Lille, France");
   await expect(banner.getByRole("link", { name: "EDBT/ICDT 2027" })).toBeVisible();
-  // The banner, then only its photo's credit.
-  await expect(page.locator(".hero > *")).toHaveCount(2);
-  await expect(page.locator(".hero > .hero__credit")).toHaveCount(1);
+  await expect(page.locator(".hero > *")).toHaveCount(1);
   await expect(page.locator(".exchange, .record, .hero__actions, .hero__body")).toHaveCount(0);
   await expect(page.locator("main").getByRole("link", { name: /call for papers/i })).toHaveCount(0);
   await expect(page.locator("main > section").first().locator("h2")).toHaveText(
