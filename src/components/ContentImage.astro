@@ -16,6 +16,8 @@ interface Props {
    * side. A wide panorama shown whole on a phone is a sliver; a crop keeps it a photo.
    */
   phone?: { width: number; height: number; position: string; sizes: string };
+  /** Lower for a photo under a veil, where detail is not seen anyway. */
+  quality?: number;
 }
 const {
   file,
@@ -26,6 +28,7 @@ const {
   fetchpriority,
   class: className,
   phone,
+  quality,
 } = Astro.props;
 const src = await contentImage(file);
 
@@ -88,6 +91,7 @@ const framed = phone
     {widths}
     {sizes}
     formats={["avif", "webp"]}
+    {quality}
     {loading}
     {fetchpriority}
     class={className}

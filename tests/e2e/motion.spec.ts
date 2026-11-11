@@ -207,6 +207,48 @@ test.describe("the home banner", () => {
     );
   });
 
+  // As the organizers asked: out of sight until the photo is hovered, at its foot, and reachable
+  // from the keyboard.
+  test("its credit shows at the foot of the photo on hover or focus", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.emulateMedia({ reducedMotion: "reduce" });
+    await page.goto("");
+    const banner = page.locator(".hero__banner");
+    const credit = banner.locator(".hero__credit");
+    await expect(credit).toHaveCSS("opacity", "0");
+    await banner.hover();
+    await expect(credit).toHaveCSS("opacity", "1");
+    const [outer, inner] = await Promise.all([banner.boundingBox(), credit.boundingBox()]);
+    expect(
+      Math.abs((outer?.y ?? 0) + (outer?.height ?? 0) - ((inner?.y ?? 0) + (inner?.height ?? 0))),
+    ).toBeLessThan(1);
+    await page.mouse.move(0, 0);
+    await expect(credit).toHaveCSS("opacity", "0");
+    await credit.getByRole("link").first().focus();
+    await expect(credit).toHaveCSS("opacity", "1");
+  });
+
+  // A touch screen has no hover, so a tap shows the credit, and another tap hides it.
+  test("on a touch screen, a tap on the banner shows its credit", async ({ browser, baseURL }) => {
+    const context = await browser.newContext({
+      baseURL,
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 390, height: 844 },
+      reducedMotion: "reduce",
+    });
+    const page = await context.newPage();
+    await page.goto("");
+    const banner = page.locator(".hero__banner");
+    const credit = banner.locator(".hero__credit");
+    await expect(credit).toHaveCSS("opacity", "0");
+    await banner.locator("h1").tap();
+    await expect(credit).toHaveCSS("opacity", "1");
+    await banner.locator("h1").tap();
+    await expect(credit).toHaveCSS("opacity", "0");
+    await context.close();
+  });
+
   test("its words stay readable over the art", async ({ page }) => {
     // Light only, but a dark system theme must not change what is read over the art.
     for (const scheme of ["light", "dark"] as const) {
