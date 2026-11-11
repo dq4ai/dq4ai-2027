@@ -59,7 +59,9 @@ links to sections by anchor. Nothing is folded away. The old page addresses (`/d
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
 The banner is a photo of Lille's Grand'Place at dusk, as the organizers chose, under a navy veil so
-the white title stays readable; its CC BY-SA licence requires the credit below it. It is the first
+the white title stays readable; its CC BY-SA licence requires the credit, which the
+organizers asked to keep out of sight: it shows at the foot of the photo on hover, keyboard focus or a tap on a touch screen,
+and stays in the page for screen readers. It is the first
 screen's largest paint, so it loads eagerly, and the page's Lighthouse budget is 100 with a largest
 paint under 2000 ms (under 1200 ms without the photo, on Lighthouse's simulated slow 4G). The page
 is a centred frame of `--page-width` (56.25rem, the previous edition's 900px), and text runs its

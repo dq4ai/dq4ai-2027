@@ -14,9 +14,14 @@ explains when a day ends. The contact is the page's last line. No paragraph or b
 word alone. Sijie Dong's affiliation is Ant International, and Sebastian Schelter (BIFOLD & TU
 Berlin) joins the Program Committee.
 
+The banner photo's credit, which its CC BY-SA licence requires, no longer sits under the banner: it
+shows at the foot of the photo when the banner is hovered, tapped on a touch screen, or a credit link
+has keyboard focus, as the organizers asked, and stays in the page for screen readers. The photo is
+encoded at a lower quality, which its veil hides, to keep the Lighthouse score at 100.
+
 The organizers' fifth round. The page is a centred frame of 900px, as on QuaLLM-KG 2026, rather
-than running edge to edge. The banner is a photo of Lille's Grand'Place at dusk, credited below it
-as its licence requires; its Lighthouse budget allows a largest paint of 2000 ms instead of 1200 ms
+than running edge to edge. The banner is a photo of Lille's Grand'Place at dusk, credited as its
+licence requires; its Lighthouse budget allows a largest paint of 2000 ms instead of 1200 ms
 for the photo. The Program section and its menu link are left out until there is a program; its old
 addresses lead to About meanwhile. A keynote whose talk is not yet known reads "To be announced"
 once, not for each of its title, abstract and biography. Jesualdo Tomás Fernández Breis (Universidad

@@ -96,12 +96,44 @@ main > section:not(.session) > h2 {
   background: var(--color-surface);
 }
 
+/* The photo's credit, which its licence requires, stays out of sight until the photo is hovered
+   or a credit link has keyboard focus, as the organizers asked. It stays in the page for screen
+   readers and search engines. */
 .hero__credit {
-  margin: var(--space-1) 0 0;
-  color: var(--color-text-muted);
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  max-inline-size: none;
+  margin: 0;
+  padding: var(--space-1) var(--space-3);
+  background: rgb(10 16 40 / 0.8);
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   text-align: end;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.hero__banner[data-credit] .hero__credit,
+.hero__credit:focus-within {
+  opacity: 1;
+  transform: none;
+}
+
+/* Only a real pointer hovers: a phone's tap would otherwise leave the credit stuck open. */
+@media (hover: hover) {
+  .hero__banner:hover .hero__credit {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero__credit {
+    transition:
+      opacity var(--dur-fast) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out);
+  }
 }
 
 .hero__title {
