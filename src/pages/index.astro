@@ -15,7 +15,7 @@ import { getCommittees, getSite, getSponsors } from "../lib/content";
 import { formatHeadlineDay, TBA } from "../lib/dates";
 import { absoluteUrl } from "../lib/paths";
 import { buildEventJsonLd, serializeJsonLd } from "../lib/seo";
-import { hostLocation, workshopTitle } from "../lib/view";
+import { hostLocation, isKnown, workshopTitle } from "../lib/view";
 
 const [site, committees, sponsors] = await Promise.all([getSite(), getCommittees(), getSponsors()]);
 // The whole site is this one page, laid out as the previous edition's (QuaLLM-KG 2026) with this
@@ -107,5 +107,11 @@ const jsonLd = serializeJsonLd(
         ))}
       </ul>
     </PageSection>
+  )}
+  {/* At the end of the page, as the organizers asked. */}
+  {isKnown(site.contactEmail) && (
+    <p class="contact">
+      Contact: <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+    </p>
   )}
 </BaseLayout>

@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+The organizers' sixth round. About reads as the organizers rewrote it. Topics: "Quality in LLMs and
+generative AI" drops "NLP" from its title, "AI for data quality" has four new bullets (AI-driven
+profiling, evaluation and monitoring; automated error detection and repair; LLM-based integration
+and transformation; AI agents for data quality management), and "Technology transfer" leaves
+Applications. Submission opens the categories with "The workshop solicits papers in the following
+categories:" and closes them with one sentence on lengths (full papers up to 8 pages, short papers
+up to 4, including references), in place of a page limit in each category (`pageLimit` becomes
+`paperLengths` in `cfp.yaml`). The dates table has no status column, and the AoE note no longer
+explains when a day ends. The contact is the page's last line. No paragraph or bullet ends on a
+word alone. Sijie Dong's affiliation is Ant International, and Sebastian Schelter (BIFOLD & TU
+Berlin) joins the Program Committee.
+
 The banner photo's credit, which its CC BY-SA licence requires, no longer sits under the banner: it
 shows at the foot of the photo when the banner is hovered, tapped on a touch screen, or a credit link
 has keyboard focus, as the organizers asked, and stays in the page for screen readers. The photo is

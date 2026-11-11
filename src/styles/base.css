@@ -66,6 +66,12 @@ dl {
   max-inline-size: var(--measure);
 }
 
+/* No paragraph or bullet ends on a word alone, as the organizers asked. */
+p,
+li {
+  text-wrap: pretty;
+}
+
 p + p,
 p + :is(ul, ol, dl),
 :is(ul, ol, dl) + p {

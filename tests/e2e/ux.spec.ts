@@ -13,8 +13,11 @@ test.describe("contact", () => {
   for (const path of [""]) {
     test("the page says how to reach the organizers", async ({ page }, testInfo) => {
       await page.goto(path);
-      // The contact closes the Organizers section; there is no Contact section of its own.
-      const contact = section(page, "organizers").locator(".contact");
+      // At the end of the page, after the last section, as the organizers asked.
+      const contact = page.locator("main > .contact");
+      await expect(contact).toHaveCount(1);
+      expect(await contact.evaluate((p) => p.nextElementSibling)).toBeNull();
+      await expect(section(page, "organizers").locator(".contact")).toHaveCount(0);
       await expect(contact).toContainText("Contact:");
       if (populated(testInfo.project.name)) {
         await expect(contact.locator('a[href^="mailto:"]')).toHaveAttribute(
@@ -45,17 +48,9 @@ test.describe("deadlines as they pass", () => {
     await page.clock.install({ time: new Date("2026-12-19T12:01:00Z") });
     await page.goto("");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
-    await expect(row.locator(".status--passed:visible")).toHaveText("Passed");
     await expect(row.locator(".flag")).toHaveCount(0);
     const nextRow = page.locator("tbody tr", { hasText: "Author notification" });
     await expect(nextRow.locator(".flag")).toHaveCount(1);
-  });
-
-  test("a deadline's own day reads Today", async ({ page }) => {
-    await page.clock.install({ time: new Date("2026-12-18T13:00:00Z") });
-    await page.goto("");
-    const row = page.locator("tbody tr", { hasText: "Paper submission" });
-    await expect(row.locator(".status--today:visible")).toHaveText("Today");
   });
 
   test("an announcement is not called a deadline", async ({ page }) => {
@@ -703,9 +698,7 @@ test.describe("less at once", () => {
   });
 
   // As on the previous edition's site: one bullet each, the name in bold, nothing to open.
-  test("paper categories are one bullet each, with their page limit", async ({
-    page,
-  }, testInfo) => {
+  test("paper categories are one bullet each, then their lengths", async ({ page }, testInfo) => {
     await page.goto("");
     const items = page.locator(".paper-types > li");
     await expect(items).toHaveCount(3);
@@ -718,8 +711,19 @@ test.describe("less at once", () => {
         .first()
         .evaluate((li) => getComputedStyle(li.parentElement as Element).listStyleType),
     ).toBe("disc");
+    // The organizers asked for the lengths in one sentence after the categories, not in each.
+    await expect(items.filter({ hasText: /page/i })).toHaveCount(0);
+    const categories = page.locator(".subsection.paper-categories");
+    await expect(categories.locator("> p").first()).toHaveText(
+      "The workshop solicits papers in the following categories:",
+    );
     if (!populated(testInfo.project.name)) {
-      await expect(research).toContainText("Page limit: 6 pages, including references.");
+      await expect(categories.locator(".paper-lengths")).toContainText(
+        "full papers (up to 8 pages, including references)",
+      );
+      await expect(categories.locator(".paper-lengths")).toContainText(
+        "(up to 4 pages, including references)",
+      );
     }
   });
 

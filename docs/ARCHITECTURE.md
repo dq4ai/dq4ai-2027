@@ -3,7 +3,7 @@
 ## Decisions
 
 **Static Astro site, zero framework JS.** The site is documents with three small behaviours: the
-menu, the program's time-zone toggle, and keeping deadline statuses current. Each is a short script,
+menu, the program's time-zone toggle, and keeping the next deadline's flag current. Each is a short script,
 and the site works without them. The site is always light: the organizers asked for no dark theme
 and no theme button, so the colour tokens have one value each.
 
@@ -14,10 +14,10 @@ before rendering, so errors name a file and field instead of a rendering stack t
 **`TBA` is a value, not a missing field.** Pending facts stay visible in the data, render
 consistently, and appear in the placeholder report. Checks on a date apply once it is set.
 
-**Build-time status plus a daily rebuild.** Statuses are correct without JavaScript. The rebuild
-moves "upcoming" to "passed". GitHub pauses scheduled workflows after 60 days without repository
+**Build-time flag plus a daily rebuild.** The next deadline is flagged in red without JavaScript;
+the organizers asked for no status column. The rebuild moves the flag once a deadline passes. GitHub pauses scheduled workflows after 60 days without repository
 activity; any commit, or re-enabling the workflow under Actions, resumes them. The rebuild runs just after 12:00 UTC, when a day ends in AoE. Between builds, a small script
-corrects statuses and the flagged date (`DeadlineSync.astro`), so a page built
+moves the flagged date (`DeadlineSync.astro`), so a page built
 earlier never contradicts itself.
 
 **The logo first.** The palette comes from logo D: navy for data quality for AI, teal for AI for
@@ -39,7 +39,7 @@ previous edition's site exactly, with this edition's content: "DQ4AI 2027" large
 its sections and menu (About, Topics of Interest, Submission, Program, Keynote Speakers, Organizers,
 Program Committee), each title above its content; nothing behind "Read more"; and no Attend,
 Policies, Previous editions or Contact section, since the host conference handles venue and travel.
-The contact closes Organizers. Accepted papers appear in the program, through the talks that
+The contact is the page's last line, after the last section. Accepted papers appear in the program, through the talks that
 present them.
 
 **Warm and plain, like an academic page.** The organizers found the first design too "industrial" and

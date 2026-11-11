@@ -22,18 +22,18 @@ is left. Keep the quotes around dates, and keep the indentation as it is.
 
 ## Common edits
 
-| To change                               | Edit                                |
-| --------------------------------------- | ----------------------------------- |
-| Deadlines                               | `dates.yaml`                        |
-| Workshop date, contact, submission link | `site.yaml`                         |
-| Template, review model                  | `site.yaml`                         |
-| Page limits, topics and their bullets   | `cfp.yaml` (`topics`: `items`)      |
-| Formatting, anonymization               | `submission.yaml`                   |
-| People and committees                   | `people.yaml` and `committees.yaml` |
-| Keynotes                                | `keynotes.yaml`                     |
-| Program                                 | `sessions.yaml` and `talks.yaml`    |
-| Accepted papers                         | `papers.yaml`                       |
-| Announcements                           | a new file in `news/`               |
+| To change                               | Edit                                  |
+| --------------------------------------- | ------------------------------------- |
+| Deadlines                               | `dates.yaml`                          |
+| Workshop date, contact, submission link | `site.yaml`                           |
+| Template, review model                  | `site.yaml`                           |
+| Paper lengths, topics and their bullets | `cfp.yaml` (`paperLengths`, `topics`) |
+| Formatting, anonymization               | `submission.yaml`                     |
+| People and committees                   | `people.yaml` and `committees.yaml`   |
+| Keynotes                                | `keynotes.yaml`                       |
+| Program                                 | `sessions.yaml` and `talks.yaml`      |
+| Accepted papers                         | `papers.yaml`                         |
+| Announcements                           | a new file in `news/`                 |
 
 ## Say when details will be known
 

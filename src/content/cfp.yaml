@@ -14,14 +14,14 @@ scope:
     and require new approaches to data preparation, validation, provenance, evaluation, and
     monitoring.
   - >-
-    At the same time, AI techniques are increasingly becoming part of data management and
-    data-quality workflows, creating a two-way relationship between AI and data quality: ensuring
+    At the same time, AI techniques are increasingly becoming part of data management and data
+    quality workflows, creating a two-way relationship between AI and data quality: ensuring
     high-quality data for AI while leveraging AI to improve data quality management.
 goal: >-
   The goal of the workshop is to bring together researchers and practitioners from the data
-  management, data quality, and AI communities to discuss methods, systems, benchmarks, evaluation
-  frameworks, and applications addressing these challenges. It aims to foster cross-disciplinary
-  exchange at the intersection of data quality, AI, and trustworthy data management.
+  management and AI communities to discuss methods, systems, benchmarks, evaluation frameworks, and
+  applications addressing these challenges. It aims to foster cross-disciplinary exchange at the
+  intersection of data quality, AI and trustworthy data management.
 topicsIntro: >-
   The workshop welcomes contributions addressing all aspects of data quality for AI, including but
   not limited to:
@@ -32,16 +32,17 @@ topics:
       - Bias, reliability and robustness
   - title: AI for data quality
     items:
-      - LLMs and other AI techniques for data profiling and cleaning
-      - Error detection and data repair
-      - Quality assessment and monitoring
+      - AI-driven data profiling, evaluation, and monitoring
+      - Automated error detection and data repair
+      - LLM-based data integration and transformation
+      - AI agents for data quality management
   - title: Quality in KGs
     items:
       - Quality in KG construction, enrichment, and maintenance
       - Schema validation and constraint checking
       - Entity resolution and ontology alignment
       - Consistency, completeness, provenance, and evolution
-  - title: Quality in LLMs, NLP, and generative AI
+  - title: Quality in LLMs and generative AI
     items:
       - Hallucinations and factual errors
       - Bias and uncertainty
@@ -64,28 +65,29 @@ topics:
   - title: Applications and case studies
     items:
       - Real-world and industrial deployments
-      - Technology transfer
       - Lessons learned from maintaining data quality at scale
+paperTypesIntro: "The workshop solicits papers in the following categories:"
 paperTypes:
   - id: research
     title: Research papers
     description: >-
       Original research contributions addressing challenges in data quality for AI, including new
       methods, algorithms, frameworks, models, or theoretical approaches.
-    pageLimit: 6 pages, including references
   - id: system-application
     title: System and application papers
     description: >-
       The implementation or application of data quality research in real-world settings, including
       industrial deployments, domain-specific applications, and practical experiences.
-    pageLimit: 4 pages, including references
   - id: vision
     title: Vision papers
     description: >-
       Perspectives on emerging challenges, open problems, or research opportunities in data quality
       for AI. They may highlight gaps in existing approaches, present challenging use cases, and
       propose directions for future research.
-    pageLimit: 4 pages, including references
+paperLengths: >-
+  The workshop will accept full papers (up to 8 pages, including references) and short papers
+  describing work in progress, systems, demos/systems/applications, or vision/innovative ideas (up
+  to 4 pages, including references).
 proceedingsNote: >-
   Accepted papers will be published in the CEUR Workshop Proceedings, subject to the applicable
   publication policies.

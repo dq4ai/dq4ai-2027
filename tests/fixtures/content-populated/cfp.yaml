@@ -41,7 +41,7 @@ topics:
       - Schema validation and constraint checking
       - Entity resolution and ontology alignment
       - Consistency, completeness, provenance, and evolution
-  - title: Quality in LLMs, NLP, and generative AI
+  - title: Quality in LLMs and generative AI
     items:
       - Hallucinations and factual errors
       - Bias and uncertainty
@@ -66,26 +66,25 @@ topics:
       - Real-world and industrial deployments
       - Technology transfer
       - Lessons learned from maintaining data quality at scale
+paperTypesIntro: "The workshop solicits papers in the following categories:"
 paperTypes:
   - id: research
     title: Research papers
     description: >-
       Original research contributions addressing challenges in data quality for AI, including new
       methods, algorithms, frameworks, models, or theoretical approaches.
-    pageLimit: TBA
   - id: system-application
     title: System and application papers
     description: >-
       The implementation or application of data quality research in real-world settings, including
       industrial deployments, domain-specific applications, and practical experiences.
-    pageLimit: TBA
   - id: vision
     title: Vision papers
     description: >-
       Perspectives on emerging challenges, open problems, or research opportunities in data quality
       for AI. They may highlight gaps in existing approaches, present challenging use cases, and
       propose directions for future research.
-    pageLimit: TBA
+paperLengths: TBA
 proceedingsNote: >-
   Accepted papers will be published in the CEUR Workshop Proceedings, subject to the applicable
   publication policies.

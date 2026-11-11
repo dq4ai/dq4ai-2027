@@ -153,9 +153,10 @@ export const cfpSchema = z.strictObject({
       }),
     )
     .min(1),
-  paperTypes: z
-    .array(z.strictObject({ id, title: text, description: text, pageLimit: text }))
-    .min(1),
+  paperTypesIntro: text,
+  paperTypes: z.array(z.strictObject({ id, title: text, description: text })).min(1),
+  /** Lengths for all categories, in one sentence after them. */
+  paperLengths: text,
   proceedingsNote: text,
   presentation: text,
 });

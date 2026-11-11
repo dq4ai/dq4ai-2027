@@ -20,8 +20,8 @@ and the site is always light.
   Artificial Intelligence", "co-located with EDBT/ICDT 2027, Lille, France" and "(April 6, 2027)".
 - **Sections**, each with its title above it and ending on "Go to top ↑": About the DQ4AI Workshop,
   Topics of Interest (each topic a heading over bullet points), Submission (paper categories,
-  important dates, submission details), Program, Keynote Speakers, Organizers (with the contact) and
-  Program Committee.
+  important dates, submission details), Program, Keynote Speakers, Organizers and Program Committee,
+  then the contact.
 - **Menu:** Home, About, Submission, Program, Keynote Speakers, Organizers and Program Committee.
 - **Footer:** one line, "© DQ4AI 2027 — All rights reserved".
 

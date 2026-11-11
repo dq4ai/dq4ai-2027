@@ -319,14 +319,6 @@ main > section > .facts:has(+ .go-top) > div:last-child {
   overflow-wrap: anywhere;
 }
 
-/* A date and its status: when they wrap, the status starts on the date's column. */
-.deadline-cell {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-3);
-  align-items: baseline;
-}
-
 /* A value nobody has supplied yet: said quietly, in the body type, wherever it appears. */
 .tba {
   display: inline;
@@ -346,50 +338,7 @@ main > section > .facts:has(+ .go-top) > div:last-child {
   font-weight: 600;
 }
 
-.status {
-  display: inline-block;
-  font-size: var(--text-sm);
-  font-weight: 600;
-  white-space: nowrap;
-}
-
-.status--upcoming {
-  color: var(--color-text);
-}
-
-.status--today {
-  color: var(--color-status-today);
-}
-
-.status--passed,
-.status--tba {
-  color: var(--color-status-passed);
-}
-
-.status--extended {
-  color: var(--color-accent);
-}
-
-.status-group {
-  display: inline-flex;
-  flex-wrap: wrap;
-  gap: 0 var(--space-2);
-}
-
-/* On a phone, status moves under the date so the date keeps the width it needs. */
-.status-inline {
-  display: none;
-}
-
 @media (width < 40rem) {
-  .status-column {
-    display: none;
-  }
-
-  .status-inline {
-    display: block;
-  }
-
   /* One solid cell, not two fragments, when the date needs two lines. */
   .table .flag {
     display: inline-block;
@@ -443,6 +392,11 @@ main > section > .facts:has(+ .go-top) > div:last-child {
 .topics ul {
   padding-inline-start: 1.25em;
   list-style: disc;
+}
+
+/* Short bullets: even lines, so none ends on a word alone, as the organizers asked. */
+.topics li {
+  text-wrap: balance;
 }
 
 .topics li + li {
@@ -574,10 +528,6 @@ main > section > .facts:has(+ .go-top) > div:last-child {
 
   .table thead th:first-child {
     inline-size: calc(var(--label) + var(--space-4));
-  }
-
-  .table thead th.status-column {
-    inline-size: 11rem;
   }
 }
 
@@ -834,8 +784,11 @@ main > section > .toolbar:first-of-type {
 }
 
 /* The contact closes the Organizers section, set apart from the last list. */
-.page-section > .contact {
-  margin-block-start: var(--space-4);
+/* The page's last line, after the last section. */
+main > .contact {
+  margin-block-start: var(--space-5);
+  padding-block-start: var(--space-4);
+  border-block-start: 1px solid var(--color-rule);
 }
 
 /* Under a section's heading, the parts it holds (committees, policies, the checklist), each with

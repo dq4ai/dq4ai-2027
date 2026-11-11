@@ -2,15 +2,12 @@
 import { getDeadlines, getSite } from "../../lib/content";
 import { formatAoE, formatIsoDay, TBA } from "../../lib/dates";
 import { nextDeadline, stripPrefix } from "../../lib/view";
-import StatusBadge from "../StatusBadge.astro";
 import Value from "../Value.astro";
 
 const [site, deadlines] = await Promise.all([getSite(), getDeadlines()]);
-// Status adds nothing until a deadline has a date: the date cell already says it is unknown.
-const showStatus = deadlines.some((deadline) => deadline.status !== "tba");
 const next = nextDeadline(deadlines);
 // The deadlines and the workshop's own day only: the organizers asked to leave out the host
-// conference's dates, the calendar file and the time-zone switch. Part of the Submission section,
+// conference's dates, the calendar file, the time-zone switch and each deadline's status. Part of the Submission section,
 // as the organizers asked.
 ---
 
@@ -22,11 +19,6 @@ const next = nextDeadline(deadlines);
         <tr>
           <th scope="col">Item</th>
           <th scope="col">Date</th>
-          {showStatus && (
-            <th scope="col" class="status-column">
-              Status
-            </th>
-          )}
         </tr>
       </thead>
       <tbody>
@@ -59,27 +51,7 @@ const next = nextDeadline(deadlines);
               ) : (
                 <Value of={TBA} />
               )}
-              {deadline.status !== "tba" && (
-                <span class="status-inline">
-                  <StatusBadge
-                    status={deadline.status}
-                    extended={deadline.previous !== undefined}
-                    due={deadline.due}
-                  />
-                </span>
-              )}
             </td>
-            {showStatus && (
-              <td class="status-column">
-                {deadline.status !== "tba" && (
-                  <StatusBadge
-                    status={deadline.status}
-                    extended={deadline.previous !== undefined}
-                    due={deadline.due}
-                  />
-                )}
-              </td>
-            )}
           </tr>
         ))}
         <tr>
@@ -91,13 +63,9 @@ const next = nextDeadline(deadlines);
               <time datetime={site.workshopDate}>{formatIsoDay(site.workshopDate)}</time>
             )}
           </td>
-          {showStatus && <td class="status-column"></td>}
         </tr>
       </tbody>
     </table>
   </section>
-  <p class="note">
-    All deadlines are Anywhere on Earth (AoE, UTC−12): a deadline is open until that day has ended
-    everywhere on Earth.
-  </p>
+  <p class="note">All deadlines are Anywhere on Earth (AoE, UTC−12).</p>
 </div>
