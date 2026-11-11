@@ -92,9 +92,13 @@ surname instead, set `order: surname`; if a surname is not the last word of the 
 `surname: van der Berg`.
 Optional links: `url`, `orcid`, `dblp` (full addresses).
 
-When membership is final, delete the `note:` line from the program committee in `committees.yaml`.
+The `note:` of the program committee ("To be completed.") shows after the names. When membership is
+final, delete that line.
 
 ## Publish the program
+
+The Program section and its menu link stay off the page until the first session is added, as the
+organizers asked.
 
 First set `workshopDate` in `site.yaml`. Then add sessions, with the venue's time offset (`+02:00`
 in Lille in April). Sessions must fall on the workshop date and must not overlap.

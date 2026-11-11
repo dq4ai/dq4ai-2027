@@ -18,6 +18,11 @@ export const OLD_PAGES = {
   "news/": "about",
 } as const;
 
+/** Where an old address leads: the program's lead to About while there is no program. */
+export function oldPageTarget(id: string, hasProgram: boolean): string {
+  return id === "program" && !hasProgram ? "about" : id;
+}
+
 /** The section whose heading has this id. */
 export function section(page: Page, id: string): Locator {
   return page.locator(`main section:has(> h2#${id})`);

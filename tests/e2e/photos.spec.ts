@@ -41,11 +41,11 @@ test.describe("the header stays within reach", () => {
       [390, 844],
     ] as const) {
       await page.setViewportSize({ width, height });
-      await page.goto("#program");
+      await page.goto("#program-committee");
       await expect
         .poll(async () => {
           const header = await page.locator(".site-header").boundingBox();
-          const heading = await page.locator("#program").boundingBox();
+          const heading = await page.locator("#program-committee").boundingBox();
           return (heading?.y ?? 0) - ((header?.y ?? 0) + (header?.height ?? 0));
         })
         .toBeGreaterThanOrEqual(0);

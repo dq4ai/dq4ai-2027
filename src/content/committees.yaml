@@ -11,7 +11,7 @@
 - id: program-committee
   title: Program Committee
   order: name
-  note: Membership is being finalized.
+  note: To be completed.
   members:
     - mohammad-sadoghi
     - hazar-harmouch
@@ -20,3 +20,4 @@
     - sijie-dong
     - jahid-hasan
     - cinzia-cappiello
+    - jesualdo-fernandez-breis

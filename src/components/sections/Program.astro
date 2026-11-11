@@ -1,107 +1,96 @@
 ---
 import { getProgram, getSite } from "../../lib/content";
-import { formatTimeInZone, parseIso, TBA } from "../../lib/dates";
+import { formatTimeInZone, parseIso } from "../../lib/dates";
 import { url } from "../../lib/paths";
 import { isKnown } from "../../lib/view";
 import ExternalLink from "../ExternalLink.astro";
 import LocalTimeToggle from "../LocalTimeToggle.astro";
 import PageSection from "../PageSection.astro";
-import Value from "../Value.astro";
 
 const [site, program] = await Promise.all([getSite(), getProgram()]);
 const zone = site.venueTimezone;
 const time = (iso: string) => formatTimeInZone(parseIso(iso), zone);
 ---
 
-<PageSection id="program">
-  {program.length === 0 ? (
-    <dl class="facts">
-      <div>
-        <dt>Sessions and talks</dt>
-        <dd>
-          <Value of={TBA} />
-        </dd>
-      </div>
-    </dl>
-  ) : (
-    <>
-      <div class="toolbar">
-        <a class="button" href={url("/calendar/program.ics")} download>
-          Add full day to calendar (.ics)
-        </a>
-        <LocalTimeToggle activeLabel="Show venue time" />
-      </div>
-      <p class="note" data-zone-note role="status">
-        Times shown in the venue time zone ({zone}).
-      </p>
-      {program.map((session) => (
-        <section
-          class:list={["session", { "session--brief": session.kind === "break" }]}
-          aria-labelledby={session.id}
-        >
-          <p class="session__time">
-            <time
-              data-convert={session.start}
-              data-convert-format="session-start"
-              data-venue-zone={zone}
-              datetime={session.start}
-            >
-              {time(session.start)}
-            </time>
-            <span aria-hidden="true">–</span>
-            <span class="visually-hidden"> to </span>
-            <time data-convert={session.end} data-convert-format="time" datetime={session.end}>
-              {time(session.end)}
-            </time>
-          </p>
-          <div>
-            <h3 id={session.id}>{session.title}</h3>
-            {session.kind !== "break" && (
-              <p class="session__meta">
-                {[
-                  isKnown(session.room) ? session.room : undefined,
-                  session.chairPerson && `Chair: ${session.chairPerson.name}`,
-                ]
-                  .filter(Boolean)
-                  .map((detail) => `${detail}. `)
-                  .join("")}
-                <a href={url(`/calendar/session-${session.id}.ics`)} download>
-                  <span>Add to calendar</span>
-                  <span class="visually-hidden">: {session.title}</span>
-                </a>
+{/* Left out until there is a program, as the organizers asked. */}
+{program.length > 0 && (
+  <PageSection id="program">
+    <div class="toolbar">
+      <a class="button" href={url("/calendar/program.ics")} download>
+        Add full day to calendar (.ics)
+      </a>
+      <LocalTimeToggle activeLabel="Show venue time" />
+    </div>
+    <p class="note" data-zone-note role="status">
+      Times shown in the venue time zone ({zone}).
+    </p>
+    {program.map((session) => (
+      <section
+        class:list={["session", { "session--brief": session.kind === "break" }]}
+        aria-labelledby={session.id}
+      >
+        <p class="session__time">
+          <time
+            data-convert={session.start}
+            data-convert-format="session-start"
+            data-venue-zone={zone}
+            datetime={session.start}
+          >
+            {time(session.start)}
+          </time>
+          <span aria-hidden="true">–</span>
+          <span class="visually-hidden"> to </span>
+          <time data-convert={session.end} data-convert-format="time" datetime={session.end}>
+            {time(session.end)}
+          </time>
+        </p>
+        <div>
+          <h3 id={session.id}>{session.title}</h3>
+          {session.kind !== "break" && (
+            <p class="session__meta">
+              {[
+                isKnown(session.room) ? session.room : undefined,
+                session.chairPerson && `Chair: ${session.chairPerson.name}`,
+              ]
+                .filter(Boolean)
+                .map((detail) => `${detail}. `)
+                .join("")}
+              <a href={url(`/calendar/session-${session.id}.ics`)} download>
+                <span>Add to calendar</span>
+                <span class="visually-hidden">: {session.title}</span>
+              </a>
+            </p>
+          )}
+          {session.talks.map((talk) => (
+            <article class="talk">
+              <h4>{talk.title}</h4>
+              <p class="entry__meta">
+                {talk.speakerPeople.map((person) => person.name).join(", ")}
               </p>
-            )}
-            {session.talks.map((talk) => (
-              <article class="talk">
-                <h4>{talk.title}</h4>
+              {(talk.abstract ?? talk.paperEntry?.abstract) && (
+                <details>
+                  <summary>Abstract</summary>
+                  <p>{talk.abstract ?? talk.paperEntry?.abstract}</p>
+                </details>
+              )}
+              {(talk.paperEntry?.url || talk.slidesUrl) && (
                 <p class="entry__meta">
-                  {talk.speakerPeople.map((person) => person.name).join(", ")}
+                  {talk.paperEntry?.url && (
+                    <ExternalLink href={talk.paperEntry.url}>
+                      Paper<span class="visually-hidden">: {talk.title}</span>
+                    </ExternalLink>
+                  )}{" "}
+                  {talk.slidesUrl && (
+                    <ExternalLink href={talk.slidesUrl}>
+                      Slides<span class="visually-hidden">: {talk.title}</span>
+                    </ExternalLink>
+                  )}
                 </p>
-                {(talk.abstract ?? talk.paperEntry?.abstract) && (
-                  <details>
-                    <summary>Abstract</summary>
-                    <p>{talk.abstract ?? talk.paperEntry?.abstract}</p>
-                  </details>
-                )}
-                {(talk.paperEntry?.url || talk.slidesUrl) && (
-                  <p class="entry__meta">
-                    {talk.paperEntry?.url && (
-                      <ExternalLink href={talk.paperEntry.url}>
-                        Paper<span class="visually-hidden">: {talk.title}</span>
-                      </ExternalLink>
-                    )}{" "}
-                    {talk.slidesUrl && (
-                      <ExternalLink href={talk.slidesUrl}>
-                        Slides<span class="visually-hidden">: {talk.title}</span>
-                      </ExternalLink>
-                    )}
-                  </p>
-                )}
-              </article>
-            ))}
-          </div>
-        </section>
-      ))}
-    </>
-  )}
-</PageSection>
+              )}
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </PageSection>
+)}

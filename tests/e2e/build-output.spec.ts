@@ -131,9 +131,11 @@ test.describe("build output", () => {
       expect(html, file).toContain('rel="canonical"');
       expect(html, file).not.toContain("<script");
     }
-    // Accepted papers belong in the program, as on the previous edition's site.
+    // Accepted papers belong in the program, as on the previous edition's site; while there is
+    // no program, the organizers asked for it to stay off the page, so they lead to About.
     const papersStub = readFileSync(join(dist, "accepted-papers", "index.html"), "utf8");
-    expect(papersStub).toContain(`url=${BASE}#program"`);
+    const program = testInfo.project.name === "populated-content" ? "program" : "about";
+    expect(papersStub).toContain(`url=${BASE}#${program}"`);
     const attendStub = readFileSync(join(dist, "attend", "index.html"), "utf8");
     expect(attendStub).toContain(`url=${BASE}#about"`);
   });

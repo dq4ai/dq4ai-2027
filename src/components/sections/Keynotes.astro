@@ -31,26 +31,33 @@ const keynotes = await getKeynotes();
             )}
           </h3>
         </div>
-        <dl class="facts">
-          <div>
-            <dt>Talk title</dt>
-            <dd>
-              <Value of={keynote.title} />
-            </dd>
-          </div>
-          <div>
-            <dt>Abstract</dt>
-            <dd>
-              <Value of={keynote.abstract} />
-            </dd>
-          </div>
-          <div>
-            <dt>Biography</dt>
-            <dd>
-              <Value of={keynote.bio} />
-            </dd>
-          </div>
-        </dl>
+        {/* Nothing known about the talk yet: one "To be announced", as the organizers asked. */}
+        {isKnown(keynote.title) || isKnown(keynote.abstract) || isKnown(keynote.bio) ? (
+          <dl class="facts">
+            <div>
+              <dt>Talk title</dt>
+              <dd>
+                <Value of={keynote.title} />
+              </dd>
+            </div>
+            <div>
+              <dt>Abstract</dt>
+              <dd>
+                <Value of={keynote.abstract} />
+              </dd>
+            </div>
+            <div>
+              <dt>Biography</dt>
+              <dd>
+                <Value of={keynote.bio} />
+              </dd>
+            </div>
+          </dl>
+        ) : (
+          <p>
+            <Value of={keynote.title} />
+          </p>
+        )}
       </article>
     ))}
   </PageSection>

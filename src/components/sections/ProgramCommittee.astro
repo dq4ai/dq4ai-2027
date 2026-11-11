@@ -8,7 +8,6 @@ const committee = (await getCommittees()).find(({ id }) => id === "program-commi
 
 {committee && committee.people.length > 0 && (
   <PageSection id="program-committee">
-    {committee.note && <p class="note">{committee.note}</p>}
     <ul class="people">
       {committee.people.map((person) => (
         <li class="person">
@@ -16,5 +15,7 @@ const committee = (await getCommittees()).find(({ id }) => id === "program-commi
         </li>
       ))}
     </ul>
+    {/* After the names, as the organizers asked: the list is still growing. */}
+    {committee.note && <p class="note">{committee.note}</p>}
   </PageSection>
 )}

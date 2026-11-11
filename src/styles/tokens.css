@@ -31,14 +31,6 @@
      previous edition set it. */
   --color-brand-a: #1e3a8a;
   --color-brand-b: #0f7f72;
-  /* The home banner's ribbons: the brand colours softened into the paper, and a warm sand
-     tint. Text never sits on the deep ends; a veil of paper keeps the centre calm. */
-  --wave-a1: #97a9de;
-  --wave-a2: #c6d1f0;
-  --wave-b1: #9ad3c9;
-  --wave-b2: #cbe8e2;
-  --wave-sand: #efd9b6;
-  --wave-veil: rgb(251 249 244 / 0.72);
   --color-surface: #fbf9f4;
   --color-surface-raised: #f3efe6;
   --color-text: #23262d;
@@ -79,9 +71,9 @@
   --space-6: 3rem;
   --space-7: 4rem;
 
-  /* Text runs the full width of its column, as the organizers asked; the page width bounds it. */
+  /* The page is a centred frame of 900px, as on the previous edition's site; text runs its width. */
   --measure: none;
-  --page-width: 80rem;
+  --page-width: 56.25rem;
   /* The left column of every page: section names, session times and news dates sit in it. */
   --rail: 12rem;
   --rail-gap: var(--space-5);
@@ -91,8 +83,6 @@
   --dur-instant: 80ms;
   --dur-fast: 150ms;
   --dur-slower: 480ms;
-  /* The home banner's one arrival, and nothing else. */
-  --dur-hero: 1100ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
   --radius: 6px;

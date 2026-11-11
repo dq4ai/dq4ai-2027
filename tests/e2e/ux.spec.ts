@@ -254,10 +254,10 @@ test.describe("authors' tasks", () => {
 });
 
 test.describe("values not yet known", () => {
-  test("program and papers use the same empty cell as other pages", async ({ page }, testInfo) => {
+  test("without a program, neither it nor papers have a section", async ({ page }, testInfo) => {
     test.skip(populated(testInfo.project.name), "needs an empty program");
     await page.goto("");
-    await expect(section(page, "program").locator(".facts .tba")).toHaveText("To be announced");
+    await expect(page.locator("#program")).toHaveCount(0);
     // Accepted papers have no section until there are papers to list.
     await expect(page.locator("#accepted-papers")).toHaveCount(0);
   });
@@ -425,10 +425,9 @@ test.describe("rows and tables line up", () => {
   test("the dates table starts its dates where other pages start values", async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
-    const edge = await page
-      .locator("dl.facts dd")
-      .first()
-      .evaluate((dd) => dd.getBoundingClientRect().left);
+    const rows = page.locator("dl.facts dd");
+    test.skip((await rows.count()) === 0, "no other rows on the page");
+    const edge = await rows.first().evaluate((dd) => dd.getBoundingClientRect().left);
     for (const table of [datesTable(page)]) {
       const left = await table
         .locator("thead th")
@@ -665,7 +664,9 @@ test.describe("one name for one thing", () => {
 test.describe("less at once", () => {
   // The organizers asked for the previous edition's menu: Home, then one link per section, in the
   // page's order. As there, the topics have no link of their own.
-  test("the menu has a link for every section of the page but the topics", async ({ page }) => {
+  test("the menu has a link for every section of the page but the topics", async ({
+    page,
+  }, testInfo) => {
     await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto("");
     const menu = page.locator("#site-nav a");
@@ -683,7 +684,7 @@ test.describe("less at once", () => {
       "Home",
       "About",
       "Submission",
-      "Program",
+      ...(populated(testInfo.project.name) ? ["Program"] : []),
       "Keynote Speakers",
       "Organizers",
       "Program Committee",

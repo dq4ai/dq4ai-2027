@@ -50,126 +50,58 @@ main > section:not(.session) > h2 {
   padding-block: var(--space-4) var(--space-6);
 }
 
+/* The host city at dusk behind the title, as the organizers chose. A navy veil, deepest under
+   the words, keeps white text above 4.5:1 on every part of the photo. */
 .hero__banner {
   position: relative;
   isolation: isolate;
   padding: var(--space-5) var(--space-3);
   overflow: clip;
   border-radius: var(--radius-large);
-  background: linear-gradient(
-    115deg,
-    var(--wave-sand) 0%,
-    var(--color-surface) 45%,
-    var(--color-surface) 55%,
-    var(--wave-sand) 100%
-  );
+  background: var(--color-brand-a);
+  color: #fff;
   text-align: center;
 }
 
-/* A veil of paper behind the words, so the ribbons never compete with them. */
 .hero__banner::after {
   position: absolute;
   z-index: -1;
   inset: 0;
   background: radial-gradient(
-    ellipse 40% 50% at 50% 52%,
-    var(--wave-veil) 0%,
-    var(--wave-veil) 40%,
-    transparent 100%
+    ellipse 70% 80% at 50% 50%,
+    rgb(15 25 60 / 0.68) 0%,
+    rgb(15 25 60 / 0.5) 100%
   );
   content: "";
 }
 
-.hero-waves {
+.hero__photo {
   position: absolute;
   z-index: -2;
   inset: 0;
   inline-size: 100%;
   block-size: 100%;
+  object-fit: cover;
 }
 
-/* Each ribbon is full colour at its edge and gone by its tip. */
-.wave-stop--a-deep {
-  stop-color: var(--wave-a1);
+.hero__banner a,
+.hero__banner .hero__date {
+  color: #fff;
 }
 
-.wave-stop--a-soft {
-  stop-color: var(--wave-a2);
+/* The logo is navy and teal: on the photo it sits on a disc of paper. */
+.hero__banner .hero__mark {
+  padding: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-surface);
 }
 
-.wave-stop--b-deep {
-  stop-color: var(--wave-b1);
-}
-
-.wave-stop--b-soft {
-  stop-color: var(--wave-b2);
-}
-
-:is(.wave-stop--a-sand, .wave-stop--b-sand) {
-  stop-color: var(--wave-sand);
-}
-
-.wave-stop--fading {
-  stop-opacity: 0.55;
-}
-
-.wave-stop--gone {
-  stop-opacity: 0;
-}
-
-.hero-waves--a .wave--deep {
-  fill: url("#wave-a-deep");
-}
-
-.hero-waves--a .wave--soft {
-  fill: url("#wave-a-soft");
-}
-
-.hero-waves--a .wave--sand {
-  fill: url("#wave-a-sand");
-}
-
-.hero-waves--b .wave--deep {
-  fill: url("#wave-b-deep");
-}
-
-.hero-waves--b .wave--soft {
-  fill: url("#wave-b-soft");
-}
-
-.hero-waves--b .wave--sand {
-  fill: url("#wave-b-sand");
-}
-
-.wave {
-  opacity: 0.85;
-}
-
-/* The page's one arrival: each direction drifts in from its own side and settles, once, with the
-   logo. Whole drawings move, so the browser slides layers rather than repainting curves.
-   From-only, so the art can never be left hidden. */
-@media (prefers-reduced-motion: no-preference) {
-  .hero-waves--a {
-    animation: drift-from-left var(--dur-hero) var(--ease-out);
-  }
-
-  .hero-waves--b {
-    animation: drift-from-right var(--dur-hero) var(--ease-out);
-  }
-}
-
-@keyframes drift-from-left {
-  from {
-    opacity: 0;
-    transform: translateX(-4%);
-  }
-}
-
-@keyframes drift-from-right {
-  from {
-    opacity: 0;
-    transform: translateX(4%);
-  }
+.hero__credit {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-align: end;
 }
 
 .hero__title {
