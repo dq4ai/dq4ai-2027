@@ -52,8 +52,10 @@ export const SECTIONS: Section[] = [
     title: "Organizers",
     menu: "Organizers",
     oldPath: "/organization/",
-    // The organizers asked for no "Organizers" title: the committees' own titles open it.
+    // The organizers asked for no "Organizers" title, on the page or in the menu: the committees'
+    // own titles open it.
     hideTitle: true,
+    notInMenu: true,
   },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },

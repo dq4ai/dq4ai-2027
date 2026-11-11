@@ -385,10 +385,10 @@ test("the skip link is the first stop and moves focus to the content", async ({ 
 
 test("navigation reaches a section of the page", async ({ page }) => {
   await page.goto("");
-  await page.locator("#site-nav").getByRole("link", { name: "Organizers" }).click();
-  await expect(page).toHaveURL(/\/#organizers$/);
-  // Its title is hidden, as the organizers asked: its first committee's title is what is seen.
-  await expect(section(page, "organizers").locator("h3").first()).toBeInViewport();
+  await page.locator("#site-nav").getByRole("link", { name: "Program Committee" }).click();
+  await expect(page).toHaveURL(/\/#program-committee$/);
+
+  await expect(page.locator("#program-committee")).toBeInViewport();
 });
 
 test("the site works without JavaScript", async ({ browser, baseURL }) => {

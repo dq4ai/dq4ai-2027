@@ -3,8 +3,8 @@
 ## Unreleased
 
 The Organizers section shows no "Organizers" title, as the organizers asked: the Honorary Chair and
-Workshop Chairs titles open it. The title stays for screen readers, and the menu's Organizers link
-still leads there (`hideTitle` in `src/lib/nav.ts`).
+Workshop Chairs titles open it. The menu has no Organizers link either. The title stays for screen
+readers (`hideTitle` and `notInMenu` in `src/lib/nav.ts`).
 
 The organizers' sixth round. About reads as the organizers rewrote it. Topics: "Quality in LLMs and
 generative AI" drops "NLP" from its title, "AI for data quality" has four new bullets (AI-driven
