@@ -11,11 +11,14 @@ interface Props {
   class?: string;
 }
 const { id, title, class: className } = Astro.props;
-const heading = title ?? sectionById(id).title;
+const section = sectionById(id);
+const heading = title ?? section.title;
 ---
 
 <section class:list={["page-section", className]}>
-  <Heading {id}>{heading}</Heading>
+  <Heading {id} hidden={section.hideTitle}>
+    {heading}
+  </Heading>
   <slot />
   <GoTop />
 </section>

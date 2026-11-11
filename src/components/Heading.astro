@@ -2,21 +2,25 @@
 interface Props {
   id: string;
   level?: 2 | 3;
+  /** Read by screen readers and kept as the menu's target, but not shown. */
+  hidden?: boolean | undefined;
 }
-const { id, level = 2 } = Astro.props;
+const { id, level = 2, hidden = false } = Astro.props;
 const Tag = `h${level}` as const;
 const linkId = `${id}-link`;
 ---
 
-<a
-  id={linkId}
-  class="section-anchor"
-  href={`#${id}`}
-  aria-label="Link to section:"
-  aria-labelledby={`${linkId} ${id}`}
->
-  #
-</a>
-<Tag {id} class="section-heading">
+{!hidden && (
+  <a
+    id={linkId}
+    class="section-anchor"
+    href={`#${id}`}
+    aria-label="Link to section:"
+    aria-labelledby={`${linkId} ${id}`}
+  >
+    #
+  </a>
+)}
+<Tag {id} class:list={["section-heading", { "visually-hidden": hidden }]}>
   <slot />
 </Tag>

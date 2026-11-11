@@ -387,7 +387,8 @@ test("navigation reaches a section of the page", async ({ page }) => {
   await page.goto("");
   await page.locator("#site-nav").getByRole("link", { name: "Organizers" }).click();
   await expect(page).toHaveURL(/\/#organizers$/);
-  await expect(page.locator("#organizers")).toBeInViewport();
+  // Its title is hidden, as the organizers asked: its first committee's title is what is seen.
+  await expect(section(page, "organizers").locator("h3").first()).toBeInViewport();
 });
 
 test("the site works without JavaScript", async ({ browser, baseURL }) => {
@@ -440,6 +441,10 @@ test("organizers are listed once and the committee is sorted as configured", asy
     ]);
     // The organizers asked for the Honorary Chair to open the page.
     await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
+    // The organizers asked for no "Organizers" title on the page; it stays for screen readers.
+    await expect(page.locator("h2#organizers")).toHaveClass(/visually-hidden/);
+    await expect(page.getByRole("heading", { level: 2, name: "Organizers" })).toHaveCount(1);
+    await expect(page.locator("#organizers-link")).toHaveCount(0);
   }
 });
 
