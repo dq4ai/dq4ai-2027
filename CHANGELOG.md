@@ -3,8 +3,9 @@
 ## Unreleased
 
 The banner photo's credit, which its CC BY-SA licence requires, no longer sits under the banner: it
-shows at the foot of the photo when the banner is hovered or a credit link has keyboard focus, as
-the organizers asked, and stays in the page for screen readers.
+shows at the foot of the photo when the banner is hovered, tapped on a touch screen, or a credit link
+has keyboard focus, as the organizers asked, and stays in the page for screen readers. The photo is
+encoded at a lower quality, which its veil hides, to keep the Lighthouse score at 100.
 
 The organizers' fifth round. The page is a centred frame of 900px, as on QuaLLM-KG 2026, rather
 than running edge to edge. The banner is a photo of Lille's Grand'Place at dusk, credited as its

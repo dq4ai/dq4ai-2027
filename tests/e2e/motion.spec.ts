@@ -228,6 +228,27 @@ test.describe("the home banner", () => {
     await expect(credit).toHaveCSS("opacity", "1");
   });
 
+  // A touch screen has no hover, so a tap shows the credit, and another tap hides it.
+  test("on a touch screen, a tap on the banner shows its credit", async ({ browser, baseURL }) => {
+    const context = await browser.newContext({
+      baseURL,
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 390, height: 844 },
+      reducedMotion: "reduce",
+    });
+    const page = await context.newPage();
+    await page.goto("");
+    const banner = page.locator(".hero__banner");
+    const credit = banner.locator(".hero__credit");
+    await expect(credit).toHaveCSS("opacity", "0");
+    await banner.locator("h1").tap();
+    await expect(credit).toHaveCSS("opacity", "1");
+    await banner.locator("h1").tap();
+    await expect(credit).toHaveCSS("opacity", "0");
+    await context.close();
+  });
+
   test("its words stay readable over the art", async ({ page }) => {
     // Light only, but a dark system theme must not change what is read over the art.
     for (const scheme of ["light", "dark"] as const) {
