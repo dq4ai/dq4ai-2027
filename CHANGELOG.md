@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Paper submission is due 8 January 2027, 23:59 AoE, a week earlier than before (was 15 January).
+
 The organizers' seventh round. The banner has no logo, and a brighter photo: the Grand'Place by
 day (Velvet, CC BY-SA 3.0), under a lighter veil that keeps white text above 4.5:1. Program
 Committee members missing a country now show one (Italy, USA, China, Germany). The page ends on a
