@@ -59,6 +59,14 @@ export const SECTIONS: Section[] = [
   },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
+  // At the end of the page and not in the menu, as the organizers asked.
+  {
+    id: "past-edition",
+    title: "Past Edition",
+    menu: "Past Edition",
+    oldPath: "/previous-editions/",
+    notInMenu: true,
+  },
 ];
 
 export function sectionById(id: string): Section {
@@ -94,7 +102,6 @@ export function redirects(has: { program: boolean }): { path: string; to: string
     { path: "/news/", to: "/#about" },
     { path: "/attend/", to: "/#about" },
     { path: "/policies/", to: "/#submission" },
-    { path: "/previous-editions/", to: "/#about" },
     { path: "/accepted-papers/", to: program },
   ];
 }

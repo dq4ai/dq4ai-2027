@@ -27,13 +27,11 @@ test.describe("tokens", () => {
 });
 
 test.describe("what moves", () => {
-  test("the home logo's loop settles once around the checked data", async ({ page }) => {
+  // The organizers asked for no logo on the banner; the header's logo stays still.
+  test("the banner has no logo, and the header's logo stays still", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" });
     await page.goto("");
-    const names = await page
-      .locator(".hero .mark__loop")
-      .evaluate((e) => getComputedStyle(e).animationName);
-    expect(names).toBe("settle");
+    await expect(page.locator(".hero__banner svg")).toHaveCount(0);
     const header = await page
       .locator(".site-header .mark__loop")
       .evaluate((e) => getComputedStyle(e).animationName);
@@ -201,9 +199,9 @@ test.describe("the home banner", () => {
     await page.goto("");
     const credit = page.locator(".hero__credit");
     await expect(credit).toContainText("Photo: Velvet");
-    await expect(credit.getByRole("link", { name: "CC BY-SA 4.0" })).toHaveAttribute(
+    await expect(credit.getByRole("link", { name: "CC BY-SA 3.0" })).toHaveAttribute(
       "href",
-      "https://creativecommons.org/licenses/by-sa/4.0/",
+      "https://creativecommons.org/licenses/by-sa/3.0/",
     );
   });
 

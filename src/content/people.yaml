@@ -15,6 +15,7 @@
 - id: ziawasch-abedjan
   name: Ziawasch Abedjan
   affiliation: Technische Universität Berlin
+  country: Germany
 - id: mohammad-sadoghi
   name: Mohammad Sadoghi
   affiliation: University of California
@@ -34,12 +35,15 @@
 - id: sijie-dong
   name: Sijie Dong
   affiliation: Ant International
+  country: China
 - id: jahid-hasan
   name: Jahid Hasan
   affiliation: Purdue University
+  country: USA
 - id: cinzia-cappiello
   name: Cinzia Cappiello
   affiliation: Politecnico di Milano
+  country: Italy
 - id: jesualdo-fernandez-breis
   name: Jesualdo Tomás Fernández Breis
   surname: Fernández Breis
@@ -48,3 +52,4 @@
 - id: sebastian-schelter
   name: Sebastian Schelter
   affiliation: BIFOLD & TU Berlin
+  country: Germany

@@ -13,7 +13,7 @@ export const OLD_PAGES = {
   "organization/": "organizers",
   "attend/": "about",
   "policies/": "submission",
-  "previous-editions/": "about",
+  "previous-editions/": "past-edition",
   "accepted-papers/": "program",
   "news/": "about",
 } as const;
