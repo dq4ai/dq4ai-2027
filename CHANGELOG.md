@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The header and footer read "DQ4AI", without the year. The banner photo has no credit on the page, as
+the organizers asked; its attribution stays in `LICENSE`.
+
 Paper submission is due 8 January 2027, 23:59 AoE, a week earlier than before (was 15 January).
 
 The organizers' seventh round. The banner has no logo, and a brighter photo: the Grand'Place by

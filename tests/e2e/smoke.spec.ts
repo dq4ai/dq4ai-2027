@@ -235,27 +235,15 @@ test("every name and affiliation is on one line", async ({ page }) => {
   expect(sizes.place).toBeLessThan(sizes.name);
 });
 
-test("the wordmark keeps its words apart", async ({ page }) => {
+// The organizers asked for the acronym alone, without the year.
+test("the wordmark reads DQ4AI, without the year", async ({ page }) => {
   await page.goto("");
   for (const area of [".site-header", ".site-footer"]) {
-    await expect(
-      page.locator(area).getByRole("link", { name: "DQ4AI 2027", exact: true }),
-    ).toHaveCount(1);
-    const text = await page.locator(`${area} .brand`).textContent();
-    expect(text?.trim()).toBe("DQ4AI 2027");
+    await expect(page.locator(area).getByRole("link", { name: "DQ4AI", exact: true })).toHaveCount(
+      1,
+    );
+    expect((await page.locator(`${area} .brand`).textContent())?.trim()).toBe("DQ4AI");
   }
-});
-
-test("the wordmark looks the same in the footer as in the header", async ({ page }) => {
-  await page.goto("");
-  const gap = (area: string) =>
-    page.locator(`${area} .brand`).evaluate((brand) => {
-      const nameBox = brand.querySelector(".brand__name")?.getBoundingClientRect();
-      const yearBox = brand.querySelector(".brand__year")?.getBoundingClientRect();
-      const size = parseFloat(getComputedStyle(brand).fontSize);
-      return ((yearBox?.left ?? 0) - (nameBox?.right ?? 0)) / size;
-    });
-  expect(await gap(".site-footer")).toBeCloseTo(await gap(".site-header"), 1);
 });
 
 test("no page shows the raw value TBA or the old wording", async ({ page }) => {

@@ -100,11 +100,6 @@
   color: var(--color-brand-b);
 }
 
-.brand__year {
-  color: var(--color-text-muted);
-  font-weight: 400;
-}
-
 .icon-button {
   display: inline-flex;
   align-items: center;
