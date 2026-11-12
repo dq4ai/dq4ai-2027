@@ -267,11 +267,27 @@ test("no page shows the raw value TBA or the old wording", async ({ page }) => {
 });
 
 // The organizers asked for no Attend section: the host conference handles venue and travel.
-test("the page has no Attend, Policies, Previous editions or Contact section", async ({ page }) => {
+test("the page has no Attend, Policies or Contact section", async ({ page }) => {
   await page.goto("");
-  await expect(page.locator("#attend, #policies, #previous-editions, #contact")).toHaveCount(0);
+  await expect(page.locator("#attend, #policies, #contact")).toHaveCount(0);
   await expect(page.locator("main figure, main .city-photo")).toHaveCount(0);
   await expect(page.locator("main")).not.toContainText(/Visa letters|Host city/);
+});
+
+// The organizers asked for the past edition and their thanks at the end of the page, not in the menu.
+test("the page ends on the past edition, linked, and thanks Sven Groppe", async ({ page }) => {
+  await page.goto("");
+  const section = page.locator("section:has(#past-edition)");
+  await expect(section.getByRole("link", { name: "Sven Groppe" })).toHaveAttribute(
+    "href",
+    "https://svengroppe.github.io/",
+  );
+  await expect(section.getByRole("link", { name: "QuaLLM-KG workshop" })).toHaveAttribute(
+    "href",
+    "https://quallmkg2026.github.io/",
+  );
+  await expect(page.locator("main > section").last()).toContainText("Past Edition");
+  await expect(page.locator("#site-nav")).not.toContainText("Past Edition");
 });
 
 // The banner's photo is the first screen's largest picture, so it loads at once; any other waits.

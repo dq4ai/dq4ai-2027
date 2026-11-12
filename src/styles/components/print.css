@@ -64,7 +64,6 @@
     content: none;
   }
 
-  .hero__mark,
   .not-found__mark {
     inline-size: 32pt;
     block-size: 32pt;

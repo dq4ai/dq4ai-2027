@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+The organizers' seventh round. The banner has no logo, and a brighter photo: the Grand'Place by
+day (Velvet, CC BY-SA 3.0), under a lighter veil that keeps white text above 4.5:1. Program
+Committee members missing a country now show one (Italy, USA, China, Germany). The page ends on a
+"Past Edition" section, not in the menu, that thanks Prof. Sven Groppe and links to the QuaLLM-KG
+workshop; `/previous-editions/` leads there.
+
 The Organizers section shows no "Organizers" title, as the organizers asked: the Honorary Chair and
 Workshop Chairs titles open it. The menu has no Organizers link either. The title stays for screen
 readers (`hideTitle` and `notInMenu` in `src/lib/nav.ts`).

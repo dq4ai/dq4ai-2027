@@ -38,7 +38,8 @@ reads "© DQ4AI 2027 — All rights reserved", as the previous edition's did. Th
 previous edition's site exactly, with this edition's content: "DQ4AI 2027" large over the full title;
 its sections and menu (About, Topics of Interest, Submission, Program, Keynote Speakers, Organizers,
 Program Committee), each title above its content; nothing behind "Read more"; and no Attend,
-Policies, Previous editions or Contact section, since the host conference handles venue and travel.
+Policies or Contact section, since the host conference handles venue and travel. The page ends on
+a short Past Edition section, not in the menu, thanking those behind the first edition.
 The contact is the page's last line, after the last section. Accepted papers appear in the program, through the talks that
 present them.
 
@@ -58,8 +59,8 @@ sections in order; `src/pages/index.astro` renders one component per section fro
 links to sections by anchor. Nothing is folded away. The old page addresses (`/dates/`, `/call-for-papers/` and so on) are
 kept as stubs, `src/pages/[moved].astro`, that send the browser to their section with a meta
 refresh, since they are already in announcements; they are `noindex` and left out of the sitemap.
-The banner is a photo of Lille's Grand'Place at dusk, as the organizers chose, under a navy veil so
-the white title stays readable; its CC BY-SA licence requires the credit, which the
+The banner is a photo of Lille's Grand'Place by day, with no logo, as the organizers chose, under a
+navy veil behind the words so the white title stays readable while the edges stay bright; its CC BY-SA licence requires the credit, which the
 organizers asked to keep out of sight: it shows at the foot of the photo on hover, keyboard focus or a tap on a touch screen,
 and stays in the page for screen readers. It is the first
 screen's largest paint, so it loads eagerly, and the page's Lighthouse budget is 100 with a largest
@@ -70,12 +71,11 @@ full width.
 **Motion.** Precise, calm, quick. Something moves only to explain, give feedback or direct attention,
 and every value comes from a token.
 
-| Moment             | Motion                           | Why                                      |
-| ------------------ | -------------------------------- | ---------------------------------------- |
-| Home logo, on load | The loop settles once, 480 ms    | The hero: the two directions around data |
-| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content   |
-| Hover on a pointer | Color or border eases, 150 ms    | Feedback                                 |
-| Press              | Color, and buttons scale to 0.97 | Feedback                                 |
+| Moment             | Motion                           | Why                                    |
+| ------------------ | -------------------------------- | -------------------------------------- |
+| Phone menu opens   | Fade, 150 ms                     | Tells new links from displaced content |
+| Hover on a pointer | Color or border eases, 150 ms    | Feedback                               |
+| Press              | Color, and buttons scale to 0.97 | Feedback                               |
 
 These stay still on purpose: a change of system theme, so every color changes at once; section
 jumps, because smooth scrolling took over a second on long pages and ran on page load; the time-zone

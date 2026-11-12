@@ -18,10 +18,11 @@ describe("the one page's sections", () => {
       "Organizers",
       "Program Committee",
       "Supported by",
+      "Past Edition",
     ]);
   });
 
-  it("puts every section in the menu but the topics, the organizers and the sponsors", () => {
+  it("puts every section in the menu but the topics, the organizers, the sponsors and the past edition", () => {
     expect(menuSections({ keynotes: true, program: true }).map((section) => section.menu)).toEqual([
       "About",
       "Submission",
@@ -68,6 +69,10 @@ describe("the one page's sections", () => {
       to: "/#organizers",
     });
     expect(redirects({ program: true })).toContainEqual({ path: "/attend/", to: "/#about" });
+    expect(redirects({ program: true })).toContainEqual({
+      path: "/previous-editions/",
+      to: "/#past-edition",
+    });
   });
 
   it("sends the program's old addresses to About while there is no program", () => {
