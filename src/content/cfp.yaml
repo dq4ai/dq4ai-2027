@@ -1,14 +1,14 @@
 scope:
   - >-
-    The rapid emergence of artificial intelligence (AI), including knowledge graphs (KGs), large
-    language models (LLMs), and generative AI, is transforming data science and data management.
+    The rapid emergence of artificial intelligence (AI), including knowledge graphs (KGs) and
+    generative AI, is transforming data science and data management.
     These technologies increasingly rely on large-scale, heterogeneous, dynamic, and continuously
     evolving data, making the quality of the underlying data, models, and processes fundamental to
     the reliability of modern AI systems.
   - >-
     Ensuring data quality across the AI lifecycle raises multifaceted challenges. KGs face issues
     such as incompleteness, inconsistency, incorrect links, outdated facts, and lack of provenance,
-    while LLMs raise concerns about hallucinations, bias, factual grounding, and reproducibility.
+    while generative AI models raise concerns about hallucinations, bias, factual grounding, and reproducibility.
     Similar challenges arise in generative and multimodal AI, retrieval-augmented generation, AI
     agents, and hybrid systems. When these technologies interact, quality issues become intertwined
     and require new approaches to data preparation, validation, provenance, evaluation, and
@@ -26,46 +26,31 @@ topicsIntro: >-
   The workshop welcomes contributions addressing all aspects of data quality for AI, including but
   not limited to:
 topics:
-  - title: Data quality for AI
+  - title: Data and knowledge quality management
     items:
-      - Quality of training and fine-tuning data for foundation models, LLMs, generative AI, RAG, and AI agents
-      - Bias, reliability and robustness
-  - title: AI for data quality
+      - Data profiling and quality assessment
+      - Error detection, data validation, cleaning, and repair
+      - Entity resolution, link prediction, and ontology alignment
+      - Provenance, explainability, and trustworthiness
+      - Quality management in dynamic and large-scale settings
+      - Data and knowledge governance, privacy, and responsible management
+  - title: Data quality across the AI lifecycle
     items:
-      - AI-driven data profiling, evaluation, and monitoring
-      - Automated error detection and data repair
-      - LLM-based data integration and transformation
+      - Quality of training, validation, and fine-tuning data for foundation models, generative AI, RAG, and AI agents
+      - Factual errors, hallucinations, and grounding of AI-generated outputs
+      - Multimodal data quality, including cross-modal alignment, consistency, and integration
+  - title: AI-driven quality management
+    items:
+      - Generative AI for data cleaning, integration, transformation, and enrichment
+      - AI-driven knowledge graph construction, enrichment, validation, and maintenance
       - AI agents for data quality management
-  - title: Quality in KGs
+      - LLM-KG synergies for improving data quality
+  - title: Evaluation, benchmarks, and applications
     items:
-      - Quality in KG construction, enrichment, and maintenance
-      - Schema validation and constraint checking
-      - Entity resolution and ontology alignment
-      - Consistency, completeness, provenance, and evolution
-  - title: Quality in LLMs and generative AI
-    items:
-      - Hallucinations and factual errors
-      - Bias and uncertainty
-      - Evaluation of language models and NLP systems
-  - title: Data management and governance for AI
-    items:
-      - Quality-aware data management
-      - Data preparation and integration
-      - Lineage, traceability, versioning, and reproducibility
-      - Privacy, fairness, transparency, and trustworthy AI across the AI lifecycle
-  - title: Multimodal data quality
-    items:
-      - Quality across text, images, audio, video, structured, and sensor data
-      - Cross-modal alignment, consistency, and integration
-  - title: Evaluation and benchmarks
-    items:
-      - Metrics, benchmarks, and evaluation frameworks
-      - Human-in-the-loop approaches
-      - Methods for assessing data quality and its impact on AI systems
-  - title: Applications and case studies
-    items:
-      - Real-world and industrial deployments
-      - Lessons learned from maintaining data quality at scale
+      - Data quality metrics, benchmarks, and evaluation frameworks
+      - Human-in-the-loop approaches for data quality assessment
+      - Assessment of the impact of data quality on AI performance and reliability
+      - Real-world applications and industrial deployments
 paperTypesIntro: "The workshop solicits papers in the following categories:"
 paperTypes:
   - id: research

@@ -3,14 +3,10 @@ import { expect, test } from "@playwright/test";
 import { readFileSync } from "node:fs";
 
 const TOPICS = [
-  "Data quality for AI",
-  "AI for data quality",
-  "Quality in KGs",
-  "Quality in LLMs and generative AI",
-  "Data management and governance for AI",
-  "Multimodal data quality",
-  "Evaluation and benchmarks",
-  "Applications and case studies",
+  "Data and knowledge quality management",
+  "Data quality across the AI lifecycle",
+  "AI-driven quality management",
+  "Evaluation, benchmarks, and applications",
 ];
 
 test.describe("logo", () => {
@@ -78,7 +74,7 @@ test.describe("logo", () => {
 // each topic a heading over its bullet points, shown in full on the one page.
 test.describe("topics", () => {
   for (const path of [""]) {
-    test("the page lists the eight topics as headings over bullet points", async ({ page }) => {
+    test("the page lists the four topics as headings over bullet points", async ({ page }) => {
       await page.goto(path);
       const section = page.locator("main > section", { has: page.locator("#topics") });
       const topics = section.locator(".topics");
@@ -95,15 +91,14 @@ test.describe("topics", () => {
   }
 
   test("each topic has its own address", async ({ page }) => {
-    // The organizers asked for "Quality in KGs" rather than "Knowledge graphs".
-    await page.goto("#topic-quality-in-kgs");
-    const heading = page.locator("#topic-quality-in-kgs");
+    await page.goto("#topic-ai-driven-quality-management");
+    const heading = page.locator("#topic-ai-driven-quality-management");
     await expect(heading).toBeInViewport();
-    await expect(page.locator("#topic-quality-in-kgs + ul")).toContainText(
-      "Entity resolution and ontology alignment",
+    await expect(page.locator("#topic-ai-driven-quality-management + ul")).toContainText(
+      "LLM-KG synergies for improving data quality",
     );
-    await expect(page.locator("#topic-data-quality-for-ai + ul")).toContainText(
-      "Quality of training and fine-tuning data",
+    await expect(page.locator("#topic-data-and-knowledge-quality-management + ul")).toContainText(
+      "Entity resolution, link prediction, and ontology alignment",
     );
   });
 
