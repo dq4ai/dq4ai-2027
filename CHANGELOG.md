@@ -2,8 +2,12 @@
 
 ## Unreleased
 
-The header and footer read "DQ4AI", without the year. The banner photo has no credit on the page, as
-the organizers asked; its attribution stays in `LICENSE`.
+The organizers' eighth round. About speaks of generative AI instead of LLMs. Topics are four
+groups: data and knowledge quality management, data quality across the AI lifecycle, AI-driven
+quality management, and evaluation, benchmarks, and applications.
+
+The header and footer read "DQ4AI", without the year. The banner photo's credit is back, out of
+sight until the photo is hovered, focused or tapped, as its CC BY-SA licence requires.
 
 Paper submission is due 8 January 2027, 23:59 AoE, a week earlier than before (was 15 January).
 
