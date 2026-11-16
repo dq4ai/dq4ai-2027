@@ -22,9 +22,7 @@ goal: >-
   management and AI communities to discuss methods, systems, benchmarks, evaluation frameworks, and
   applications addressing these challenges. It aims to foster cross-disciplinary exchange at the
   intersection of data quality, AI and trustworthy data management.
-topicsIntro: >-
-  The workshop welcomes contributions addressing all aspects of data quality for AI, including but
-  not limited to:
+topicsIntro: "Topics of interest include, but are not limited to:"
 topics:
   - title: Data and knowledge quality management
     items:

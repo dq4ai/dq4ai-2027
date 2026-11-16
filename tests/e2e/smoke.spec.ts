@@ -105,11 +105,9 @@ test("About shows the whole scope and goal, with nothing to open", async ({ page
 test("the Submission section reads like the previous edition's", async ({ page }) => {
   await page.goto("");
   const submission = section(page, "submission");
-  await expect(submission.locator("h3")).toHaveText([
-    "Paper categories",
-    "Important dates",
-    "Submission details",
-  ]);
+  // The organizers asked for the categories without a "Paper categories" title.
+  await expect(submission.locator(".paper-categories h3")).toHaveCount(0);
+  await expect(submission.locator("h3")).toHaveText(["Important dates", "Submission details"]);
   await expect(submission.locator("#checklist, #faq")).toHaveCount(0);
 });
 
