@@ -8,8 +8,8 @@
 - id: notification
   label: Author notification
   kind: notification
-  date: "2027-02-20T23:59:00-12:00"
+  date: "2027-02-15T23:59:00-12:00"
 - id: camera-ready
   label: Camera-ready papers
   kind: camera-ready
-  date: "2027-03-05T23:59:00-12:00"
+  date: "2027-02-28T23:59:00-12:00"
