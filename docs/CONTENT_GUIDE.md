@@ -13,8 +13,8 @@ If something is wrong the build stops, the live site stays as it was, and the fa
 **Actions** tab names the file and field to fix, for example:
 
 ```text
-dates.yaml → notification.date: Author notification (1 December 2026, 23:59 AoE) must be after
-Paper submission (11 December 2026, 23:59 AoE)
+dates.yaml → notification.date: Author notification (December 1st, 2026, 23:59 AoE) must be after
+Paper submission (December 11th, 2026, 23:59 AoE)
 ```
 
 Write `TBA` for anything not known yet. The site shows "To be announced" (or "Not recorded" for a past edition), and each build lists what

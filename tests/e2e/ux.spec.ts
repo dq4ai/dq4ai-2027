@@ -395,7 +395,7 @@ test.describe("time zones", () => {
     await page.goto("");
     const toggle = page.locator(".tz-toggle");
     await toggle.click();
-    await expect(page.locator(".session__time").first()).toContainText("21:00 (6 April)");
+    await expect(page.locator(".session__time").first()).toContainText("21:00 (April 6th)");
     await expect(toggle).toHaveText("Show venue time");
     await toggle.click();
     await expect(toggle).toHaveText("Show in my time zone");

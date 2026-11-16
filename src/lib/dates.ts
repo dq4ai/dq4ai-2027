@@ -9,7 +9,20 @@ export const TBA = "TBA";
 /** "Anywhere on Earth" is UTC-12. POSIX-style IANA names invert the sign, hence GMT+12. */
 export const AOE_ZONE = "Etc/GMT+12";
 
-const LOCALE = "en-GB";
+const LOCALE = "en-US";
+
+/** "8th": the organizers write dates in English style, "January 8th, 2027". */
+function ordinal(day: number): string {
+  const tens = day % 100;
+  const suffix = tens >= 11 && tens <= 13 ? "th" : (["th", "st", "nd", "rd"][day % 10] ?? "th");
+  return `${day}${suffix}`;
+}
+
+function joinParts(parts: Intl.DateTimeFormatPart[]): string {
+  return parts
+    .map((part) => (part.type === "day" ? ordinal(Number(part.value)) : part.value))
+    .join("");
+}
 const ISO_WITH_ZONE = /^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}(:\d{2})?(Z|[+-]\d{2}:\d{2})$/;
 const ISO_DAY = /^(\d{4})-(\d{2})-(\d{2})$/;
 
@@ -81,7 +94,9 @@ function dayKeyInZone(date: Date, zone: string): string {
 }
 
 export function formatDayInZone(date: Date, zone: string): string {
-  return new Intl.DateTimeFormat(LOCALE, { timeZone: zone, dateStyle: "long" }).format(date);
+  return joinParts(
+    new Intl.DateTimeFormat(LOCALE, { timeZone: zone, dateStyle: "long" }).formatToParts(date),
+  );
 }
 
 export function formatTimeInZone(date: Date, zone: string): string {
@@ -97,11 +112,13 @@ export function formatTimeInZone(date: Date, zone: string): string {
 export function formatLocalSessionTime(date: Date, zone: string, venueZone: string): string {
   const time = formatTimeInZone(date, zone);
   if (dayKeyInZone(date, zone) === dayKeyInZone(date, venueZone)) return time;
-  const day = new Intl.DateTimeFormat(LOCALE, {
-    timeZone: zone,
-    day: "numeric",
-    month: "long",
-  }).format(date);
+  const day = joinParts(
+    new Intl.DateTimeFormat(LOCALE, {
+      timeZone: zone,
+      day: "numeric",
+      month: "long",
+    }).formatToParts(date),
+  );
   return `${time} (${day})`;
 }
 
@@ -120,14 +137,14 @@ export function formatAoE(date: Date): string {
 
 /** Formats an instant in the reader's own zone, naming the zone. Used by the toggle script. */
 export function formatInLocalZone(date: Date, zone?: string): string {
-  return new Intl.DateTimeFormat(LOCALE, {
+  const day = formatDayInZone(date, zone ?? Intl.DateTimeFormat().resolvedOptions().timeZone);
+  const time = new Intl.DateTimeFormat(LOCALE, {
     ...(zone ? { timeZone: zone } : {}),
-    dateStyle: "long",
-    timeStyle: "short",
+    hour: "2-digit",
+    minute: "2-digit",
     hourCycle: "h23",
-  })
-    .format(date)
-    .concat(` (${localZoneName(date, zone)})`);
+  }).format(date);
+  return `${day}, ${time} (${localZoneName(date, zone)})`;
 }
 
 function localZoneName(date: Date, zone?: string): string {
@@ -143,18 +160,19 @@ export function formatIsoDay(day: string): string {
   return formatDayInZone(parseDay(day), "UTC");
 }
 
-/** "April 6, 2027": the banner writes the workshop's day month first, as the previous edition did. */
+/** "April 6th, 2027": the banner's workshop day, now the same as every other date. */
 export function formatHeadlineDay(day: string): string {
-  return new Intl.DateTimeFormat("en-US", { timeZone: "UTC", dateStyle: "long" }).format(
-    parseDay(day),
-  );
+  return formatIsoDay(day);
 }
 
-/** "6–9 April 2027", collapsing the parts both ends share. */
+/** "April 6th–9th, 2027", collapsing the parts both ends share. */
 export function formatDayRange(startDay: string, endDay: string): string {
-  return new Intl.DateTimeFormat(LOCALE, { timeZone: "UTC", dateStyle: "long" })
-    .formatRange(parseDay(startDay), parseDay(endDay))
-    .replace(/^(\d+)\s–\s(\d+)/, "$1–$2");
+  return joinParts(
+    new Intl.DateTimeFormat(LOCALE, { timeZone: "UTC", dateStyle: "long" }).formatRangeToParts(
+      parseDay(startDay),
+      parseDay(endDay),
+    ),
+  ).replace(/(\d+(?:st|nd|rd|th))\s–\s(\d+(?:st|nd|rd|th),)/, "$1–$2");
 }
 
 export function isOnDayInZone(date: Date, day: string, zone: string): boolean {

@@ -21,12 +21,12 @@ const site = {
 describe("pageContext", () => {
   it("keeps the host's dates apart from a workshop date not yet known", () => {
     expect(pageContext(site)).toBe(
-      "DQ4AI 2027 workshop at EDBT/ICDT 2027 (6–9 April 2027), Lille, France",
+      "DQ4AI 2027 workshop at EDBT/ICDT 2027 (April 6th–9th, 2027), Lille, France",
     );
   });
   it("gives the workshop's own date once known", () => {
     expect(pageContext({ ...site, workshopDate: "2027-04-07" })).toBe(
-      "DQ4AI 2027 workshop, 7 April 2027, at EDBT/ICDT 2027, Lille, France",
+      "DQ4AI 2027 workshop, April 7th, 2027, at EDBT/ICDT 2027, Lille, France",
     );
   });
 });
