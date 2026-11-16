@@ -662,6 +662,8 @@ details p {
   margin-block: 0 var(--space-1);
 }
 
+/* The Honorary Chair in the keynote speakers' size, as the organizers asked. */
+.committee--honorary-chair .person,
 .keynote__person {
   font-size: var(--text-h3);
   font-weight: 400;
@@ -801,4 +803,9 @@ main > .contact {
   .go-top a:hover {
     text-decoration: underline;
   }
+}
+
+/* About reads justified, every line ending at the same column, as the organizers asked. */
+.about p:not(.go-top) {
+  text-align: justify;
 }

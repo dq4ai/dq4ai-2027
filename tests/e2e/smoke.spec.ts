@@ -443,10 +443,9 @@ test("organizers are listed once and the committee is sorted as configured", asy
     ]);
     // The organizers asked for the Honorary Chair to open the page.
     await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
-    // The organizers asked for no "Organizers" title on the page; it stays for screen readers.
-    await expect(page.locator("h2#organizers")).toHaveClass(/visually-hidden/);
-    await expect(page.getByRole("heading", { level: 2, name: "Organizers" })).toHaveCount(1);
-    await expect(page.locator("#organizers-link")).toHaveCount(0);
+    // The organizers asked for the section under an "Organization" title.
+    await expect(page.locator("h2#organizers")).toHaveText("Organization");
+    await expect(page.locator("h2#organizers")).toBeVisible();
   }
 });
 
@@ -587,4 +586,33 @@ test("the home page prints at document sizes", async ({ page }) => {
     .locator(".hero h1")
     .evaluate((h1) => parseFloat(getComputedStyle(h1).fontSize));
   expect(title).toBeLessThanOrEqual(27);
+});
+
+// The organizers' ninth round.
+test("About is justified, with no AoE sentence under the dates", async ({ page }) => {
+  await page.goto("");
+  const align = await section(page, "about")
+    .locator("p")
+    .first()
+    .evaluate((p) => getComputedStyle(p).textAlign);
+  expect(align).toBe("justify");
+  await expect(page.locator("main")).not.toContainText("All deadlines are Anywhere on Earth");
+});
+
+test("the Honorary Chair reads in the keynote speakers' type", async ({ page }, testInfo) => {
+  test.skip(populated(testInfo.project.name), "the fixture has no Honorary Chair");
+  await page.goto("");
+  const style = (selector: string) =>
+    page
+      .locator(selector)
+      .first()
+      .evaluate((e) => {
+        const c = getComputedStyle(e);
+        return [c.fontFamily, c.fontSize, c.fontWeight];
+      });
+  for (const part of [".person__name", ".person__place"]) {
+    expect(await style(`.committee--honorary-chair ${part}`)).toEqual(
+      await style(`.keynote__person ${part}`),
+    );
+  }
 });

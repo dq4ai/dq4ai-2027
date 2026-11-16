@@ -674,7 +674,7 @@ test.describe("less at once", () => {
       .evaluateAll((headings) =>
         headings
           .map((h) => h.id)
-          .filter((id) => !["sponsors", "topics", "organizers", "past-edition"].includes(id)),
+          .filter((id) => !["sponsors", "topics", "past-edition"].includes(id)),
       );
     expect(targets).toEqual(sections);
     await expect(menu).toHaveText([
@@ -683,10 +683,9 @@ test.describe("less at once", () => {
       "Submission",
       ...(populated(testInfo.project.name) ? ["Program"] : []),
       "Keynote Speakers",
+      "Organization",
       "Program Committee",
     ]);
-    // The organizers asked for no "Organizers", on the page or in the menu.
-    await expect(menu.filter({ hasText: "Organizers" })).toHaveCount(0);
     await expect(page.locator(".site-footer nav")).toHaveCount(0);
   });
 

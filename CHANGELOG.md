@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+The organizers' ninth round. About is justified, every full line ending at the same column. The
+dates no longer end on "All deadlines are Anywhere on Earth (AoE, UTC−12)."; each date still says
+AoE. The Honorary Chair, Workshop Chairs and organizers now sit under an "Organization" title,
+which is in the menu. The Honorary Chair reads in the keynote speakers' size.
+
+Author notification is due 15 February 2027 and camera-ready papers 28 February 2027 (were
+20 February and 5 March). The topics open on "Topics of interest include, but are not limited
+to:", and the paper categories have no "Paper categories" title.
+
 The organizers' eighth round. About speaks of generative AI instead of LLMs. Topics are four
 groups: data and knowledge quality management, data quality across the AI lifecycle, AI-driven
 quality management, and evaluation, benchmarks, and applications.

@@ -49,13 +49,10 @@ export const SECTIONS: Section[] = [
   },
   {
     id: "organizers",
-    title: "Organizers",
-    menu: "Organizers",
+    // The organizers asked for an "Organization" title, on the page and in the menu.
+    title: "Organization",
+    menu: "Organization",
     oldPath: "/organization/",
-    // The organizers asked for no "Organizers" title, on the page or in the menu: the committees'
-    // own titles open it.
-    hideTitle: true,
-    notInMenu: true,
   },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
