@@ -15,19 +15,20 @@ describe("the one page's sections", () => {
       "Submission",
       "Program",
       "Keynote Speakers",
-      "Organizers",
+      "Organization",
       "Program Committee",
       "Supported by",
       "Past Edition",
     ]);
   });
 
-  it("puts every section in the menu but the topics, the organizers, the sponsors and the past edition", () => {
+  it("puts every section in the menu but the topics, the sponsors and the past edition", () => {
     expect(menuSections({ keynotes: true, program: true }).map((section) => section.menu)).toEqual([
       "About",
       "Submission",
       "Program",
       "Keynote Speakers",
+      "Organization",
       "Program Committee",
     ]);
   });

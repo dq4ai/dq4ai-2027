@@ -13,7 +13,7 @@ const groups = committees.filter(
 
 <PageSection id="organizers">
   {groups.map((committee) => (
-    <div class="subsection">
+    <div class={`subsection committee--${committee.id}`}>
       <h3 id={committee.id}>{committee.title}</h3>
       {committee.note && <p class="note">{committee.note}</p>}
       <ul class="people">
