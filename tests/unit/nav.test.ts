@@ -15,7 +15,7 @@ describe("the one page's sections", () => {
       "Submission",
       "Program",
       "Keynote Speakers",
-      "Organization",
+      "Workshop Chairs",
       "Program Committee",
       "Supported by",
       "Past Edition",
@@ -28,7 +28,7 @@ describe("the one page's sections", () => {
       "Submission",
       "Program",
       "Keynote Speakers",
-      "Organization",
+      "Workshop Chairs",
       "Program Committee",
     ]);
   });

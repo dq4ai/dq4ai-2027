@@ -443,8 +443,8 @@ test("organizers are listed once and the committee is sorted as configured", asy
     ]);
     // The organizers asked for the Honorary Chair to open the page.
     await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
-    // The organizers asked for the section under an "Organization" title.
-    await expect(page.locator("h2#organizers")).toHaveText("Organization");
+    // The organizers asked for the section under an "Workshop Chairs" title.
+    await expect(page.locator("h2#organizers")).toHaveText("Workshop Chairs");
     await expect(page.locator("h2#organizers")).toBeVisible();
   }
 });

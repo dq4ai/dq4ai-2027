@@ -49,9 +49,9 @@ export const SECTIONS: Section[] = [
   },
   {
     id: "organizers",
-    // The organizers asked for an "Organization" title, on the page and in the menu.
-    title: "Organization",
-    menu: "Organization",
+    // The organizers asked for a "Workshop Chairs" title, on the page and in the menu.
+    title: "Workshop Chairs",
+    menu: "Workshop Chairs",
     oldPath: "/organization/",
   },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },

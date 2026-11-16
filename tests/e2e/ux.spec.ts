@@ -683,7 +683,7 @@ test.describe("less at once", () => {
       "Submission",
       ...(populated(testInfo.project.name) ? ["Program"] : []),
       "Keynote Speakers",
-      "Organization",
+      "Workshop Chairs",
       "Program Committee",
     ]);
     await expect(page.locator(".site-footer nav")).toHaveCount(0);
