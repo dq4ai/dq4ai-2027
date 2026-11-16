@@ -104,8 +104,8 @@ describe("plain-text CFP", () => {
         new Date("2026-11-10T00:00:00Z"),
       ),
     });
-    expect(text).toContain("18 December 2026, 23:59 AoE");
-    expect(text).toContain("extended from 11 December 2026");
+    expect(text).toContain("December 18th, 2026, 23:59 AoE");
+    expect(text).toContain("extended from December 11th, 2026");
     expect(text).toContain("Submission link: To be announced");
     expect(text).toContain("Jane Doe, Example University");
     expect(text).not.toContain("TBA");
@@ -122,7 +122,7 @@ describe("plain-text CFP", () => {
 
   it("does not present the host conference's dates as the workshop's", () => {
     const text = plainText();
-    expect(text).not.toMatch(/Co-located with [^.]*\d+–\d+ April 2027/);
+    expect(text).not.toMatch(/Co-located with [^.]*\d+(st|nd|rd|th)?–\d+(st|nd|rd|th)?,? 2027/);
     expect(text).toContain(hostDatesSentence(site));
   });
 
@@ -134,12 +134,12 @@ describe("plain-text CFP", () => {
 describe("sentences for people and search engines", () => {
   it("keeps the conference's dates apart from an unknown workshop date", () => {
     expect(hostDatesSentence({ ...site, workshopDate: "TBA" })).toBe(
-      "EDBT/ICDT 2027 runs 6–9 April 2027 in Lille, France. Workshop date: to be announced.",
+      "EDBT/ICDT 2027 runs April 6th–9th, 2027 in Lille, France. Workshop date: to be announced.",
     );
   });
   it("gives the workshop date alone once it is known, as the organizers asked", () => {
     expect(hostDatesSentence({ ...site, workshopDate: "2027-04-07" })).toBe(
-      "Workshop date: 7 April 2027, in Lille, France.",
+      "Workshop date: April 7th, 2027, in Lille, France.",
     );
   });
   it("identifies the workshop and host in the page description", () => {

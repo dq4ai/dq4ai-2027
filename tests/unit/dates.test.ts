@@ -38,31 +38,31 @@ describe("isIsoWithZone", () => {
 
 describe("AoE formatting", () => {
   it("shows the deadline on its AoE calendar day", () => {
-    expect(formatAoE(parseIso(END_OF_11_DEC_AOE))).toBe("11 December 2026, 23:59 AoE");
-    expect(formatAoEDay(parseIso(END_OF_11_DEC_AOE))).toBe("11 December 2026");
+    expect(formatAoE(parseIso(END_OF_11_DEC_AOE))).toBe("December 11th, 2026, 23:59 AoE");
+    expect(formatAoEDay(parseIso(END_OF_11_DEC_AOE))).toBe("December 11th, 2026");
   });
   it("converts an instant given in another zone to AoE", () => {
     // 12:00 UTC on the 12th is exactly midnight starting the 12th in UTC-12.
-    expect(formatAoE(parseIso("2026-12-12T12:00:00Z"))).toBe("12 December 2026, 00:00 AoE");
-    expect(formatAoE(parseIso("2026-12-12T11:59:00Z"))).toBe("11 December 2026, 23:59 AoE");
+    expect(formatAoE(parseIso("2026-12-12T12:00:00Z"))).toBe("December 12th, 2026, 00:00 AoE");
+    expect(formatAoE(parseIso("2026-12-12T11:59:00Z"))).toBe("December 11th, 2026, 23:59 AoE");
   });
 });
 
 describe("formatHeadlineDay", () => {
   it("writes the month first, as the previous edition's banner did", () => {
-    expect(formatHeadlineDay("2027-04-06")).toBe("April 6, 2027");
+    expect(formatHeadlineDay("2027-04-06")).toBe("April 6th, 2027");
   });
   it("keeps the calendar day whatever the time zone", () => {
-    expect(formatHeadlineDay("2027-01-01")).toBe("January 1, 2027");
+    expect(formatHeadlineDay("2027-01-01")).toBe("January 1st, 2027");
   });
 });
 
 describe("formatDayRange", () => {
   it("collapses a range within one month", () => {
-    expect(formatDayRange("2027-04-06", "2027-04-09")).toBe("6–9 April 2027");
+    expect(formatDayRange("2027-04-06", "2027-04-09")).toBe("April 6th–9th, 2027");
   });
   it("keeps spaced dashes across months", () => {
-    expect(formatDayRange("2027-03-30", "2027-04-02")).toMatch(/^30 March\s–\s2 April 2027$/);
+    expect(formatDayRange("2027-03-30", "2027-04-02")).toMatch(/^March 30th\s–\sApril 2nd, 2027$/);
   });
 });
 
@@ -85,7 +85,7 @@ describe("venue time zone across DST", () => {
     const lateNightUtc = parseIso("2027-04-05T22:30:00Z");
     expect(isOnDayInZone(lateNightUtc, "2027-04-06", PARIS)).toBe(true);
     expect(isOnDayInZone(lateNightUtc, "2027-04-05", PARIS)).toBe(false);
-    expect(formatDayInZone(lateNightUtc, PARIS)).toBe("6 April 2027");
+    expect(formatDayInZone(lateNightUtc, PARIS)).toBe("April 6th, 2027");
   });
 });
 
@@ -103,7 +103,7 @@ describe("deadlineStatus", () => {
   it("stays open in Paris on the morning of the next local day", () => {
     // 08:00 on 12 December in Paris looks past the 11th, yet AoE it is still the 11th.
     const parisMorning = parseIso("2026-12-12T08:00:00+01:00");
-    expect(formatDayInZone(parisMorning, "Europe/Paris")).toBe("12 December 2026");
+    expect(formatDayInZone(parisMorning, "Europe/Paris")).toBe("December 12th, 2026");
     expect(deadlineStatus(deadline(END_OF_11_DEC_AOE), parisMorning)).toBe("today");
   });
   it("is passed one minute after the deadline", () => {
@@ -167,7 +167,7 @@ describe("formatLocalSessionTime", () => {
   });
   it("names the local day when it differs from the venue's", () => {
     expect(formatLocalSessionTime(opening, "Pacific/Honolulu", "Europe/Paris")).toBe(
-      "21:00 (6 April)",
+      "21:00 (April 6th)",
     );
   });
 });

@@ -363,7 +363,7 @@ test("the dates section lists the deadlines and the workshop's day only", async 
   const dates = datesTable(page);
   await expect(dates.locator("tbody th").last()).toHaveText("Workshop date");
   await expect(dates.locator("table")).not.toContainText("EDBT/ICDT");
-  await expect(page.locator("main")).not.toContainText("6–9 April");
+  await expect(page.locator("main")).not.toContainText("April 6th–9th");
   await expect(dates.locator(".toolbar, .tz-toggle, [data-zone-note]")).toHaveCount(0);
   await expect(dates.locator('a[href$=".ics"]')).toHaveCount(0);
 });
@@ -526,10 +526,10 @@ test.describe("states that depend on content", () => {
   test("the conference's dates are not given as the workshop's", async ({ page }, testInfo) => {
     await page.goto("");
     await expect(page.locator(".hero__date")).toHaveText(
-      populated(testInfo.project.name) ? "(April 7, 2027)" : "(April 6, 2027)",
+      populated(testInfo.project.name) ? "(April 7th, 2027)" : "(April 6th, 2027)",
     );
     // The organizers asked to leave out the host conference's dates.
-    await expect(page.locator("main")).not.toContainText("6–9 April 2027");
+    await expect(page.locator("main")).not.toContainText("April 6th–9th, 2027");
   });
 
   test("the page limits are with the paper categories", async ({ page }) => {
@@ -548,8 +548,8 @@ test.describe("states that depend on content", () => {
     test.skip(!populated(testInfo.project.name), "needs an extended deadline");
     await page.goto("");
     const row = page.locator("tbody tr", { hasText: "Paper submission" });
-    await expect(row.locator("del")).toHaveText("11 December 2026, 23:59 AoE");
-    await expect(row.getByText("18 December 2026, 23:59 AoE")).toBeVisible();
+    await expect(row.locator("del")).toHaveText("December 11th, 2026, 23:59 AoE");
+    await expect(row.getByText("December 18th, 2026, 23:59 AoE")).toBeVisible();
     await expect(row).toContainText("Was");
     await expect(row).toContainText("Now");
   });

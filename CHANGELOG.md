@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+The organizers' tenth round. Every date reads in English style, month first with an ordinal day:
+"January 8th, 2027, 23:59 AoE", "April 6th–9th, 2027". The paper lengths no longer say "systems"
+twice: short papers describe "work in progress, demos/systems/applications, or vision/innovative
+ideas".
+
 The organizers' ninth round. About is justified, every full line ending at the same column. The
 dates no longer end on "All deadlines are Anywhere on Earth (AoE, UTC−12)."; each date still says
 AoE. The Honorary Chair, Workshop Chairs and organizers now sit under a "Workshop Chairs" title,
