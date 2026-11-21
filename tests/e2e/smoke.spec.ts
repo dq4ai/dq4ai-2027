@@ -429,6 +429,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
     expect(names).toEqual([
       "Asma Abboura",
       "Cinzia Cappiello",
+      "Dario Satriani",
       "Hazar Harmouch",
       "Imane Hocine",
       "Jahid Hasan",
