@@ -92,8 +92,8 @@ surname instead, set `order: surname`; if a surname is not the last word of the 
 `surname: van der Berg`.
 Optional links: `url`, `orcid`, `dblp` (full addresses).
 
-The `note:` of the program committee ("To be completed.") shows after the names. When membership is
-final, delete that line.
+A committee's optional `note:` (for example `note: To be completed.`) shows after its names. Delete
+the line when it no longer applies.
 
 ## Publish the program
 

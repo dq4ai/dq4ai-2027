@@ -9,8 +9,12 @@ ideas". Farah Benamara's affiliation is now IRIT, University of Toulouse.
 Dario Satriani (Eurecom, France) joins the Program Committee.
 
 The organizers' eleventh round. The menu says "Organization", and the section has no title on the
-page: it opens directly on the Honorary Chair and Workshop Chairs. Laure Berti (IRD, France) joins
-the Program Committee.
+page: it opens directly on the Honorary Chair and Workshop Chairs. Laure Berti-Equille (IRD, France)
+joins the Program Committee.
+
+The organizers' twelfth round. The Honorary Chair title is blue and the size of the "Keynote
+Speakers" title. Jesualdo Tomás Fernández Breis now reads Jesualdo Fernández Breis. The Program
+Committee no longer ends on "To be completed.".
 
 The organizers' ninth round. About is justified, every full line ending at the same column. The
 dates no longer end on "All deadlines are Anywhere on Earth (AoE, UTC−12)."; each date still says
