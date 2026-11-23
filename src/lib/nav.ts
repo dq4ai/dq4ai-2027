@@ -49,10 +49,12 @@ export const SECTIONS: Section[] = [
   },
   {
     id: "organizers",
-    // The organizers asked for a "Workshop Chairs" title, on the page and in the menu.
-    title: "Workshop Chairs",
-    menu: "Workshop Chairs",
+    // The organizers asked for "Organization" in the menu, and no section title on the page: the
+    // Honorary Chair and Workshop Chairs headings come first.
+    title: "Organization",
+    menu: "Organization",
     oldPath: "/organization/",
+    hideTitle: true,
   },
   { id: "program-committee", title: "Program Committee", menu: "Program Committee" },
   { id: "sponsors", title: "Supported by", menu: "Sponsors", notInMenu: true },
