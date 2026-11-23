@@ -434,6 +434,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Imane Hocine",
       "Jahid Hasan",
       "Jesualdo Tomás Fernández Breis",
+      "Laure Berti",
       "Mohammad Sadoghi",
       "Sebastian Schelter",
       "Sijie Dong",
@@ -444,9 +445,9 @@ test("organizers are listed once and the committee is sorted as configured", asy
     ]);
     // The organizers asked for the Honorary Chair to open the page.
     await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
-    // The organizers asked for the section under an "Workshop Chairs" title.
-    await expect(page.locator("h2#organizers")).toHaveText("Workshop Chairs");
-    await expect(page.locator("h2#organizers")).toBeVisible();
+    // The organizers asked for no section title: it stays for screen readers and the menu's link.
+    await expect(page.locator("h2#organizers")).toHaveText("Organization");
+    await expect(page.locator("h2#organizers")).toHaveClass(/visually-hidden/);
   }
 });
 

@@ -8,6 +8,10 @@ twice: short papers describe "work in progress, demos/systems/applications, or v
 ideas". Farah Benamara's affiliation is now IRIT, University of Toulouse.
 Dario Satriani (Eurecom, France) joins the Program Committee.
 
+The organizers' eleventh round. The menu says "Organization", and the section has no title on the
+page: it opens directly on the Honorary Chair and Workshop Chairs. Laure Berti (IRD, France) joins
+the Program Committee.
+
 The organizers' ninth round. About is justified, every full line ending at the same column. The
 dates no longer end on "All deadlines are Anywhere on Earth (AoE, UTC−12)."; each date still says
 AoE. The Honorary Chair, Workshop Chairs and organizers now sit under a "Workshop Chairs" title,
