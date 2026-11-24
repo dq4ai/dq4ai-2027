@@ -452,6 +452,7 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Jesualdo Fernández Breis",
       "Laure Berti-Equille",
       "Mohammad Sadoghi",
+      "Robert Wrembel",
       "Sebastian Schelter",
       "Sijie Dong",
     ]);
