@@ -5,4 +5,4 @@ summary: Divesh Srivastava (AT&T Chief Data Office, USA) will serve as Honorary 
 ---
 
 We are delighted to announce that Divesh Srivastava (AT&T Chief Data Office, USA) will serve as
-Honorary Chair of DQ4AI 2027. [Organization](#organizers).
+Honorary Chair of DQ4AI 2027.

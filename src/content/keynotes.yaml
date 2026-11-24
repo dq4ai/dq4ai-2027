@@ -2,6 +2,13 @@
 #   photo: { file: name.jpg, alt: "Portrait of the speaker" }
 - id: abedjan
   speaker: ziawasch-abedjan
-  title: TBA
-  abstract: TBA
+  title: Ad-hoc Data Integration in Data Lakes
+  abstract: >-
+    As data lakes have become a prominent foundation for enterprise and scientific data management,
+    organizations increasingly face the challenge of locating relevant datasets and building ad-hoc
+    integration pipelines across heterogeneous, poorly documented, and rapidly evolving data
+    collections. In this setting, ad-hoc data discovery and integration becomes a critical
+    capability for turning raw, distributed data assets into usable knowledge. In this talk, I will
+    give insights into our research on holistic discovery systems, task-dependent discovery, and
+    lake cleaning.
   bio: TBA

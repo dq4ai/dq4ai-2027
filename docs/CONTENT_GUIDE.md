@@ -159,7 +159,7 @@ date: "2026-12-01"
 summary: The paper submission deadline is now 18 December.
 ---
 
-The paper submission deadline is extended to December 18th, 2026. [Submission](#submission).
+The paper submission deadline is extended to December 18th, 2026.
 ```
 
 ## Harmless build messages

@@ -817,7 +817,12 @@ main > .contact {
   text-align: justify;
 }
 
-/* The news box, as on ICDE 2027's site: a shaded panel, one bullet per item, recent ones marked. */
+/* The news box, as on ICDE 2027's site: a shaded panel, one bullet per item, recent ones marked.
+   Its title in the names' red and its badge in the logo's green, as the organizers asked. */
+#news {
+  color: var(--color-person);
+}
+
 .news {
   max-inline-size: none;
   padding: var(--space-4) var(--space-5);
@@ -839,8 +844,8 @@ main > .contact {
   margin-inline-end: var(--space-2);
   padding: 0.1em 0.45em;
   border-radius: var(--radius);
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+  background: var(--color-brand-b);
+  color: #fff;
   font-size: var(--text-sm);
   font-weight: 700;
   text-transform: uppercase;
