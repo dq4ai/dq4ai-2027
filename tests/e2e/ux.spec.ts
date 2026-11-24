@@ -674,7 +674,7 @@ test.describe("less at once", () => {
       .evaluateAll((headings) =>
         headings
           .map((h) => h.id)
-          .filter((id) => !["sponsors", "topics", "past-edition"].includes(id)),
+          .filter((id) => !["news", "sponsors", "topics", "past-edition"].includes(id)),
       );
     expect(targets).toEqual(sections);
     await expect(menu).toHaveText([

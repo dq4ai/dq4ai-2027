@@ -240,3 +240,9 @@ export function toIcsDate(day: string, addDays = 0): string {
 export function buildTime(pinned: string | undefined): Date {
   return pinned ? parseIso(pinned) : new Date();
 }
+
+/** Whether a plain day such as a news item's is less than `days` days before `now`. */
+export function isRecentDay(day: string, now: Date, days = 30): boolean {
+  const age = now.getTime() - parseDay(day).getTime();
+  return age >= 0 && age < days * 24 * 60 * 60 * 1000;
+}

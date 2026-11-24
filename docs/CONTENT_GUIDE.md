@@ -147,8 +147,10 @@ photo: { file: jane-doe.jpg, alt: Portrait of Jane Doe }
 
 ## Post news
 
-News is not shown on the page, by the organizers' choice: it goes to the RSS feed (`rss.xml`) only.
-Add a file such as `news/2026-12-01-deadline-extended.md`:
+The three latest news items show in the News box at the top of the page, marked "New" for 30 days,
+and every item goes to the RSS feed (`rss.xml`). Items of the same day show in the order of their
+file names. The text below the `---` is what the box shows; `summary` is for the feed. Add a file
+such as `news/2026-12-01-deadline-extended.md`:
 
 ```markdown
 ---
@@ -157,7 +159,7 @@ date: "2026-12-01"
 summary: The paper submission deadline is now 18 December.
 ---
 
-The full announcement goes here.
+The paper submission deadline is extended to December 18th, 2026.
 ```
 
 ## Harmless build messages

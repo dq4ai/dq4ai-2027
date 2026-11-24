@@ -4,6 +4,7 @@ import ExternalLink from "../components/ExternalLink.astro";
 import PageSection from "../components/PageSection.astro";
 import About from "../components/sections/About.astro";
 import Keynotes from "../components/sections/Keynotes.astro";
+import News from "../components/sections/News.astro";
 import Organizers from "../components/sections/Organizers.astro";
 import PastEdition from "../components/sections/PastEdition.astro";
 import Program from "../components/sections/Program.astro";
@@ -81,6 +82,7 @@ const jsonLd = serializeJsonLd(
     }
   </script>
 
+  <News />
   <About />
   <Topics />
   <Submission />

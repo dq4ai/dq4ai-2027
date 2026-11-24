@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+A small News box opens the page, as on ICDE 2027's site: the three latest items, recent ones marked
+"New". It announces the Honorary Chair, the keynote speaker and the paper deadline. Its title is red
+and its badges green.
+
+Ziawasch Abedjan's keynote is "Ad-hoc Data Integration in Data Lakes", with its abstract.
+
 The organizers' tenth round. Every date reads in English style, month first with an ordinal day:
 "January 8th, 2027, 23:59 AoE", "April 6th–9th, 2027". The paper lengths no longer say "systems"
 twice: short papers describe "work in progress, demos/systems/applications, or vision/innovative
