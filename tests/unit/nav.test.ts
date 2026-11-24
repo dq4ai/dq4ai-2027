@@ -10,6 +10,7 @@ describe("the one page's sections", () => {
   // The organizers asked for the previous edition's sections and menu (QuaLLM-KG 2026).
   it("follows the previous edition's sections, in its order", () => {
     expect(SECTIONS.map((section) => section.title)).toEqual([
+      "News",
       "About",
       "Topics of Interest",
       "Submission",

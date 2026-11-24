@@ -93,4 +93,7 @@ export const getPapers = () => listOf("papers");
 export const getSponsors = () => listOf("sponsors");
 
 export const getNews = async () =>
-  (await getCollection("news")).sort((a, b) => b.data.date.localeCompare(a.data.date));
+  (await getCollection("news")).sort(
+    // Newest first; items of the same day in the order of their file names.
+    (a, b) => b.data.date.localeCompare(a.data.date) || a.id.localeCompare(b.id),
+  );

@@ -816,3 +816,33 @@ main > .contact {
 .about p:not(.go-top) {
   text-align: justify;
 }
+
+/* The news box, as on ICDE 2027's site: a shaded panel, one bullet per item, recent ones marked. */
+.news {
+  max-inline-size: none;
+  padding: var(--space-4) var(--space-5);
+  padding-inline-start: calc(var(--space-5) + 1em);
+  list-style: disc;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius);
+}
+
+.news li + li {
+  margin-block-start: var(--space-3);
+}
+
+.news p {
+  display: inline;
+}
+
+.news__new {
+  margin-inline-end: var(--space-2);
+  padding: 0.1em 0.45em;
+  border-radius: var(--radius);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

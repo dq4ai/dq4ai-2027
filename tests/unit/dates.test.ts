@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  isRecentDay,
   deadlineStatus,
   effectiveDate,
   formatAoE,
@@ -169,5 +170,17 @@ describe("formatLocalSessionTime", () => {
     expect(formatLocalSessionTime(opening, "Pacific/Honolulu", "Europe/Paris")).toBe(
       "21:00 (April 6th)",
     );
+  });
+});
+
+describe("isRecentDay", () => {
+  const now = new Date("2026-11-24T12:00:00Z");
+  it("is true from the day itself until 30 days later", () => {
+    expect(isRecentDay("2026-11-24", now)).toBe(true);
+    expect(isRecentDay("2026-10-26", now)).toBe(true);
+    expect(isRecentDay("2026-10-25", now)).toBe(false);
+  });
+  it("is false for a day still to come", () => {
+    expect(isRecentDay("2026-11-25", now)).toBe(false);
   });
 });

@@ -30,6 +30,8 @@ export const HOME = {
 // The sections of the previous edition's site (QuaLLM-KG 2026), in its order, with this edition's
 // content, as the organizers asked.
 export const SECTIONS: Section[] = [
+  // A small box of the latest news above About, as on ICDE 2027's site, as the organizers asked.
+  { id: "news", title: "News", menu: "News", notInMenu: true },
   { id: "about", title: "About", menu: "About", oldPath: "/call-for-papers/" },
   { id: "topics", title: "Topics of Interest", menu: "Topics", notInMenu: true },
   { id: "submission", title: "Submission", menu: "Submission", oldPath: "/submission/" },

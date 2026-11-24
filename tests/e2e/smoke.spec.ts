@@ -73,8 +73,9 @@ test("the home page leads with the workshop's purpose", async ({ page }) => {
   await expect(page.locator("main .topics")).toContainText("Multimodal data quality");
 });
 
-// The chairs asked for nothing between the banner and "About": no statement, button or key facts.
-test("the home page goes from the banner straight to About", async ({ page }) => {
+// The chairs asked for nothing between the banner and "About" but the News box (asked for later):
+// no statement, button or key facts.
+test("the home page goes from the banner to News, then About", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("");
   const banner = page.locator(".hero__banner");
@@ -83,9 +84,9 @@ test("the home page goes from the banner straight to About", async ({ page }) =>
   await expect(page.locator(".hero > *")).toHaveCount(1);
   await expect(page.locator(".exchange, .record, .hero__actions, .hero__body")).toHaveCount(0);
   await expect(page.locator("main").getByRole("link", { name: /call for papers/i })).toHaveCount(0);
-  await expect(page.locator("main > section").first().locator("h2")).toHaveText(
-    "About the DQ4AI Workshop",
-  );
+  const headings = page.locator("main > section > h2");
+  await expect(headings.nth(0)).toHaveText("News");
+  await expect(headings.nth(1)).toHaveText("About the DQ4AI Workshop");
 });
 
 // The organizers asked for no "Read more" or "Show less": everything is read in place.
@@ -111,10 +112,23 @@ test("the Submission section reads like the previous edition's", async ({ page }
   await expect(submission.locator("#checklist, #faq")).toHaveCount(0);
 });
 
-test("the page has no News section, as the organizers asked", async ({ page }) => {
+test("a small News box opens the page, as on ICDE 2027's site", async ({ page }, testInfo) => {
   await page.goto("");
-  await expect(page.locator("#news, [id^='news-']")).toHaveCount(0);
-  await expect(page.locator("main h2", { hasText: /news/i })).toHaveCount(0);
+  // Above About, not in the menu, as the organizers asked.
+  await expect(page.locator("main > section > h2").first()).toHaveAttribute("id", "news");
+  await expect(page.locator("#site-nav a", { hasText: /news/i })).toHaveCount(0);
+  const items = section(page, "news").locator(".news > li");
+  if (populated(testInfo.project.name)) {
+    // The newest first, and only the latest three.
+    await expect(items).toHaveCount(2);
+    await expect(items.first()).toContainText("Test data for the news page.");
+    await expect(items.locator(".news__new")).toHaveCount(1);
+  } else {
+    await expect(items).toHaveCount(3);
+    await expect(items.nth(0)).toContainText("Divesh Srivastava");
+    await expect(items.nth(1)).toContainText("Ziawasch Abedjan");
+    await expect(items.nth(2)).toContainText("January 8th, 2027");
+  }
 });
 
 test("Submission does not link to the dates just below it", async ({ page }) => {
@@ -132,11 +146,11 @@ test("every old page address leads to its section", async ({ page }, testInfo) =
   }
 });
 
-test("a phone's first screen reaches About", async ({ page }) => {
+test("a phone's first screen reaches News", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("");
   await expect(page.locator(".hero__banner")).toBeInViewport({ ratio: 1 });
-  await expect(page.locator("#about")).toBeInViewport({ ratio: 1 });
+  await expect(page.locator("#news")).toBeInViewport({ ratio: 1 });
 });
 
 test("no page has sideways scrolling or a color band", async ({ page }) => {
