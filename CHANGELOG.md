@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-The Submission section's "submitted here" links to EasyChair.
+The Submission section says submissions "should be submitted through EasyChair", linked. Not "here":
+a link must say where it goes.
 
 The paper deadline news links to the EasyChair submission page. Robert Wrembel (Poznan University of
 Technology, Poland) joins the Program Committee.

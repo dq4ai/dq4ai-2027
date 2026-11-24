@@ -34,7 +34,13 @@ const facts = [
           <span class="visually-hidden">(link to come)</span>
         </>
       ) : (
-        <ExternalLink href={site.submissionUrl}>here</ExternalLink>
+        <>
+          {/* Not "here": a link must say where it goes (and Lighthouse's SEO score requires it). */}
+          through{" "}
+          <ExternalLink href={site.submissionUrl}>
+            {isKnown(site.submissionSystem) ? site.submissionSystem : "the submission system"}
+          </ExternalLink>
+        </>
       )}
       .
     </p>
