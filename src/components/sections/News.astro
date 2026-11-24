@@ -1,29 +1,28 @@
 ---
 import { render } from "astro:content";
-import { getNews, getNow } from "../../lib/content";
-import { isRecentDay } from "../../lib/dates";
+import { getNews } from "../../lib/content";
 import PageSection from "../PageSection.astro";
 
 // The latest three, as a short box above About, as the organizers asked; the rest stay in the feed.
-const now = getNow();
 const items = await Promise.all(
-  (await getNews()).slice(0, 3).map(async (entry) => ({
-    entry,
-    isNew: isRecentDay(entry.data.date, now),
-    Content: (await render(entry)).Content,
-  })),
+  (await getNews())
+    .slice(0, 3)
+    .map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
 );
 ---
 
 {items.length > 0 && (
   <PageSection id="news">
-    <ul class="news">
-      {items.map(({ entry, isNew, Content }) => (
-        <li id={`news-${entry.id}`}>
-          {isNew && <span class="news__new">New</span>}
-          <Content />
-        </li>
-      ))}
-    </ul>
+    <div class="news">
+      {/* Said once for every item, as the organizers asked. */}
+      <p>We are delighted to announce:</p>
+      <ul>
+        {items.map(({ entry, Content }) => (
+          <li id={`news-${entry.id}`}>
+            <Content />
+          </li>
+        ))}
+      </ul>
+    </div>
   </PageSection>
 )}

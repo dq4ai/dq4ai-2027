@@ -117,12 +117,14 @@ test("a small News box opens the page, as on ICDE 2027's site", async ({ page },
   // Above About, not in the menu, as the organizers asked.
   await expect(page.locator("main > section > h2").first()).toHaveAttribute("id", "news");
   await expect(page.locator("#site-nav a", { hasText: /news/i })).toHaveCount(0);
-  const items = section(page, "news").locator(".news > li");
+  const box = section(page, "news").locator(".news");
+  // Said once, with no "New" on each item, as the organizers asked.
+  await expect(box.locator("> p")).toHaveText("We are delighted to announce:");
+  const items = box.locator("li");
   if (populated(testInfo.project.name)) {
     // The newest first, and only the latest three.
     await expect(items).toHaveCount(2);
     await expect(items.first()).toContainText("Test data for the news page.");
-    await expect(items.locator(".news__new")).toHaveCount(1);
   } else {
     await expect(items).toHaveCount(3);
     await expect(items.nth(0)).toContainText("Divesh Srivastava");
