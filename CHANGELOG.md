@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The News box says "We are delighted to announce:" once, above its items, with no "New" on each.
+People's names in it are red.
+
 A small News box opens the page, as on ICDE 2027's site: the three latest items, recent ones marked
 "New". It announces the Honorary Chair, the keynote speaker and the paper deadline. Its title is red
 and its badges green.
