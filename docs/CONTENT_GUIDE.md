@@ -148,7 +148,8 @@ photo: { file: jane-doe.jpg, alt: Portrait of Jane Doe }
 ## Post news
 
 The three latest news items show in the News box at the top of the page, after "We are delighted to
-announce:", so write each as what is announced. Put people's names in `**bold**`: they show in red.
+announce:", so write each as what is announced. Put people's names in `**bold**`: they show in red. Write a link to another site as
+`<a href="https://..." rel="noopener">text</a>`; a test fails a link without `rel="noopener"`.
 Every item also goes to the RSS feed (`rss.xml`). Items of the same day show in the order of their
 file names. The text below the `---` is what the box shows; `summary` is for the feed. Add a file
 such as `news/2026-12-01-deadline-extended.md`:

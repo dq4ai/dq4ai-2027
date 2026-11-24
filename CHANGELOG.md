@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The paper deadline news links to the EasyChair submission page. Robert Wrembel (Poznan University of
+Technology, Poland) joins the Program Committee.
+
 The News box says "We are delighted to announce:" once, above its items, with no "New" on each.
 People's names in it are red.
 
