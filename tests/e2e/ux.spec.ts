@@ -193,8 +193,7 @@ test.describe("authors' tasks", () => {
     expect(text).toContain("https://example.org/template.zip");
   });
 
-  // The organizers asked for the previous edition's sentence, with a link that does nothing until
-  // the real address is known: "after, we change it".
+  // The organizers asked for the previous edition's sentence, its "here" linking to EasyChair.
   test("Submission says how to submit, as the previous edition did", async ({ page }, testInfo) => {
     await page.goto("");
     const submission = section(page, "submission");
@@ -220,11 +219,11 @@ test.describe("authors' tasks", () => {
       "href",
       "https://ceur-ws.org/HOWTOSUBMIT.html",
     );
-    // A placeholder: looks like the previous edition's link, goes nowhere, and says so aloud.
-    const here = line.locator(".link-pending");
-    await expect(here).toHaveText("here");
-    await expect(here).not.toHaveAttribute("href");
-    await expect(line.locator(".visually-hidden")).toHaveText("(link to come)");
+    await expect(line.getByRole("link", { name: "here" })).toHaveAttribute(
+      "href",
+      "https://easychair.org/conferences/?conf=dq4ai2027",
+    );
+    await expect(line.locator(".link-pending")).toHaveCount(0);
   });
 
   test("the organizers' status note appears once they write one", async ({ page }, testInfo) => {

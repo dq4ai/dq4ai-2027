@@ -27,7 +27,7 @@ describe("the committed content", () => {
   it("passes every rule and reports its placeholders", () => {
     const { issues, placeholders } = checkContent("src/content");
     expect(issues).toEqual([]);
-    expect(placeholders).toContainEqual({ file: "site.yaml", field: "submissionUrl" });
+    expect(placeholders).toContainEqual({ file: "submission.yaml", field: "formatting" });
   });
   it("the populated fixture passes every rule", () => {
     expect(checkContent("tests/fixtures/content-populated").issues).toEqual([]);
@@ -87,7 +87,7 @@ describe("plain-text CFP", () => {
   });
   it("carries extended dates and marks unknown facts", () => {
     const text = buildCfpText({
-      site,
+      site: { ...site, submissionUrl: "TBA" },
       cfp,
       chairs: [{ id: "x", name: "Jane Doe", affiliation: "Example University" }],
       siteUrl: "https://example.org/",
