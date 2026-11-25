@@ -18,8 +18,8 @@ host:
 venueTimezone: Europe/Paris
 workshopDate: "2027-04-06"
 contactEmail: soror.sahri@u-pariscite.fr
-submissionSystem: TBA # e.g. EasyChair, CMT, OpenReview, HotCRP
-submissionUrl: TBA
+submissionSystem: EasyChair # e.g. EasyChair, CMT, OpenReview, HotCRP
+submissionUrl: https://easychair.org/conferences/?conf=dq4ai2027
 proceedings:
   name: CEUR Workshop Proceedings
   url: https://ceur-ws.org/

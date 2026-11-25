@@ -193,8 +193,8 @@ test.describe("authors' tasks", () => {
     expect(text).toContain("https://example.org/template.zip");
   });
 
-  // The organizers asked for the previous edition's sentence, with a link that does nothing until
-  // the real address is known: "after, we change it".
+  // The organizers asked for the previous edition's sentence, linking to EasyChair. The link says
+  // where it goes rather than "here".
   test("Submission says how to submit, as the previous edition did", async ({ page }, testInfo) => {
     await page.goto("");
     const submission = section(page, "submission");
@@ -204,9 +204,9 @@ test.describe("authors' tasks", () => {
     if (populated(testInfo.project.name)) {
       await expect(line).toHaveText(
         "Authors must format their submissions according to the Example template, and all " +
-          "submissions in PDF format should be submitted here.",
+          "submissions in PDF format should be submitted through the submission system.",
       );
-      await expect(line.getByRole("link", { name: "here" })).toHaveAttribute(
+      await expect(line.getByRole("link", { name: "the submission system" })).toHaveAttribute(
         "href",
         /example\.org\/submit/,
       );
@@ -214,17 +214,17 @@ test.describe("authors' tasks", () => {
     }
     await expect(line).toContainText(
       "Authors must format their submissions according to the CEUR-WS proceedings template, and " +
-        "all submissions in PDF format should be submitted here",
+        "all submissions in PDF format should be submitted through EasyChair.",
     );
     await expect(line.getByRole("link", { name: "CEUR-WS proceedings template" })).toHaveAttribute(
       "href",
       "https://ceur-ws.org/HOWTOSUBMIT.html",
     );
-    // A placeholder: looks like the previous edition's link, goes nowhere, and says so aloud.
-    const here = line.locator(".link-pending");
-    await expect(here).toHaveText("here");
-    await expect(here).not.toHaveAttribute("href");
-    await expect(line.locator(".visually-hidden")).toHaveText("(link to come)");
+    await expect(line.getByRole("link", { name: "EasyChair" })).toHaveAttribute(
+      "href",
+      "https://easychair.org/conferences/?conf=dq4ai2027",
+    );
+    await expect(line.locator(".link-pending")).toHaveCount(0);
   });
 
   test("the organizers' status note appears once they write one", async ({ page }, testInfo) => {
