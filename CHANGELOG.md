@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+The News box text is bold, with "Honorary Chair" and "keynote talk" in italic.
+
 The Submission section says submissions "should be submitted through EasyChair", linked. Not "here":
 a link must say where it goes.
 

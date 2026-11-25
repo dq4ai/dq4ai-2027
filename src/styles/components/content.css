@@ -824,6 +824,8 @@ main > .contact {
 }
 
 .news {
+  /* The organizers asked for the whole news text in bold. */
+  font-weight: 700;
   padding: var(--space-4) var(--space-5);
   background: var(--color-surface-raised);
   border-radius: var(--radius);
@@ -851,4 +853,10 @@ main > .contact {
 /* People's names, in bold in the news text, in the names' red, as the organizers asked. */
 .news strong {
   color: var(--color-person);
+}
+
+/* "Honorary Chair" and "keynote talk" in italic, as the organizers asked. The font has no italic face,
+   so the browser slants the upright one. */
+.news em {
+  font-synthesis: style;
 }
