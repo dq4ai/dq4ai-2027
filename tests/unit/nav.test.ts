@@ -15,6 +15,7 @@ describe("the one page's sections", () => {
       "Topics of Interest",
       "Submission",
       "Program",
+      "Honorary Chair",
       "Keynote Speakers",
       "Organization",
       "Program Committee",

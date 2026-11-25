@@ -4,10 +4,10 @@ import PageSection from "../PageSection.astro";
 import PersonEntry from "../PersonEntry.astro";
 
 const committees = await getCommittees();
-// Every committee but the program committee, which has its own section, as on the previous
-// edition's site.
+// Every committee but the program committee and the Honorary Chair, which have their own sections.
 const groups = committees.filter(
-  (committee) => committee.id !== "program-committee" && committee.people.length > 0,
+  (committee) =>
+    !["program-committee", "honorary-chair"].includes(committee.id) && committee.people.length > 0,
 );
 ---
 
