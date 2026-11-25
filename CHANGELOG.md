@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+Katja Hose (TU Wien) gives a keynote; her talk details are TBA. The News box lists both keynote
+speakers under "DQ4AI keynote talks will be given by:", and its affiliations are short, without
+countries: AT&T Chief Data Office, TU Berlin, TU Wien.
+
 The News box text is bold, with "Honorary Chair" and "keynote talk" in italic.
 
 The Submission section says submissions "should be submitted through EasyChair", linked. Not "here":
