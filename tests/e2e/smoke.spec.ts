@@ -120,7 +120,7 @@ test("a small News box opens the page, as on ICDE 2027's site", async ({ page },
   const box = section(page, "news").locator(".news");
   // Said once, with no "New" on each item, as the organizers asked.
   await expect(box.locator("> p")).toHaveText("We are delighted to announce:");
-  const items = box.locator("li");
+  const items = box.locator("> ul > li");
   if (populated(testInfo.project.name)) {
     // The newest first, and only the latest three.
     await expect(items).toHaveCount(2);
@@ -128,7 +128,11 @@ test("a small News box opens the page, as on ICDE 2027's site", async ({ page },
   } else {
     await expect(items).toHaveCount(3);
     await expect(items.nth(0)).toContainText("Divesh Srivastava");
-    await expect(items.nth(1)).toContainText("Ziawasch Abedjan");
+    // Both keynote speakers in one item, one per line, as the organizers asked.
+    await expect(items.nth(1).locator("li")).toHaveText([
+      "Ziawasch Abedjan (TU Berlin)",
+      "Katja Hose (TU Wien)",
+    ]);
     await expect(items.nth(2)).toContainText("January 8th, 2027");
   }
 });
