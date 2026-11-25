@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The News box names both keynote speakers on one line: "Ziawasch Abedjan (TU Berlin) & Katja Hose (TU
+Wien)".
+
 The Honorary Chair has its own section, just before the keynote speakers, and is no longer under
 Organization. The deadline news reads "You can submit your papers through this portal", without
 "23:59 AoE".

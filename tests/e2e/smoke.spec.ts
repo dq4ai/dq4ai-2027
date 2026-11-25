@@ -128,11 +128,10 @@ test("a small News box opens the page, as on ICDE 2027's site", async ({ page },
   } else {
     await expect(items).toHaveCount(3);
     await expect(items.nth(0)).toContainText("Divesh Srivastava");
-    // Both keynote speakers in one item, one per line, as the organizers asked.
-    await expect(items.nth(1).locator("li")).toHaveText([
-      "Ziawasch Abedjan (TU Berlin)",
-      "Katja Hose (TU Wien)",
-    ]);
+    // Both keynote speakers on one line, as the organizers asked.
+    await expect(items.nth(1)).toHaveText(
+      "DQ4AI keynote talks will be given by: Ziawasch Abedjan (TU Berlin) & Katja Hose (TU Wien)",
+    );
     await expect(items.nth(2)).toContainText("January 8th, 2027");
   }
 });

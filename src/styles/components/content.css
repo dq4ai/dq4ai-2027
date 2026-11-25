@@ -853,13 +853,3 @@ main > .contact {
 .news em {
   font-synthesis: style;
 }
-
-/* A list inside an item, such as the keynote speakers: indented under it, one per line, no bullets. */
-.news li ul {
-  margin-block-start: var(--space-1);
-  list-style: none;
-}
-
-.news li li + li {
-  margin-block-start: 0;
-}
