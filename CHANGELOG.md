@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+The Honorary Chair has its own section, just before the keynote speakers, and is no longer under
+Organization. The deadline news reads "You can submit your papers through this portal", without
+"23:59 AoE".
+
 Katja Hose (TU Wien) gives a keynote; her talk details are TBA. The News box lists both keynote
 speakers under "DQ4AI keynote talks will be given by:", and its affiliations are short, without
 countries: AT&T Chief Data Office, TU Berlin, TU Wien.

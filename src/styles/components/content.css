@@ -662,15 +662,8 @@ details p {
   margin-block: 0 var(--space-1);
 }
 
-/* The Honorary Chair title in blue, the size of the "Keynote Speakers" title, as the organizers
-   asked. */
-.committee--honorary-chair h3 {
-  font-size: var(--text-h2);
-  color: var(--color-brand-a);
-}
-
 /* The Honorary Chair in the keynote speakers' size, as the organizers asked. */
-.committee--honorary-chair .person,
+.honorary-chair .person,
 .keynote__person {
   font-size: var(--text-h3);
   font-weight: 400;

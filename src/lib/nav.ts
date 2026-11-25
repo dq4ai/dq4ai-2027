@@ -42,6 +42,8 @@ export const SECTIONS: Section[] = [
     oldPath: "/program/",
     onlyWithProgram: true,
   },
+  // Before the keynote speakers, not under Organization, as the organizers asked.
+  { id: "honorary-chair", title: "Honorary Chair", menu: "Honorary Chair", notInMenu: true },
   {
     id: "keynotes",
     title: "Keynote Speakers",
@@ -52,7 +54,7 @@ export const SECTIONS: Section[] = [
   {
     id: "organizers",
     // The organizers asked for "Organization" in the menu, and no section title on the page: the
-    // Honorary Chair and Workshop Chairs headings come first.
+    // Workshop Chairs heading comes first.
     title: "Organization",
     menu: "Organization",
     oldPath: "/organization/",
