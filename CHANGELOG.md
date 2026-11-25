@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+Katja Hose's keynote entry reads "TU Wien, Austria".
+
 The News box names both keynote speakers on one line: "Ziawasch Abedjan (TU Berlin) & Katja Hose (TU
 Wien)".
 
