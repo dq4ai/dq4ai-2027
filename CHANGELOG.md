@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+The Honorary Chair is back under Organization, before the Workshop Chairs, in the keynote speakers'
+type: as its own section it had no menu link.
+
 Katja Hose's keynote entry reads "TU Wien, Austria".
 
 The News box names both keynote speakers on one line: "Ziawasch Abedjan (TU Berlin) & Katja Hose (TU
