@@ -463,14 +463,8 @@ test("organizers are listed once and the committee is sorted as configured", asy
       "Soror Sahri",
       "Farah Benamara",
     ]);
-    // The Honorary Chair has its own section, just before the keynote speakers, as the organizers
-    // asked; Organization opens with the Workshop Chairs.
-    await expect(section(page, "organizers").locator("h3").first()).toHaveText("Workshop Chairs");
-    await expect(page.locator("#honorary-chair ~ ul .person__name")).toHaveText(
-      "Divesh Srivastava",
-    );
-    const ids = await page.locator("main > section > h2").evaluateAll((h) => h.map((e) => e.id));
-    expect(ids.indexOf("honorary-chair")).toBe(ids.indexOf("keynotes") - 1);
+    // The organizers asked for the Honorary Chair to open the page.
+    await expect(section(page, "organizers").locator("h3").first()).toHaveText("Honorary Chair");
     // The organizers asked for no section title: it stays for screen readers and the menu's link.
     await expect(page.locator("h2#organizers")).toHaveText("Organization");
     await expect(page.locator("h2#organizers")).toHaveClass(/visually-hidden/);
@@ -639,6 +633,8 @@ test("the Honorary Chair reads in the keynote speakers' type", async ({ page }, 
         return [c.fontFamily, c.fontSize, c.fontWeight];
       });
   for (const part of [".person__name", ".person__place"]) {
-    expect(await style(`.honorary-chair ${part}`)).toEqual(await style(`.keynote__person ${part}`));
+    expect(await style(`.committee--honorary-chair ${part}`)).toEqual(
+      await style(`.keynote__person ${part}`),
+    );
   }
 });
